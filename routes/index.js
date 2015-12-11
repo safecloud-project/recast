@@ -2,6 +2,7 @@ var express = require('express');
 var fs = require('fs');
 var path = require('path');
 var rawBody = require('raw-body');
+var redis = require('redis');
 var router = express.Router();
 var typer = require('media-typer');
 
@@ -27,16 +28,17 @@ function RS(messageLength, errorCorrectionLength) {
 
 router.get('/(:path)', function(req, res, next) {
   'use strict';
-  var resourcePath = path.join(__dirname, '../data/' , path.normalize(req.path));
-  var stream = fs.createReadStream(resourcePath, {
-    'autoclose': true,
-    'flags': 'r'
+  var redisClient = redis.createClient({'return_buffers': true});
+  redisClient.get(req.path, function (error, data) {
+    redisClient.end();
+    if (error) {
+      return res.status(error.status || 500).send(error.message);
+    }
+    if (!data) {
+      return res.status(404).send('not found');
+    }
+    res.status(200).send(data);
   });
-  if (!stream) {
-    return res.status(500).send('NOK');
-  }
-  res.status(200);
-  stream.pipe(res);
 });
 
 function rawBodyUpload(req, res, next) {
@@ -56,12 +58,12 @@ function rawBodyUpload(req, res, next) {
 
 router.put('/(:path)', rawBodyUpload, function (req, res) {
   'use strict';
-  //TODO: Handle file path with folder arborescence with 'mkdirp'
-  var fileLocation = path.join(__dirname, '../data/' , req.path);
-  fs.writeFile(fileLocation, req.data, function (error) {
+  var redisClient = redis.createClient();
+  redisClient.set(req.path, req.data, function (error) {
     if (error) {
-      return res.status(error.status || 500).send('NOK');
+        return res.status(error.status || 500).send(error.message);
     }
+    redisClient.end();
     res.status(200).send('OK');
   });
 });
