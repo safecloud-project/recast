@@ -29,6 +29,9 @@ function rawBodyUpload(req, res, next) {
     if (err) {
       return next(err);
     }
+    if (!Buffer.isBuffer(string) || string.length === 0) {
+      return res.status(400).send('file missing');
+    }
     req.data = string;
     next();
   });
