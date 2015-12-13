@@ -49,4 +49,16 @@ router.put('/(:path)', rawBodyUpload, function (req, res) {
   });
 });
 
+router.delete('/(:path)', function (req, res) {
+  'use strict';
+  var redisClient = redis.createClient();
+  redisClient.del(req.path, function (error) {
+    redisClient.end();
+    if (error) {
+      return res.status(error.status || 500).send(error.message);
+    }
+    return res.status(200).send('OK');
+  });
+});
+
 module.exports = router;
