@@ -4,7 +4,7 @@ var redis = require('redis');
 var router = express.Router();
 var typer = require('media-typer');
 
-var REDIS_OPTIONS = Object.freeze({
+var redisClient = redis.createClient({
   'host': process.env.REDIS_PORT_6379_TCP_ADDR || '127.0.0.1',
   'port':  process.env.REDIS_PORT_6379_TCP_PORT || 6379,
   'return_buffers': true
@@ -12,16 +12,14 @@ var REDIS_OPTIONS = Object.freeze({
 
 router.get('/(:path)', function(req, res) {
   'use strict';
-  var redisClient = redis.createClient(REDIS_OPTIONS);
   redisClient.get(req.path, function (error, data) {
-    redisClient.end();
     if (error) {
       return res.status(error.status || 500).send(error.message);
     }
     if (!data) {
       return res.status(404).send('not found');
     }
-    res.status(200).send(data);
+    return res.status(200).send(data);
   });
 });
 
@@ -45,21 +43,17 @@ function rawBodyUpload(req, res, next) {
 
 router.put('/(:path)', rawBodyUpload, function (req, res) {
   'use strict';
-  var redisClient = redis.createClient(REDIS_OPTIONS);
   redisClient.set(req.path, req.data, function (error) {
     if (error) {
       return res.status(error.status || 500).send(error.message);
     }
-    redisClient.end();
-    res.status(200).send('OK');
+    return res.status(200).send('OK');
   });
 });
 
 router.delete('/(:path)', function (req, res) {
   'use strict';
-  var redisClient = redis.createClient(REDIS_OPTIONS);
   redisClient.del(req.path, function (error) {
-    redisClient.end();
     if (error) {
       return res.status(error.status || 500).send(error.message);
     }
