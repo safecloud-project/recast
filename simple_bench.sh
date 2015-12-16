@@ -9,9 +9,9 @@ function random_key
 #random_key=$(random_key)
 #echo $random_key
 
-TOTAL_KEYS=$1
-SIZE=$2 
-HOST=$3 #os.getenv("PROXY_PORT_3000_TCP_ADDR") .. ":" .. os.getenv("PROXY_PORT_3000_TCP_PORT")
+TOTAL_KEYS=${1:-10} #1st param or default to 10
+SIZE=${2:-16} #2nd param or default to 16
+HOST=${3:-"192.168.99.104:3000"} #os.getenv("PROXY_PORT_3000_TCP_ADDR") .. ":" .. os.getenv("PROXY_PORT_3000_TCP_PORT")
 
 echo "TOTAL_KEYS=${TOTAL_KEYS}"
 
