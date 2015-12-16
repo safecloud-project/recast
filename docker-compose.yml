@@ -7,3 +7,8 @@ proxy:
 
 redis:
   image: redis
+
+client:
+  build: ./client_bash/
+  links:
+  - proxy
