@@ -1,9 +1,10 @@
+//protoc -I . --python_out=. --grpc_out=. --plugin=protoc-gen-grpc=/grpc/bins/opt/grpc_python_plugin playcloud.proto
 syntax = "proto3";
 
 //the encoder service
 service EncoderDecoder {
 	rpc Encode (EncodeRequest) returns (EncodeReply) {}
-	rpc Decode (DecodeRequest) returns (DecodeReply){}
+	rpc Decode (DecodeRequest) returns (DecodeReply) {}
 }
 
 message EncodeRequest{
@@ -16,7 +17,7 @@ message EncodeReply{
 }
 
 message DecodeRequest{
-	bytes enc_blocks=1;
+	repeated bytes enc_blocks=1;
 	map<string,string> decoding_parameters=2;
 }
 
