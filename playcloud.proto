@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+//the encoder service
+service EncoderDecoder {
+	rpc Encode (EncodeRequest) returns (EncodeReply) {}
+	rpc Decode (DecodeRequest) returns (DecodeReply){}
+}
+
+message EncodeRequest{
+	bytes payload = 1; 
+	map<string,string> encoding_parameters = 2;
+}
+
+message EncodeReply{
+	bytes enc_blocks=1;
+}
+
+message DecodeRequest{
+	bytes enc_blocks=1;
+	map<string,string> decoding_parameters=2;
+}
+
+message DecodeReply{
+	bytes dec_block=1;
+}
+
