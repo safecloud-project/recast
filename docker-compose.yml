@@ -8,6 +8,7 @@ proxy:
 
 redis:
   image: redis
+  mem_limit: 2000000000
 
 client:
   build: ./client_bash/
