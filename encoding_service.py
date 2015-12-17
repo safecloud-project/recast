@@ -2,15 +2,17 @@
 
 import playcloud_pb2
 
-class EncoderDecoder(playcloud_pb2.EarlyAdopterEncoderDecoderServicer):
+class EncoderDecoder(playcloud_pb2.BetaEncoderDecoderServicer):
 
-  def Encode(self, request, context):
-    #here invoke pylonghair
-  def Decode(self, request,context):
-    #here invoke pylonghair   
+    def Encode(self, request, context):
+      #here invoke pylonghair  
+      return
+    def Decode(self, request,context):
+      #here invoke pylonghair  
+      return 
 
 def serve():
-  server = playcloud_pb2.early_adopter_create_EncoderDecoder_server(Greeter())
+  server = playcloud_pb2.beta_create_EncoderDecoder_server(EncoderDecoder())
   server.add_insecure_port('[::]:50051')
   server.start()
   try:
