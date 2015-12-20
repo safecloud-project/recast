@@ -1,18 +1,15 @@
 var express = require('express');
+var path = require('path');
 var rawBody = require('raw-body');
-var redis = require('redis');
 var router = express.Router();
 var typer = require('media-typer');
 
-var redisClient = redis.createClient({
-  'host': process.env.REDIS_PORT_6379_TCP_ADDR || '127.0.0.1',
-  'port':  process.env.REDIS_PORT_6379_TCP_PORT || 6379,
-  'return_buffers': true
-});
+var store = require(path.join(__dirname, '../lib/store'))();
+
 
 router.get('/(:path)', function(req, res) {
   'use strict';
-  redisClient.get(req.path, function (error, data) {
+  store.get(req.path, function (error, data) {
     if (error) {
       return res.status(error.status || 500).send(error.message);
     }
@@ -43,7 +40,7 @@ function rawBodyUpload(req, res, next) {
 
 router.put('/(:path)', rawBodyUpload, function (req, res) {
   'use strict';
-  redisClient.set(req.path, req.data, function (error) {
+  store.put(req.path, req.data, function (error) {
     if (error) {
       return res.status(error.status || 500).send(error.message);
     }
@@ -53,7 +50,7 @@ router.put('/(:path)', rawBodyUpload, function (req, res) {
 
 router.delete('/(:path)', function (req, res) {
   'use strict';
-  redisClient.del(req.path, function (error) {
+  store.delete(req.path, function (error) {
     if (error) {
       return res.status(error.status || 500).send(error.message);
     }
