@@ -5,12 +5,11 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Server server = new Server();
         server.start();
-        Scanner scanner = new Scanner(System.in);
-        while (scanner.hasNext()) ;
-        server.stop();
-        System.exit(0);
+        while (true) {
+            Thread.sleep(1000);
+        }
     }
 }

@@ -4,6 +4,7 @@ proxy:
   - "3000:3000"
   links:
   - redis
+  - dummy-coder
 
 redis:
   image: redis
@@ -12,3 +13,6 @@ client:
   build: ./client_bash/
   links:
   - proxy
+
+dummy-coder:
+  build: ./dummy-coder
