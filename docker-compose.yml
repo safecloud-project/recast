@@ -16,3 +16,11 @@ client:
 
 dummy-coder:
   build: ./dummy-coder
+
+java-proxy:
+  build: ./java-proxy
+  ports:
+    - "8080:8080"
+  links:
+  - redis
+  - dummy-coder
