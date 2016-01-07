@@ -12,5 +12,5 @@ WORKDIR /usr/src/app
 RUN mvn package
 
 # Launch the server on container start-up
-EXPOSE 1234
+EXPOSE 8080
 ENTRYPOINT ["mvn", "spring-boot:run"]
