@@ -8,7 +8,10 @@ import java.io.IOException;
 
 public class Store {
 
-    static JedisPool POOL = new JedisPool(new JedisPoolConfig(), System.getenv("REDIS_PORT_6379_TCP_ADDR") != null ? System.getenv("REDIS_PORT_6379_TCP_ADDR") : "127.0.0.1");
+    private static String redisHost = System.getenv("REDIS_PORT_6379_TCP_ADDR") != null ? System.getenv("REDIS_PORT_6379_TCP_ADDR") : "127.0.0.1";
+    private static int redisPort = System.getenv("REDIS_PORT_6379_TCP_ADDR") != null ? Integer.parseInt(System.getenv("REDIS_PORT_6379_TCP_PORT")) : 6379;
+
+    static JedisPool POOL = new JedisPool(new JedisPoolConfig(), redisHost, redisPort);
 
     private ErasureClient erasureClient;
 
