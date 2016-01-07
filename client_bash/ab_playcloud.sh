@@ -9,7 +9,7 @@ function print_help() {
 	echo -e "\tserver                  Server to test in the form of host:port"
 }
 
-if [[ $# -ne 3 ]]; then
+if [[ $# -lt 3 ]]; then
 	print_help
 	exit 0
 fi
@@ -24,7 +24,7 @@ if [ ! -f $DATA_FILE ]; then
 	exit 1
 fi
 SERVER="$PROXY_PORT_3000_TCP_ADDR:$PROXY_PORT_3000_TCP_PORT"
-if [[ $# -ne 4 ]]; then
+if [[ $# -ge 4 ]]; then
 	SERVER=$4
 fi
 RANDOM_KEY=$(echo $(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1))
