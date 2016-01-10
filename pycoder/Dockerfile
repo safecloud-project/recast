@@ -2,18 +2,10 @@ FROM ubuntu:15.10
 
 # Install dependencies
 RUN apt-get update --quiet && apt-get upgrade --assume-yes --quiet
-RUN apt-get install --assume-yes --quiet automake build-essential gcc liberasurecode1 python-dev python-setuptools wget
+RUN apt-get install --assume-yes --quiet automake build-essential gcc liberasurecode1 wget
 
 #Install PyECLib
-RUN ldconfig
-WORKDIR /tmp/
-RUN wget https://pypi.python.org/packages/source/P/PyECLib/PyECLib-1.1.1.tar.gz#md5=53ba4101e01e22728bc25fcd43287565
-RUN tar xf PyECLib-1.1.1.tar.gz && rm PyECLib-1.1.1.tar.gz
-WORKDIR /tmp/PyECLib-1.1.1
-RUN python setup.py install
-RUN rm -rf /tmp/PyECLib-1.1.1
-WORKDIR /
-
+RUN apt-get install --assume-yes --quiet python-pyeclib
 
 # Install protobuf 3
 RUN apt-get install --assume-yes --quiet autoconf curl libtool unzip
@@ -30,15 +22,20 @@ RUN make clean
 WORKDIR /
 
 # Install GRPC
-RUN apt-get install --assume-yes --quiet autoconf git libtool libgrpc-dev libssl-dev python-all-dev python-virtualenv zlib1g-dev
+RUN apt-get install --assume-yes --quiet autoconf git libtool libgrpc-dev libssl-dev python-all-dev python-pip python-virtualenv zlib1g-dev
 RUN git clone https://github.com/grpc/grpc
 WORKDIR grpc
+RUN git checkout release-0_11
 RUN make
 RUN make install
-RUN make clean
 WORKDIR /
 
+# Install python runtime requirements
+RUN pip install -U grpcio==0.11.0b1
+RUN pip install -U protobuf==3.0.0a3
+
 # Cleanup
-RUN apt-get autoremove  --assume-yes --quiet autoconf automake build-essential curl gcc git libtool unzip wget
+RUN apt-get autoremove  --assume-yes --quiet autoconf automake build-essential curl git libtool unzip wget
 RUN rm -rf /protobuf-3.0.0-beta-1 /v3.0.0-beta-1.tar.gz
-RUN apt-get autoclean
+RUN apt-get --assume-yes --quiet autoremove
+RUN apt-get --assume-yes --quiet autoclean
