@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "lint": "find -not -path \"./node_modules/*\" -iname \"*.js\" | xargs ./node_modules/eslint/bin/eslint.js || true",
     "start": "pm2 start processes.json && pm2 logs",
     "test": "./node_modules/mocha/bin/_mocha --recursive test"
   },
@@ -18,6 +19,7 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "eslint": "^1.10.3",
     "sinon": "^1.17.2",
     "supertest": "^1.1.0"
   }
