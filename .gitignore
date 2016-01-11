@@ -1,8 +1,12 @@
-node_modules
-npm-debug.log
+# Editor files
 *~
 *.swp
+# Nodejs files
+node_modules
+*npm-debug.log
 # Java files
 *.class
 *.jar
 *.war
+# Python files
+*.pyc

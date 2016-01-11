@@ -39,3 +39,7 @@ RUN apt-get autoremove  --assume-yes --quiet autoconf automake build-essential c
 RUN rm -rf /protobuf-3.0.0-beta-1 /v3.0.0-beta-1.tar.gz
 RUN apt-get --assume-yes --quiet autoremove
 RUN apt-get --assume-yes --quiet autoclean
+
+# Copy server sources
+COPY *.py /usr/local/src/app/
+ENTRYPOINT ["/usr/bin/python", "/usr/local/src/app/server.py"]
