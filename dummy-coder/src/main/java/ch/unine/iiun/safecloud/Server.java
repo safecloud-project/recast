@@ -4,7 +4,6 @@ import io.grpc.internal.ServerImpl;
 import io.grpc.netty.NettyServerBuilder;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class Server {
@@ -16,10 +15,10 @@ public class Server {
     private ServerImpl gRpcServer;
 
     public Server() {
-        Server(DEFAULT_PORT);
-    }
+        this(DEFAULT_PORT);
 
-    public void Server(int port) {
+    }
+    public Server(int port) {
         this.port = port;
     }
 
