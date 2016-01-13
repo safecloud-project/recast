@@ -9,7 +9,7 @@ RUN ln -s /usr/share/maven/bin/mvn /usr/local/bin/mvn
 
 COPY . /usr/src/app
 WORKDIR /usr/src/app
-RUN mvn package
+RUN mvn clean && mvn package
 
 # Launch the server on container start-up
 EXPOSE 8080
