@@ -9,21 +9,20 @@ service EncoderDecoder {
 	rpc Decode (DecodeRequest) returns (DecodeReply) {}
 }
 
-message EncodeRequest{
-	bytes payload = 1; 
+message EncodeRequest {
+	bytes payload = 1;
 	map<string,string> encoding_parameters = 2;
 }
 
-message EncodeReply{
-	bytes enc_blocks=1;
+message EncodeReply {
+	bytes enc_blocks = 1;
 }
 
-message DecodeRequest{
-	repeated bytes enc_blocks=1;
-	map<string,string> decoding_parameters=2;
+message DecodeRequest {
+	repeated bytes enc_blocks = 1;
+	map<string, string> decoding_parameters = 2;
 }
 
-message DecodeReply{
-	bytes dec_block=1;
+message DecodeReply {
+	bytes dec_block = 1;
 }
-
