@@ -42,7 +42,8 @@ RUN apt-get --assume-yes --quiet autoclean
 
 # Expose port to other containers
 EXPOSE 1234
- 
+
 # Copy server sources
-COPY *.py /usr/local/src/app/
+COPY * /usr/local/src/app/
+WORKDIR /usr/local/src/app/
 ENTRYPOINT ["/usr/bin/python", "/usr/local/src/app/server.py"]
