@@ -1,48 +1,56 @@
-import logging
-
-from playcloud_pb2 import *
+"""Wrapper for pyeclib encoders using GRPC"""
+from playcloud_pb2 import BetaEncoderDecoderServicer
+from playcloud_pb2 import DecodeReply
+from playcloud_pb2 import EncodeReply
 from pyeclib.ec_iface import ECDriver
 
 
-class Eraser:
+def bytes_to_strips(k, m, payload):
+    """Transforms a byte string in a list of bytes string"""
+    disks = k + m
+    length = len(payload) / disks
+    strips = []
+    for i in range(disks):
+        start = i * length
+        end = min(len(payload), length + i * length)
+        strips.append(payload[start:end])
+    return strips
+
+def strips_to_bytes(strips):
+    """Flatens a list of byte strings in single byte string"""
+    return "".join(strips)
+
+class Eraser(object):
+    """A wrapper for pyeclib erasure coding driver (ECDriver)"""
     def __init__(self, k=8, m=2, ec_type="liberasurecode_rs_vand"):
         self.k = k
         self.m = m
         self.ec_type = ec_type
         self.driver = ECDriver(k=self.k, m=self.m, ec_type=self.ec_type)
 
-    def bytes_to_strips(self, data):
-        n = self.k + self.m
-        length = len(data) / n
-        strips = []
-        for i in range(n):
-            start = i * length
-            end = min(len(data), length + i * length)
-            strips.append(data[start:end])
-        return strips
-
-    def strips_to_bytes(self, strips):
-        return "".join(strips)
-
     def encode(self, data):
+        """Encode a string of bytes in flattened string of byte strips"""
         strips = self.driver.encode(data)
-        return self.strips_to_bytes(strips)
+        return strips_to_bytes(strips)
 
     def decode(self, data):
-        strips = self.bytes_to_strips(data)
+        """Decode a flattened string of byte strips in a string of bytes"""
+        strips = bytes_to_strips(self.k, self.m, data)
         return self.driver.decode(strips)
 
 
-class CodingService(BetaEncoderDecoderServicer):
+ERASER = Eraser()
 
+class CodingService(BetaEncoderDecoderServicer):
+    """An Encoder/Decoder built on top of playcloud.proto that can be loaded by a GRPC server"""
     def Encode(self, request, context):
-        eraser = Eraser()
+        """Encode data sent in an EncodeRequest into a EncodeReply"""
         reply = EncodeReply()
-        reply.enc_blocks = eraser.encode(request.payload)
+        reply.enc_blocks = ERASER.encode(request.payload)
         return reply
 
     def Decode(self, request, context):
-        eraser = Eraser()
+        """Decode data sent in an DecodeRequest into a DecodeReply"""
         reply = DecodeReply()
-        reply.dec_block = eraser.decode(request.enc_blocks[0])
+        reply.dec_block = ERASER.decode(request.enc_blocks[0])
         return reply
