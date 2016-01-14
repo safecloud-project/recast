@@ -1,7 +1,9 @@
 proxy:
-  build: ./proxy
+#  build: ./proxy
+  build: ./java-proxy
   ports:
-  - "3000:3000"
+#  - "3000:3000"
+  - "3000:8080"
   links:
   - redis
   - dummy-coder
@@ -10,18 +12,6 @@ redis:
   image: redis
   mem_limit: 2000000000
 
-client:
-  build: ./client_bash/
-  links:
-  - proxy
-
 dummy-coder:
-  build: ./dummy-coder
-
-java-proxy:
-  build: ./java-proxy
-  ports:
-    - "8080:8080"
-  links:
-  - redis
-  - dummy-coder
+#  build: ./dummy-coder
+  build: ./pycoder
