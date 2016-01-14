@@ -1,13 +1,16 @@
 package ch.unine.iiun.safecloud;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
 
-public class TestStore {
+public class TestRedisStore {
 
     private static class MockedJedis extends Jedis {
         @Override
@@ -41,23 +44,23 @@ public class TestStore {
 
     @BeforeClass
     public static void setUp() {
-        originalPool = Store.POOL;
-        Store.POOL = Mockito.mock(JedisPool.class);
-        Mockito.when(Store.POOL.getResource()).thenReturn(new MockedJedis());
+        originalPool = RedisStore.POOL;
+        RedisStore.POOL = Mockito.mock(JedisPool.class);
+        Mockito.when(RedisStore.POOL.getResource()).thenReturn(new MockedJedis());
     }
 
     @AfterClass
     public static void tearDown() {
-        Store.POOL = originalPool;
+        RedisStore.POOL = originalPool;
     }
 
 
     @Test
     public void testGetNullPath() throws MissingResourceException, IOException {
-        Store store = new Store();
+        RedisStore redisStore = new RedisStore();
         try {
-            store.get(null);
-            Assert.fail("Store.get should throw an exception when receiving a null path");
+            redisStore.get(null);
+            Assert.fail("RedisStore.get should throw an exception when receiving a null path");
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "path argument cannot be null");
         }
@@ -65,10 +68,10 @@ public class TestStore {
 
     @Test
     public void testGetEmptyPath() throws MissingResourceException, IOException {
-        Store store = new Store();
+        RedisStore redisStore = new RedisStore();
         try {
-            store.get("");
-            Assert.fail("Store.get should throw an exception when receiving an empty path");
+            redisStore.get("");
+            Assert.fail("RedisStore.get should throw an exception when receiving an empty path");
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "path argument cannot be empty");
         }
@@ -77,11 +80,11 @@ public class TestStore {
 
     @Test
     public void testGetNonExistingPath() throws IOException, NoSuchMethodException {
-        Store store = new Store();
+        RedisStore redisStore = new RedisStore();
         String path = "nonexistingpath";
         try {
-            store.get(path);
-            Assert.fail("Store.get should throw an exception if the path does not lead to any resource");
+            redisStore.get(path);
+            Assert.fail("RedisStore.get should throw an exception if the path does not lead to any resource");
         } catch (MissingResourceException e) {
             Assert.assertEquals(e.getMessage(), "missing resource");
         }
@@ -89,11 +92,11 @@ public class TestStore {
 
     @Test
     public void testPutNullPath() throws IOException {
-        Store store = new Store();
+        RedisStore redisStore = new RedisStore();
         byte[] data = {1, 2, 3};
         try {
-            store.put(null, data);
-            Assert.fail("Store.put should throw an exception when receiving a null path");
+            redisStore.put(null, data);
+            Assert.fail("RedisStore.put should throw an exception when receiving a null path");
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "path argument cannot be null");
         }
@@ -101,11 +104,11 @@ public class TestStore {
 
     @Test
     public void testPutEmptyPath() throws MissingResourceException, IOException {
-        Store store = new Store();
+        RedisStore redisStore = new RedisStore();
         byte[] data = {1, 2, 3};
         try {
-            store.put("", data);
-            Assert.fail("Store.put should throw an exception when receiving an empty path");
+            redisStore.put("", data);
+            Assert.fail("RedisStore.put should throw an exception when receiving an empty path");
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "path argument cannot be empty");
         }
@@ -113,10 +116,10 @@ public class TestStore {
 
     @Test
     public void testPutNullData() throws MissingResourceException, IOException {
-        Store store = new Store();
+        RedisStore redisStore = new RedisStore();
         try {
-            store.put("path", null);
-            Assert.fail("Store.put should throw an exception when receiving null data");
+            redisStore.put("path", null);
+            Assert.fail("RedisStore.put should throw an exception when receiving null data");
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "data argument cannot be null");
         }
@@ -124,11 +127,11 @@ public class TestStore {
 
     @Test
     public void testPutEmptyData() throws MissingResourceException, IOException {
-        Store store = new Store();
+        RedisStore redisStore = new RedisStore();
         byte[] data = {};
         try {
-            store.put("path", data);
-            Assert.fail("Store.put should throw an exception when receiving an emtpy array of data");
+            redisStore.put("path", data);
+            Assert.fail("RedisStore.put should throw an exception when receiving an emtpy array of data");
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "data argument cannot be an empty array of data");
         }
@@ -136,11 +139,11 @@ public class TestStore {
 
     @Test
     public void testPutNominal() throws MissingResourceException, IOException {
-        Store store = new Store();
-        store.setErasureClient(new MockedErasureClient());
+        RedisStore redisStore = new RedisStore();
+        redisStore.setEncoderDecoder(new MockedErasureClient());
         String path = "path";
         byte[] data = {1, 2, 3};
-        String result = store.put(path, data);
+        String result = redisStore.put(path, data);
         Assert.assertEquals(result, path);
     }
 

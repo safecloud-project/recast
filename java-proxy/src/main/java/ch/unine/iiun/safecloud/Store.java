@@ -1,70 +1,28 @@
 package ch.unine.iiun.safecloud;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-
 import java.io.IOException;
 
-public class Store {
+/**
+ * An interface for data stores.
+ */
+public interface Store {
+    /**
+     * Retrieve data stored under a given key.
+     *
+     * @param key The key under which the data is stored
+     * @return The data in an array of bytes
+     * @throws MissingResourceException If no data can be found under the given key
+     * @throws IOException              If an error occurs while communicating with the data store
+     */
+    public byte[] get(final String key) throws MissingResourceException, IOException;
 
-    private static String redisHost = System.getenv("REDIS_PORT_6379_TCP_ADDR") != null ? System.getenv("REDIS_PORT_6379_TCP_ADDR") : "127.0.0.1";
-    private static int redisPort = System.getenv("REDIS_PORT_6379_TCP_ADDR") != null ? Integer.parseInt(System.getenv("REDIS_PORT_6379_TCP_PORT")) : 6379;
-
-
-    static JedisPool POOL = new JedisPool(Configuration.INSTANCE.getJedisConfig(), redisHost, redisPort);
-
-    private ErasureClient erasureClient;
-
-    public Store() throws IOException {
-        this.erasureClient = new ErasureClient();
-    }
-
-
-
-    public byte[] get(String path) throws MissingResourceException, IOException {
-        if (path == null) {
-            throw new IllegalArgumentException("path argument cannot be null");
-        }
-        if (path.isEmpty()) {
-            throw new IllegalArgumentException("path argument cannot be empty");
-        }
-        byte[] raw;
-        try(Jedis redis = POOL.getResource()) {
-            raw = redis.get(path.getBytes());
-        }
-        if (raw == null) {
-            throw new MissingResourceException("missing resource");
-        }
-        byte [] data = this.erasureClient.decode(raw);
-        return data;
-    }
-
-    public String put(String path, byte[] data) throws IOException {
-        if (path == null) {
-            throw new IllegalArgumentException("path argument cannot be null");
-        }
-        if (path.isEmpty()) {
-            throw new IllegalArgumentException("path argument cannot be empty");
-        }
-        if (data == null) {
-            throw new IllegalArgumentException("data argument cannot be null");
-        }
-        if (data.length == 0) {
-            throw new IllegalArgumentException("data argument cannot be an empty array of data");
-        }
-        try(Jedis redis = POOL.getResource()) {
-            byte[] encoded = this.erasureClient.encode(data);
-            return redis.set(path.getBytes(), encoded);
-        }
-
-    }
-
-    public ErasureClient getErasureClient() {
-        return erasureClient;
-    }
-
-    public void setErasureClient(ErasureClient erasureClient) {
-        this.erasureClient = erasureClient;
-    }
+    /**
+     * Store data under a given key.
+     *
+     * @param key  The key that should be used to store the data
+     * @param data The data to store
+     * @return The key under which the data was stored. It should be the same as the given as a parameter.
+     * @throws IOException If an error occurs while communicating with the data store
+     */
+    public String put(final String key, final byte[] data) throws IOException;
 }

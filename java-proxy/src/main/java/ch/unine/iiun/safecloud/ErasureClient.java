@@ -4,8 +4,10 @@ import com.google.protobuf.ByteString;
 import io.grpc.internal.ManagedChannelImpl;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
+import org.springframework.stereotype.Service;
 
-public class ErasureClient {
+@Service
+public class ErasureClient implements EncoderDecoder {
 
     public static final String DEFAULT_HOST = (System.getenv("DUMMY_CODER_PORT_1234_TCP_ADDR") != null) ? System.getenv("DUMMY_CODER_PORT_1234_TCP_ADDR") : "127.0.0.1";
     public static final int DEFAULT_PORT = (System.getenv("DUMMY_CODER_PORT_1234_TCP_PORT") != null) ? Integer.parseInt(System.getenv("DUMMY_CODER_PORT_1234_TCP_PORT")) : 1234;
@@ -24,7 +26,7 @@ public class ErasureClient {
         }
     }
 
-    public byte[] encode(byte[] data) {
+    public byte[] encode(final byte[] data) {
         setUp();
         ByteString payload = ByteString.copyFrom(data);
         Playcloud.EncodeRequest request = Playcloud.EncodeRequest.newBuilder().setPayload(payload).build();
@@ -32,7 +34,7 @@ public class ErasureClient {
         return reply.getEncBlocks().toByteArray();
     }
 
-    public byte[] decode(byte[] data) {
+    public byte[] decode(final byte[] data) {
         setUp();
         ByteString payload = ByteString.copyFrom(data);
         Playcloud.DecodeRequest request = Playcloud.DecodeRequest.newBuilder().addEncBlocks(payload).build();
