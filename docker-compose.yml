@@ -15,3 +15,5 @@ redis:
 dummy-coder:
 #  build: ./dummy-coder
   build: ./pycoder
+  env_file:
+    - ./erasure.env

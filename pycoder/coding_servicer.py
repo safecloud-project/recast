@@ -1,12 +1,13 @@
 """Wrapper for pyeclib encoders using GRPC"""
-import ConfigParser
+from ConfigParser import ConfigParser
+import os
 
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
 from pyeclib.ec_iface import ECDriver
 
-config = ConfigParser.ConfigParser()
+config = ConfigParser()
 config.read("pycoder.cfg")
 
 def bytes_to_strips(k, m, payload):
@@ -42,9 +43,10 @@ class Eraser(object):
         strips = bytes_to_strips(self.k, self.m, data)
         return self.driver.decode(strips)
 
-EC_K = int(config.get("ec", "k"))
-EC_M = int(config.get("ec", "m"))
-EC_TYPE = config.get("ec", "type")
+EC_K = int(os.environ.get("EC_K", config.get("ec", "k")))
+EC_M = int(os.environ.get("EC_M", config.get("ec", "m")))
+EC_TYPE = os.environ.get("EC_TYPE", config.get("ec", "type"))
+
 ERASER = Eraser(EC_K, EC_M, EC_TYPE)
 
 class CodingService(BetaEncoderDecoderServicer):
