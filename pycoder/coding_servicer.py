@@ -15,10 +15,8 @@ def bytes_to_strips(k, m, payload):
     disks = k + m
     length = len(payload) / disks
     strips = []
-    for i in range(disks):
-        start = i * length
-        end = min(len(payload), length + i * length)
-        strips.append(payload[start:end])
+    for i in xrange(0, len(payload), length):
+        strips.append(payload[i: i + length])
     return strips
 
 def strips_to_bytes(strips):
