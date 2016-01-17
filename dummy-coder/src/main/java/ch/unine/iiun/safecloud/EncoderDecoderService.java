@@ -30,16 +30,7 @@ public class EncoderDecoderService implements EncoderDecoderGrpc.EncoderDecoder 
 
     public void decode(Playcloud.DecodeRequest request, StreamObserver<Playcloud.DecodeReply> responseObserver) {
         DateTime start = new DateTime();
-        List<ByteString> blockList = request.getEncBlocksList();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ByteString block : blockList) {
-            try {
-                block.writeTo(stream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        ByteString payload = ByteString.copyFrom(stream.toByteArray());
+        ByteString payload = request.getEncBlocks();
         Playcloud.DecodeReply reply = Playcloud.DecodeReply.newBuilder().setDecBlock(payload).build();
         responseObserver.onNext(reply);
         responseObserver.onCompleted();

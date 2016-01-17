@@ -19,7 +19,7 @@ message EncodeReply {
 }
 
 message DecodeRequest {
-	repeated bytes enc_blocks = 1;
+	bytes enc_blocks = 1;
 	map<string, string> decoding_parameters = 2;
 }
 

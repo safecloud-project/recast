@@ -60,5 +60,5 @@ class CodingService(BetaEncoderDecoderServicer):
     def Decode(self, request, context):
         """Decode data sent in an DecodeRequest into a DecodeReply"""
         reply = DecodeReply()
-        reply.dec_block = ERASER.decode(request.enc_blocks[0])
+        reply.dec_block = ERASER.decode(request.enc_blocks)
         return reply
