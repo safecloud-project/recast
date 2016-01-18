@@ -1,0 +1,37 @@
+#!/bin/bash
+################################################################################
+# Generate GRPC stubs for the playcloud project.
+################################################################################
+
+function print_usage {
+  echo -e "usage: $0 <file>\n"
+  echo -e "Generates GRPC stubs for java-proxy, dummy-proxy and pycoder from a GRPC service deifnition file.\n"
+  echo -e "Options:"
+  echo -e "\t-h      Print this help message"
+}
+
+while getopts ":h" opt; do
+  case $opt in
+    h)
+      echo "YOLO"
+      print_usage
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG"
+      print_usage
+      exit 1
+      ;;
+  esac
+done
+
+if [[ $# -ne 1 ]]; then
+  print_usage
+  exit 0
+fi
+readonly PROTO=$1
+echo "PROTO=${PROTO}"
+
+protoc -I . --python_out=pycoder/ --grpc_out=pycoder/ --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${PROTO}"
+protoc -I . --java_out=java-proxy/src/main/java --grpc-java_out=java-proxy/src/main/java --plugin=protoc-gen-grpc-java="${GRPC_JAVA_ROOT}"/compiler/build/binaries/java_pluginExecutable/protoc-gen-grpc-java "${PROTO}"
+protoc -I . --java_out=dummy-coder/src/main/java --grpc-java_out=dummy-coder/src/main/java --plugin=protoc-gen-grpc-java="${GRPC_JAVA_ROOT}"/compiler/build/binaries/java_pluginExecutable/protoc-gen-grpc-java "${PROTO}"

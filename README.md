@@ -50,3 +50,21 @@ curl -X PUT my-server:3000/my-file.txt -T my-file.txt
 ### Encoder/Decoder
 
 The encoder/decoder's configuration can be overloaded by environment variables. These values can be added/modified in the erasure.env file which is loaded when starting the server up.
+
+## Re-generate GRPC stubs
+Should you need to modify the service definition in playcloud.proto, the stubs would need to be re-generated.
+To build a usable environment to compile the files, you can use the prepared docker image and use the generate-stubs script to re-generate the stubs.
+The image is based on the dockerfile at the top of the project (grpc-compiler-0.11.Dockerfile).
+```bash
+# Pull image
+docker pull dburihabwa/grpc-compiler-0.11-flat
+# Start a container while mounting the playcloud repository
+docker run -it --rm -v /path/to/playcloud:/mount/point/ dburihabwa/grpc-compiler-0.11-flat /bin/bash
+```
+Once you are in the container, move to the playcloud mount point and launch the generate-stubs script.
+```bash
+# Move to playcloud mount point
+cd /mount/point
+# Run the script to re-generate the stubs
+./generate-stubs playcloud.proto
+```
