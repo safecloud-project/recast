@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 public class Controller {
@@ -17,8 +18,8 @@ public class Controller {
         this.store = store;
     }
 
-    @RequestMapping(value="/{path}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> get(@PathVariable String path) {
+    @RequestMapping(value = "/{path}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> get(@PathVariable final String path) {
         byte[] data = {};
         try {
             data = this.store.get(path);
@@ -30,12 +31,25 @@ public class Controller {
         }
     }
 
-    @RequestMapping(value="/{path}", method = RequestMethod.PUT)
-    public ResponseEntity<String> put(@PathVariable String path, @RequestBody byte[] body) {
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<String> putKeyLess(@RequestBody final byte[] body) {
+        String path = UUID.randomUUID().toString();
         try {
             this.store.put(path, body);
             return new ResponseEntity<String>(path, HttpStatus.OK);
         } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<String>(path, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/{path}", method = RequestMethod.PUT)
+    public ResponseEntity<String> put(@PathVariable("path") final String path, @RequestBody final byte[] body) {
+        try {
+            this.store.put(path, body);
+            return new ResponseEntity<String>(path, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
             return new ResponseEntity<String>(path, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
