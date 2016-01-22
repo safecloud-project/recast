@@ -10,7 +10,6 @@ proxy:
 
 redis:
   image: redis
-  mem_limit: 2000000000
 
 dummy-coder:
 #  build: ./dummy-coder
