@@ -10,9 +10,6 @@ set output "512KB.jpeg"
 # The graph title
 set title "1000 requests (50 concurrent) with 512 KB payload RS(10, 4)"
 
-# Where to place the legend/key
-set key left top
-
 # Draw gridlines oriented on the y axis
 set grid y
 
@@ -30,6 +27,8 @@ set xlabel 'seconds'
 
 # Label the y-axis
 set ylabel "response time (ms)"
+
+set key center bottom outside
 
 # Tell gnuplot to use tabs as the delimiter instead of spaces (default)
 set datafile separator '\t'
