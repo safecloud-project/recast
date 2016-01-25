@@ -1,21 +1,21 @@
 # Set terminal
-set term png size 1000,1000
-set output "completion_2MB.png"
-set title "Completion 2 MB"
-set key center bottom outside
+set term pdfcairo enh size 5.00in, 2.00in
+set output "completion_2MB.pdf"
+set title "1000 requests (50 concurrent) with 2 MB payload RS(10, 4)"
+set key bottom right box
 
 # Percentage served
-set ylabel "Percentage served"
+set ylabel "percentage served (%)"
 set grid y
 
 # Time
-set xlabel "Time in milliseconds"
+set xlabel "time (ms)"
 set grid x
 
 # Data
 set datafile separator ","
 plot "dummy/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "dummy", \
-     "jerasure_cauchy/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "jerasure_cauchy", \
-     "jerasure_vand/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "jerasure_vand", \
-     "liberasure_vand/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "liberasure_vand"
+     "jerasure_cauchy/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "jerasure\\_cauchy", \
+     "jerasure_vand/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "jerasure\\_vand", \
+     "liberasure_vand/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "liberasure\\_vand"
 exit

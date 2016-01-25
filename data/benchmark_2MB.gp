@@ -1,11 +1,11 @@
-# Let's output to a jpeg file
-set terminal jpeg size 500,500
+# Let's output to a pdf file
+set term pdfcairo enh size 5in,5in
 
 # This sets the aspect ratio of the graph
 set size 1, 1
 
 # The file we'll write to
-set output "2MB.jpeg"
+set output "2MB.pdf"
 
 # The graph title
 set title "1000 requests (50 concurrent) with 2 MB payload RS(10, 4)"
@@ -35,8 +35,8 @@ set datafile separator '\t'
 
 # Plot the data
 plot "dummy/corrected_gnuplot-1000-50-2.tsv" every ::2 using 2:5 title "dummy" with points, \
-     "jerasure_cauchy/corrected_gnuplot-1000-50-2.tsv" every ::2 using 2:5 title "jerasure_cauchy" with points, \
-     "jerasure_vand/corrected_gnuplot-1000-50-2.tsv" every ::2 using 2:5 title "jerasure_vand" with points, \
-     "liberasure_vand/corrected_gnuplot-1000-50-2.tsv" every ::2 using 2:5 title "liberasure_vand" with points
+     "jerasure_cauchy/corrected_gnuplot-1000-50-2.tsv" every ::2 using 2:5 title "jerasure\\_cauchy" with points, \
+     "jerasure_vand/corrected_gnuplot-1000-50-2.tsv" every ::2 using 2:5 title "jerasure\\_vand" with points, \
+     "liberasure_vand/corrected_gnuplot-1000-50-2.tsv" every ::2 using 2:5 title "liberasure\\_vand" with points
 
 exit
