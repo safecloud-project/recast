@@ -9,9 +9,8 @@ import java.util.logging.Logger;
 public class Server {
 
     public final static int DEFAULT_PORT = 1234;
-
+    private static final Logger LOGGER = Logger.getLogger(Server.class.getSimpleName());
     private int port;
-    private Logger logger = Logger.getLogger(Server.class.getSimpleName());
     private ServerImpl gRpcServer;
 
     public Server() {
@@ -28,10 +27,10 @@ public class Server {
                     .addService(EncoderDecoderGrpc.bindService(new EncoderDecoderService()))
                     .build().start();
         } catch (IOException e) {
-            logger.severe(e.getMessage());
+            LOGGER.severe(e.getMessage());
             throw e;
         }
-        logger.info("Server started, listening on " + this.port);
+        LOGGER.info("Server started, listening on " + this.port);
     }
 
     public void stop() {
