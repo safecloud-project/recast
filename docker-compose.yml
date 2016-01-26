@@ -7,6 +7,8 @@ proxy:
   links:
   - redis
   - dummy-coder
+  env_file:
+    - ./erasure.env
 
 redis:
   image: redis

@@ -14,7 +14,9 @@ set grid x
 
 # Data
 set datafile separator ","
-plot "dummy/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "dummy", \
+plot \
+     "bypass/completion-1000-50-2.csv" every ::2 using 2:1 smooth sbezier with lines title "bypass", \
+     "dummy/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "dummy", \
      "jerasure_cauchy/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "jerasure\\_cauchy", \
      "jerasure_vand/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "jerasure\\_vand", \
      "liberasure_vand/completion-1000-50-2.tsv" every ::2 using 2:1 smooth sbezier with lines title "liberasure\\_vand"

@@ -34,7 +34,9 @@ set key center bottom outside
 set datafile separator '\t'
 
 # Plot the data
-plot "dummy/corrected_gnuplot-1000-50-512.tsv" every ::2 using 2:5 title "dummy" with points, \
+plot \
+     "bypass/corrected_gnuplot-1000-50-512.tsv" every ::2 using 2:5 title "bypass" with points, \
+     "dummy/corrected_gnuplot-1000-50-512.tsv" every ::2 using 2:5 title "dummy" with points, \
      "jerasure_cauchy/corrected_gnuplot-1000-50-512.tsv" every ::2 using 2:5 title "jerasure\\_cauchy" with points, \
      "jerasure_vand/corrected_gnuplot-1000-50-512.tsv" every ::2 using 2:5 title "jerasure\\_vand" with points, \
      "liberasure_vand/corrected_gnuplot-1000-50-512.tsv" every ::2 using 2:5 title "liberasure\\_vand" with points

@@ -4,9 +4,11 @@ import com.google.protobuf.ByteString;
 import io.grpc.internal.ManagedChannelImpl;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-@Service
+@Primary
+@Service(value = "grpc")
 public class ErasureClient implements EncoderDecoder {
 
     public static final String DEFAULT_HOST = (System.getenv("DUMMY_CODER_PORT_1234_TCP_ADDR") != null) ? System.getenv("DUMMY_CODER_PORT_1234_TCP_ADDR") : "127.0.0.1";

@@ -16,8 +16,11 @@ public class RedisStore implements Store {
 
     static JedisPool POOL = new JedisPool(Configuration.INSTANCE.getJedisConfig(), redisHost, redisPort);
 
-    private EncoderDecoder encoderDecoder;
+    @Autowired(required = true)
+    private ErasureClient erasure;
 
+    @Autowired(required = true)
+    private EncoderDecoder bypass;
 
     public byte[] get(final String path) throws MissingResourceException, IOException {
         if (path == null) {
@@ -33,7 +36,7 @@ public class RedisStore implements Store {
         if (raw == null) {
             throw new MissingResourceException("missing resource");
         }
-        byte[] data = this.encoderDecoder.decode(raw);
+        byte[] data = this.getEncoderDecoder().decode(raw);
         return data;
     }
 
@@ -51,18 +54,25 @@ public class RedisStore implements Store {
             throw new IllegalArgumentException("data argument cannot be an empty array of data");
         }
         try (Jedis redis = POOL.getResource()) {
-            byte[] encoded = this.encoderDecoder.encode(data);
+            byte[] encoded = this.getEncoderDecoder().encode(data);
             return redis.set(path.getBytes(), encoded);
         }
 
     }
 
     public EncoderDecoder getEncoderDecoder() {
-        return encoderDecoder;
+        final String ecType = System.getenv("EC_TYPE");
+        if (ecType != null && ecType.equalsIgnoreCase("bypass")) {
+            return bypass;
+        }
+        return erasure;
     }
 
-    @Autowired
     public void setEncoderDecoder(final EncoderDecoder encoderDecoder) {
-        this.encoderDecoder = encoderDecoder;
+        if (encoderDecoder instanceof ByPassEncoderDecoder) {
+            this.bypass = (ByPassEncoderDecoder) encoderDecoder;
+        } else {
+            this.erasure = (ErasureClient) encoderDecoder;
+        }
     }
 }
