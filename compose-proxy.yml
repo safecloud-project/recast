@@ -1,0 +1,7 @@
+proxy:
+  build: ./java-proxy
+  ports:
+  - "3000:8080"
+  env_file:
+  - ./erasure.env
+  - ../exports.env
