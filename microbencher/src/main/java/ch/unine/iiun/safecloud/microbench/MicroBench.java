@@ -86,7 +86,7 @@ public class MicroBench {
             }
             payloadSize = sizeArgument;
         }
-        
+
         if (command.hasOption("r")) {
             int requestsArgument = -1;
             try {
@@ -105,10 +105,9 @@ public class MicroBench {
         final byte[] data = generateRandomData(payloadSize);
         System.out.println(requests + " requests will be sent to " + host + ":" + port + " with data of size " + payloadSize + " bytes");
         Client client = new Client(host, port);
-        long[] results = new long[requests];
         for (int i = 0; i < requests; i++) {
-            results[i] = client.encode(data);
-            System.out.println(results[i]);
+            long elapsed = client.encode(data);
+            System.out.println(elapsed);
         }
     }
 }
