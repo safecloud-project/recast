@@ -1,4 +1,10 @@
 #! /bin/bash
+###############################################################################
+# microbench.sh                                                               #
+#                                                                             #
+# Benchmarks a GRPC enabled encoder/decoder implementing the behaviour        #
+# defined in playclcoud.proto.                                                #
+###############################################################################
 
 source ./utils.sh
 
@@ -20,14 +26,15 @@ CODER_HOST="${1}"
 ARCHIVE="${2}"
 ENV_FILE="${3}"
 REPETITIONS="${4}"
+DATA_DIRECTORY="xpdata/$(basename ${ENV_FILE})/"
 
 cd microbencher/
 docker build -t microbencher .
 cd -
-mkdir -p xpdata
+mkdir -p "${DATA_DIRECTORY}"
 
-for rep in $(seq ${REPETITIONS}); do
+for rep in $(seq "${REPETITIONS}"); do
 	source exports.source
 	setup_coder "${CODER_HOST}" "${ARCHIVE}" "${ENV_FILE}"
-	docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata microbencher /bin/bash -c "java -jar target/microbencher-1.0-SNAPSHOT-jar-with-dependencies.jar --host ${DUMMY_CODER_PORT_1234_TCP_ADDR} --port ${DUMMY_CODER_PORT_1234_TCP_PORT} > /opt/xpdata/microbench-${rep}.dat"
+	docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata microbencher /bin/bash -c "java -jar target/microbencher-1.0-SNAPSHOT-jar-with-dependencies.jar --host ${DUMMY_CODER_PORT_1234_TCP_ADDR} --port ${DUMMY_CODER_PORT_1234_TCP_PORT} > /opt/$DATA_DIRECTORY/microbench-${rep}.dat"
 done
