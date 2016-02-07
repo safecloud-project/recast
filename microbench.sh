@@ -26,15 +26,19 @@ CODER_HOST="${1}"
 ARCHIVE="${2}"
 ENV_FILE="${3}"
 REPETITIONS="${4}"
-DATA_DIRECTORY="xpdata/$(basename ${ENV_FILE})/"
+DATA_DIRECTORY="xpdata/$(basename "${ENV_FILE}")/"
+declare -a SIZES=("4" "16" "64")
 
 cd microbencher/
 docker build -t microbencher .
 cd -
 mkdir -p "${DATA_DIRECTORY}"
 
-for rep in $(seq "${REPETITIONS}"); do
-	source exports.source
-	setup_coder "${CODER_HOST}" "${ARCHIVE}" "${ENV_FILE}"
-	docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata microbencher /bin/bash -c "java -jar target/microbencher-1.0-SNAPSHOT-jar-with-dependencies.jar --host ${DUMMY_CODER_PORT_1234_TCP_ADDR} --port ${DUMMY_CODER_PORT_1234_TCP_PORT} > /opt/$DATA_DIRECTORY/microbench-${rep}.dat"
+for size in "${SIZES[@]}"; do
+	ADJUSTED_SIZE="$((size * 1024 * 1024))"
+	for rep in $(seq "${REPETITIONS}"); do
+		source exports.source
+		setup_coder "${CODER_HOST}" "${ARCHIVE}" "${ENV_FILE}"
+		docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata microbencher /bin/bash -c "java -jar target/microbencher-1.0-SNAPSHOT-jar-with-dependencies.jar --host ${DUMMY_CODER_PORT_1234_TCP_ADDR} --port ${DUMMY_CODER_PORT_1234_TCP_PORT} --size ${ADJUSTED_SIZE} > /opt/$DATA_DIRECTORY/microbench-${size}MB-${rep}.dat"
+	done
 done
