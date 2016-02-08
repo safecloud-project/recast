@@ -1,13 +1,13 @@
 #! /usr/bin/env python
-
+""" A script that decodes 1000 times a piece of data """
 import os
 import sys
 import time
 
-from ConfigParser import ConfigParser
 from pyeclib.ec_iface import ECDriver
 
 def print_usage():
+    """Prints the usage message"""
     print "Usage:", sys.argv[0], " size"
     print ""
     print "Benchmark pyeclib erasure coding libraries"
@@ -15,31 +15,29 @@ def print_usage():
     print "Arguments:"
     print "\tsize       Size of the payload to decode in bytes"
 
-def gen_random_data(size):
-    return os.urandom(size)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print_usage()
         sys.exit(0)
-    size = int(sys.argv[1])
-    data = gen_random_data(size)
-    config = ConfigParser()
-    requests = 1000
+    SIZE = int(sys.argv[1])
+    DATA = os.urandom(SIZE)
+    REQUESTS = 1000
 
     # Load driver
-    config.read("pycoder.cfg")
-    ec_k = int(os.environ.get("EC_K", config.get("ec", "k")))
-    ec_m = int(os.environ.get("EC_M", config.get("ec", "m")))
-    ec_type = os.environ.get("EC_TYPE", config.get("ec", "type"))
-    driver = ECDriver(k=ec_k, m=ec_m, ec_type=ec_type)
+    EC_K = int(os.environ.get("EC_K", 10))
+    EC_M = int(os.environ.get("EC_M", 4))
+    EC_TYPE = os.environ.get("EC_TYPE", "liberasure_rs_vand")
+    DRIVER = ECDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
 
     # Start benchmark
-    print "About to decode ", requests, " payloads of size ", size, " bytes (", ec_type, ", k =",ec_k, ", m =", ec_m, ")"
-    encoded = driver.encode(data)
-    for i in range(requests):
+    print "About to decode ", REQUESTS, " payloads of size ", SIZE, " bytes (",\
+    EC_TYPE, ", k =", EC_K, ", m =", EC_M, ")"
+    ENCODED = DRIVER.encode(DATA)
+    for i in range(REQUESTS):
         start = time.clock()
-        driver.decode(encoded)
+        DRIVER.decode(ENCODED)
         end = time.clock()
         elasped = (end - start) * 1000
         print elasped
