@@ -4,7 +4,6 @@ import os
 import sys
 import time
 
-from ConfigParser import ConfigParser
 from pyeclib.ec_iface import ECDriver
 
 def print_usage():
@@ -24,14 +23,12 @@ if __name__ == "__main__":
         sys.exit(0)
     size = int(sys.argv[1])
     data = gen_random_data(size)
-    config = ConfigParser()
     requests = 1000
 
     # Load driver
-    config.read("pycoder.cfg")
-    ec_k = int(os.environ.get("EC_K", config.get("ec", "k")))
-    ec_m = int(os.environ.get("EC_M", config.get("ec", "m")))
-    ec_type = os.environ.get("EC_TYPE", config.get("ec", "type"))
+    ec_k = int(os.environ.get("EC_K", 10))
+    ec_m = int(os.environ.get("EC_M", 4))
+    ec_type = os.environ.get("EC_TYPE", "liberasurecode_rs_vand")
     driver = ECDriver(k=ec_k, m=ec_m, ec_type=ec_type)
 
     # Start benchmark
