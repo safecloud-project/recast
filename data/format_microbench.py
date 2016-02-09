@@ -33,7 +33,7 @@ def __format_data(scheme, directory):
             means.append(str(mean))
             standard_deviation = numpy.std(records)
             standard_deviations.append(str(standard_deviation))
-            throughput = (size * 1024 * 1000) / (mean * 1000)
+            throughput = (size) / (mean / 1000)
             throughputs.append(str(throughput))
         escaped_library_name = library.replace("_", r"\\_")
         output = output + "\"" + escaped_library_name +"\" "+ " ".join(throughputs) + " " + " ".join(means) + " " +  " ".join(standard_deviations) + "\n"
