@@ -9,5 +9,4 @@ RUN pip install -U grpcio==0.11.0b1 protobuf==3.0.0a3
 
 # Copy server sources
 ADD *.py /usr/local/src/app/
-ADD pycoder.cfg /usr/local/src/app
 WORKDIR /usr/local/src/app/
