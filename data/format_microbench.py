@@ -7,6 +7,20 @@ import sys
 import numpy
 
 SIZES = [4, 16, 64]
+NAME_ESCAPINGS = {
+    "liberasurecode_rs_vand": "liberasure\\nrs\\\_vand",
+    "jerasure_rs_vand": "jerasure\\nrs\\\_vand",
+    "jerasure_rs_cauchy": "jerasure\\nrs\\\_cauchy",
+    "flat_xor_hd_3": "flat\\\_xor\\nhd\\\_3",
+    "flat_xor_hd_4": "flat\\\_xor\\nhd\\\_4"
+}
+
+def escape_name(name):
+    """
+    Escapes the name for gnuplot eps/pdf production
+    """
+    return NAME_ESCAPINGS.get(name, name.replace("_", r"\\_"))
+
 
 def __format_data(scheme, directory):
     """
@@ -35,7 +49,7 @@ def __format_data(scheme, directory):
             standard_deviations.append(str(standard_deviation))
             throughput = (size) / (mean / 1000)
             throughputs.append(str(throughput))
-        escaped_library_name = library.replace("_", r"\\_")
+        escaped_library_name = escape_name(library)
         output = output + "\"" + escaped_library_name +"\" "+ " ".join(throughputs) + " " + " ".join(means) + " " +  " ".join(standard_deviations) + "\n"
     return output
 
