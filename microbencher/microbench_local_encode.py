@@ -28,7 +28,7 @@ if __name__ == "__main__":
     EC_K = int(os.environ.get("EC_K", 10))
     EC_M = int(os.environ.get("EC_M", 4))
     EC_TYPE = os.environ.get("EC_TYPE", "liberasurecode_rs_vand")
-    DRIVER = ECDriver(k=EC_K, m=EC_M, EC_TYPE=EC_TYPE)
+    DRIVER = ECDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
 
     # Start benchmark
     print "About to encode ", REQUESTS, " payloads of size ", SIZE, " bytes (", \
