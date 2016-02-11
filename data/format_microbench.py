@@ -28,7 +28,7 @@ def __format_data(scheme, directory):
     The data is formatted in the following format:
     'library'   'throughtput'   'mean response time'   'standard deviation of response time'
     """
-    output = ""
+    output = []
     for library in os.listdir(directory):
         throughputs = []
         means = []
@@ -43,15 +43,19 @@ def __format_data(scheme, directory):
                 with open(filepath, "r") as microbench_file:
                     data = [float(x.strip()) for x in microbench_file.read().splitlines()[1:]]
                     records.extend(data)
-            mean = numpy.mean(records)
+            mean = -1
+            standard_deviation = -1
+            if len(records) > 0:
+                mean = numpy.mean(records)
+                standard_deviation = numpy.std(records)
             means.append(str(mean))
-            standard_deviation = numpy.std(records)
             standard_deviations.append(str(standard_deviation))
             throughput = (size) / (mean / 1000)
             throughputs.append(str(throughput))
         escaped_library_name = escape_name(library)
-        output = output + "\"" + escaped_library_name +"\" "+ " ".join(throughputs) + " " + " ".join(means) + " " +  " ".join(standard_deviations) + "\n"
-    return output
+        output.append("\"" + escaped_library_name +"\" "+ " ".join(throughputs) + " " + " ".join(means) + " " +  " ".join(standard_deviations))
+    output.sort()
+    return "\n".join(output)
 
 
 def format_encode_data(directory):
