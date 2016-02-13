@@ -12,8 +12,16 @@ NAME_ESCAPINGS = {
     "jerasure_rs_vand": "jerasure\\nrs\\\_vand",
     "jerasure_rs_cauchy": "jerasure\\nrs\\\_cauchy",
     "flat_xor_hd_3": "flat\\\_xor\\nhd\\\_3",
-    "flat_xor_hd_4": "flat\\\_xor\\nhd\\\_4"
+    "flat_xor_hd_4": "flat\\\_xor\\nhd\\\_4",
+    "isa_l_rs_vand": "isa\\\_l\\nrs\\\_vand"
 }
+
+DESCRIPTION_LINE = "# 'library' 'throughput 4MB (MB/s)' \
+'throughput 16MB (MB/s)' 'throughput 64MB (MB/s)' 'mean response time 4MB (ms)' \
+'mean response time 16MB (ms)' 'mean response time 64MB (ms)' \
+'standard deviation response time 4MB (ms)' \
+'standard deviation response time 16MB (ms)' \
+'standard deviation response time 64MB (ms)'"
 
 def escape_name(name):
     """
@@ -28,7 +36,7 @@ def __format_data(scheme, directory):
     The data is formatted in the following format:
     'library'   'throughtput'   'mean response time'   'standard deviation of response time'
     """
-    output = []
+    results = []
     for library in os.listdir(directory):
         throughputs = []
         means = []
@@ -53,9 +61,11 @@ def __format_data(scheme, directory):
             throughput = (size) / (mean / 1000)
             throughputs.append(str(throughput))
         escaped_library_name = escape_name(library)
-        output.append("\"" + escaped_library_name +"\" "+ " ".join(throughputs) + " " + " ".join(means) + " " +  " ".join(standard_deviations))
-    output.sort()
-    return "\n".join(output)
+        results.append("\"" + escaped_library_name +"\" "+ " ".join(throughputs) + " " + " ".join(means) + " " +  " ".join(standard_deviations))
+    results.sort()
+    data = [DESCRIPTION_LINE]
+    data.extend(results)
+    return "\n".join(data)
 
 
 def format_encode_data(directory):
