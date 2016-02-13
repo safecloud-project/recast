@@ -43,6 +43,6 @@ for i in $(seq 10); do
     setup_redis "${REDIS_HOST}" "${ARCHIVE}" "${ENV_FILE}"
     source exports.source
     mkdir -p "${PWD}/xpdata/full_circuit/${i}"
-    docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/full_circuit/${i} && ls /home && /ab_playcloud.sh 1000 50 ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT}"
+    docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/full_circuit/${i} && ls /home && /ab_playcloud.sh 1000 50 ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt"
   done
 done
