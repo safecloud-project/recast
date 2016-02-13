@@ -12,7 +12,8 @@ NAME_ESCAPINGS = {
     "jerasure_rs_vand": "jerasure\\nrs\\\_vand",
     "jerasure_rs_cauchy": "jerasure\\nrs\\\_cauchy",
     "flat_xor_hd_3": "flat\\\_xor\\nhd\\\_3",
-    "flat_xor_hd_4": "flat\\\_xor\\nhd\\\_4"
+    "flat_xor_hd_4": "flat\\\_xor\\nhd\\\_4",
+    "isa_l_rs_vand": "isa\\\_l\\nrs\\\_vand"
 }
 
 def escape_name(name):
