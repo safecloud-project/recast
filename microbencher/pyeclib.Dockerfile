@@ -2,7 +2,16 @@ FROM dburihabwa/grpc-compiler-0.11-flat
 
 # Install PyECLib
 RUN apt-get update --quiet && apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet gcc git g++ liberasurecode1 python-pip python-pyeclib wget yasm
+    apt-get install --assume-yes --quiet gcc git g++ python-pip wget yasm
+
+# Install liberasurecode
+WORKDIR /tmp
+RUN git clone https://bitbucket.org/tsg-/liberasurecode.git
+WORKDIR /tmp/liberasurecode
+RUN git checkout v1.1.1 && ./autogen.sh && ./configure && make && make test && make install
+
+# Install pyeclib
+RUN apt-get install --assume-yes --quiet python-pyeclib
 
 # Install python runtime requirements
 RUN pip install -U --quiet cython grpcio==0.11.0b1 protobuf==3.0.0a3
