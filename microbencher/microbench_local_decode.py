@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # Start benchmark
     print "About to decode ", REQUESTS, " payloads of size ", SIZE, " bytes (",\
-    EC_TYPE, ", k =", EC_K, ", m =", EC_M, ")"
+    DRIVER.ec_type, ", k =", DRIVER.k, ", m =", DRIVER.m, ")"
     ENCODED = DRIVER.encode(DATA)
     for i in range(REQUESTS):
         start = time.clock()
