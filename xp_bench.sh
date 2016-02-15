@@ -40,13 +40,11 @@ docker build -t client .
 cd -
 mkdir -p xpdata/
 source "${ENV_FILE}"
-for i in $(seq 10); do
-  for BLOCK_SIZE in "$@"; do
-    setup_proxy "${PROXY_HOST}" "${ARCHIVE}" "${ENV_FILE}"
-    setup_coder "${CODER_HOST}" "${ARCHIVE}" "${ENV_FILE}"
-    setup_redis "${REDIS_HOST}" "${ARCHIVE}" "${ENV_FILE}"
-    source exports.source
-    mkdir -p "${PWD}/xpdata/macrobench/${EC_TYPE}/${i}"
-    docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${EC_TYPE}/${i} && ls /home && /ab_playcloud.sh 1000 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt"
-  done
+for BLOCK_SIZE in "$@"; do
+  setup_proxy "${PROXY_HOST}" "${ARCHIVE}" "${ENV_FILE}"
+  setup_coder "${CODER_HOST}" "${ARCHIVE}" "${ENV_FILE}"
+  setup_redis "${REDIS_HOST}" "${ARCHIVE}" "${ENV_FILE}"
+  source exports.source
+  mkdir -p "${PWD}/xpdata/macrobench/${EC_TYPE}"
+  docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${EC_TYPE} && /ab_playcloud.sh 1000 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt"
 done
