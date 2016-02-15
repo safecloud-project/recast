@@ -30,3 +30,10 @@ class PylonghairDriver(object):
         for i in range(0, len(parity), block_size):
             strips.append(parity[i: i + block_size])
         return strips
+
+    def decode(self, strips):
+        """
+        Decodes strips of data encoded using the PylonghairDriver's encode
+        method
+        """
+        return "".join(strips[:self.k])
