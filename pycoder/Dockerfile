@@ -1,11 +1,12 @@
 FROM dburihabwa/grpc-compiler-0.11-flat
 
-#Install PyECLib
+#Install dependencies
 RUN apt-get update --quiet && apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet liberasurecode1 python-pip python-pyeclib wget
+    apt-get install --assume-yes --quiet liberasurecode1 liberasurecode-dev libjerasure2 python-pip wget && \
+    ldconfig
 
 # Install python runtime requirements
-RUN pip install -U grpcio==0.11.0b1 protobuf==3.0.0a3
+RUN pip install --upgrade --quiet grpcio==0.11.0b1 pyeclib==1.2.0 protobuf==3.0.0a3
 
 # Expose port to other containers
 EXPOSE 1234
