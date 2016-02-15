@@ -1,23 +1,8 @@
 FROM dburihabwa/grpc-compiler-0.11-flat
 
-# Install PyECLib
+# Install dependencies
 RUN apt-get update --quiet && apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet gcc git g++ python-pip wget yasm
-
-# Install liberasurecode
-WORKDIR /tmp
-RUN git clone https://bitbucket.org/tsg-/liberasurecode.git
-WORKDIR /tmp/liberasurecode
-RUN git checkout v1.1.1 && ./autogen.sh && ./configure && make && make test && make install
-
-# Install pyeclib
-RUN apt-get install --assume-yes --quiet python-pyeclib
-
-# Install python runtime requirements
-RUN pip install -U --quiet cython grpcio==0.11.0b1 protobuf==3.0.0a3
-RUN git clone https://github.com/sampot/pylonghair /usr/local/src/app
-WORKDIR /usr/local/src/app/
-RUN python setup.py build_ext --inplace
+    apt-get install --assume-yes --quiet gcc git g++ libjerasure2 python-pip wget yasm && ldconfig
 
 # Install intel ISA-L
 WORKDIR /tmp/
@@ -26,7 +11,27 @@ RUN wget --quiet https://01.org/sites/default/files/downloads/intelr-storage-acc
 WORKDIR isa-l-2.14.0
 RUN sed -i 's/1.14.1/1.15.1/' aclocal.m4 configure Makefile.in && \
     sed -i 's/1.14/1.15/'     aclocal.m4 configure Makefile.in && \
-    ./configure && make && make install
+    ./configure && make && make install && \
+    echo "/usr/lib" >> /etc/ld.so.conf && ldconfig
+
+# Install liberasurecode
+WORKDIR /tmp
+RUN git clone https://bitbucket.org/tsg-/liberasurecode.git --quiet
+WORKDIR /tmp/liberasurecode
+RUN git checkout v1.1.1 --quiet && ./autogen.sh && ./configure && make && make test && make install && ldconfig
+
+# Install pyeclib
+WORKDIR /tmp
+RUN git clone https://bitbucket.org/kmgreen2/pyeclib.git --quiet
+WORKDIR /tmp/pyeclib
+RUN python setup.py install && \
+    echo "/usr/local/lib/python2.7/dist-packages/" >> /etc/ld.so.conf && ldconfig
+
+# Install python runtime requirements
+RUN pip install --upgrade --quiet cython
+RUN git clone https://github.com/sampot/pylonghair /usr/local/src/app --quiet
+WORKDIR /usr/local/src/app/
+RUN python setup.py build_ext --inplace
 
 # Copy server sources
 ADD *.py /usr/local/src/app/
