@@ -4,6 +4,7 @@ import os
 import sys
 import time
 
+from custom_driver import ECStripingDriver
 from pyeclib.ec_iface import ECDriver
 
 from pylonghair_driver import PylonghairDriver
@@ -16,8 +17,6 @@ def print_usage():
     print ""
     print "Arguments:"
     print "\tsize       Size of the payload to decode in bytes"
-
-
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -34,12 +33,15 @@ if __name__ == "__main__":
     DRIVER = None
     if EC_TYPE == "pylonghair":
         DRIVER = PylonghairDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
+    elif EC_TYPE == "striping":
+        DRIVER = ECStripingDriver(k=EC_K, m=0, hd=None)
     else:
         DRIVER = ECDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
 
     # Start benchmark
     print "About to decode ", REQUESTS, " payloads of size ", SIZE, " bytes (",\
-    DRIVER.ec_type, ", k =", DRIVER.k, ", m =", DRIVER.m, ")"
+    (DRIVER.ec_type if hasattr(DRIVER, "ec_type") else EC_TYPE), ", k =", DRIVER.k, \
+    ", m =", DRIVER.m, ")"
     ENCODED = DRIVER.encode(DATA)
     for i in range(REQUESTS):
         start = time.clock()
