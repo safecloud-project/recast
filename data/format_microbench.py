@@ -11,9 +11,10 @@ NAME_ESCAPINGS = {
     "liberasurecode_rs_vand": "liberasure\\nrs\\\_vand",
     "jerasure_rs_vand": "jerasure\\nrs\\\_vand",
     "jerasure_rs_cauchy": "jerasure\\nrs\\\_cauchy",
-    "flat_xor_hd_3": "flat\\\_xor\\nhd\\\_3",
-    "flat_xor_hd_4": "flat\\\_xor\\nhd\\\_4",
-    "isa_l_rs_vand": "isa\\\_l\\nrs\\\_vand"
+    "flat_xor_hd_3": "liberasure\\nflat\\\_xor(3)",
+    "flat_xor_hd_4": "liberasure\\nflat\\\_xor(4)",
+    "isa_l_rs_vand": "isa\\\_l\\nrs\\\_vand",
+    "pylonghair": "longhair\\ncauchy\\\_256"
 }
 
 DESCRIPTION_LINE = "# 'library' 'throughput 4MB (MB/s)' \
