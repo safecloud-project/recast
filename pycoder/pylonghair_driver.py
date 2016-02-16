@@ -5,7 +5,7 @@ drivers.
 
 import math
 
-from pylonghair import fec_encode
+from pylonghair import fec_encode, fec_decode
 
 
 class PylonghairDriver(object):
@@ -36,4 +36,11 @@ class PylonghairDriver(object):
         Decodes strips of data encoded using the PylonghairDriver's encode
         method
         """
-        return "".join(strips[:self.k])
+        block_size = len(strips[0])
+        blocks = []
+        for row in range(self.k):
+            offset = row * block_size
+            block_data = strips[row]
+            blocks.append((row, block_data))
+        fec_decode(self.k, self.m, block_size, blocks)
+        return "".join(map(lambda x: x[1], blocks))
