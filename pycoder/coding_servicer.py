@@ -7,6 +7,7 @@ from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
 from pyeclib.ec_iface import ECDriver
 
+from custom_driver import ECStripingDriver
 from pylonghair_driver import PylonghairDriver
 
 config = ConfigParser()
@@ -33,6 +34,8 @@ class Eraser(object):
         self.ec_type = ec_type
         if EC_TYPE == "pylonghair":
             self.driver = PylonghairDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
+        elif EC_TYPE == "striping" or EC_TYPE == "bypass":
+            self.driver = ECStripingDriver(k=EC_K, m=0, hd=None)
         else:
             self.driver = ECDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
 
