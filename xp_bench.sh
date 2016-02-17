@@ -42,6 +42,29 @@ function wait_for_proxy {
   fi
 }
 
+################################################################################
+# wait_for_redis
+#
+# Wait for the redis database to be able to receive connections
+################################################################################
+function wait_for_redis {
+  local TIMER="${DEFAULT_TIMEOUT_IN_SECONDS}"
+  while [[ "${TIMER}" -gt 0 ]]; do
+    nc -q 1 "${REDIS_PORT_6379_TCP_ADDR}" "${REDIS_PORT_6379_TCP_PORT}" </dev/null
+    if [[ "${?}" -eq 0 ]]; then
+      break
+    fi
+    echo ".";
+    TIMER=$(( TIMER - 1 ))
+    sleep 1
+  done
+
+  if [[ "${TIMER}" -eq 0 ]]; then
+    echo "Failed to connect after ${DEFAULT_TIMEOUT_IN_SECONDS} seconds"
+    exit 1
+  fi
+}
+
 if [[ "${#}" -lt 6 ]]; then
   print_usage
   exit 0
@@ -74,5 +97,6 @@ for BLOCK_SIZE in "$@"; do
   mkdir -p "${PWD}/xpdata/macrobench/${EC_TYPE}"
   # Wait for connection to proxy server to be available
   wait_for_proxy
+  wait_for_redis
   docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${EC_TYPE} && /ab_playcloud.sh 1000 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt 2>&1"
 done
