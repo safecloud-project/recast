@@ -16,6 +16,32 @@ function print_usage {
   echo -e ""
 }
 
+readonly DEFAULT_TIMEOUT_IN_SECONDS=60
+
+################################################################################
+# wait_for_proxy
+#
+# Wait for the proxy to be able to receive connections by probing its expected
+# open port every second for DEFAULT_TIMEOUT_IN_SECONDS seconds.
+################################################################################
+function wait_for_proxy {
+  local TIMER="${DEFAULT_TIMEOUT_IN_SECONDS}"
+  while [[ "${TIMER}" -gt 0 ]]; do
+    nc -q 1 "${PROXY_PORT_3000_TCP_ADDR}" "${PROXY_PORT_3000_TCP_PORT}" </dev/null
+    if [[ "${?}" -eq 0 ]]; then
+      break
+    fi
+    echo ".";
+    TIMER=$(( TIMER - 1 ))
+    sleep 1
+  done
+
+  if [[ "${TIMER}" -eq 0 ]]; then
+    echo "Failed to connect after ${DEFAULT_TIMEOUT_IN_SECONDS} seconds"
+    exit 1
+  fi
+}
+
 if [[ "${#}" -lt 6 ]]; then
   print_usage
   exit 0
@@ -46,5 +72,7 @@ for BLOCK_SIZE in "$@"; do
   setup_redis "${REDIS_HOST}" "${ARCHIVE}" "${ENV_FILE}"
   source exports.source
   mkdir -p "${PWD}/xpdata/macrobench/${EC_TYPE}"
-  docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${EC_TYPE} && /ab_playcloud.sh 1000 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt"
+  # Wait for connection to proxy server to be available
+  wait_for_proxy
+  docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${EC_TYPE} && /ab_playcloud.sh 1000 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt 2>&1"
 done
