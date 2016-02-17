@@ -27,6 +27,8 @@ DATA_DIRECTORY="xpdata/pyeclib/$(basename "${EC_TYPE}")/"
 declare -a SIZES=("4" "16" "64")
 
 cp pycoder/pylonghair_driver.py microbencher/pylonghair_driver.py
+cp pycoder/custom_driver.py microbencher/custom_driver.py
+cp pycoder/__init__.py microbencher/__init__.py
 cd microbencher
 docker build -t pyeclib-microbencher -f pyeclib.Dockerfile .
 cd -
