@@ -14,10 +14,14 @@ if __name__ == "__main__":
     PYCODER_LISTEN = PYCODER_LISTEN_ADDRESS + ":" + PYCODER_LISTEN_PORT
     SERVER = beta_create_EncoderDecoder_server(CodingService())
     SERVER.add_insecure_port(PYCODER_LISTEN)
-    print "starting server on"
-    print "k =", int(os.environ.get("EC_K", config.get("ec", "k")))
-    print "m =", int(os.environ.get("EC_M", config.get("ec", "m")))
-    print "type =", os.environ.get("EC_TYPE", config.get("ec", "type"))
+    MESSAGE = "starting server on\n" + \
+    "k = " +    os.environ.get("EC_K", config.get("ec", "k")) + "\n" +\
+    "m = " +    os.environ.get("EC_M", config.get("ec", "m")) + "\n" +\
+    "type = " + os.environ.get("EC_TYPE", config.get("ec", "type")) + "\n"
+    print MESSAGE
+    log_filename = "/tmp/pycoder/log/pycoder-" + str(time.time()) + ".log"
+    with open(log_filename, "a") as f:
+        f.write(MESSAGE)
     SERVER.start()
     try:
         while True:
