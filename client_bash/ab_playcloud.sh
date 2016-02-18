@@ -20,7 +20,7 @@ CONCURRENT_REQUESTS=$2
 PAYLOAD_SIZE=$3
 BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
 DATA_FILE="${BASE_DIR}/random${PAYLOAD_SIZE}.dat"
-if [ ! -f ${DATA_FILE} ]; then
+if [ ! -f "${DATA_FILE}" ]; then
 	echo "File ${DATA_FILE} could not be found"
 	exit 1
 fi
@@ -34,4 +34,4 @@ COMPLETION_OUTPUT="completion-${REQUESTS}-${CONCURRENT_REQUESTS}-${PAYLOAD_SIZE}
 GNUPLOT_DATA_OUTPUT="gnuplot-${REQUESTS}-${CONCURRENT_REQUESTS}-${PAYLOAD_SIZE}.tsv"
 
 # Benchmark
-ab -n ${REQUESTS} -c ${CONCURRENT_REQUESTS} -e ${COMPLETION_OUTPUT} -g ${GNUPLOT_DATA_OUTPUT} -u "${DATA_FILE}" "http://${SERVER}/"
+ab -v 5 -n "${REQUESTS}" -c "${CONCURRENT_REQUESTS}" -e "${COMPLETION_OUTPUT}" -g "${GNUPLOT_DATA_OUTPUT}" -u "${DATA_FILE}" "http://${SERVER}/"
