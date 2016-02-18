@@ -99,4 +99,6 @@ for BLOCK_SIZE in "$@"; do
   wait_for_proxy
   wait_for_redis
   docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${EC_TYPE} && /ab_playcloud.sh 1000 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt 2>&1"
+  # Take memory footprint
+  redis-cli -h "${REDIS_PORT_6379_TCP_ADDR}" -p "${REDIS_PORT_6379_TCP_PORT}" "INFO memory" > "${PWD}/xpdata/macrobench/${EC_TYPE}/memory.txt"
 done
