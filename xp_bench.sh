@@ -31,13 +31,13 @@ function wait_for_proxy {
     if [[ "${?}" -eq 0 ]]; then
       break
     fi
-    echo ".";
+    echo "waiting for proxy ...";
     TIMER=$(( TIMER - 1 ))
     sleep 1
   done
 
   if [[ "${TIMER}" -eq 0 ]]; then
-    echo "Failed to connect after ${DEFAULT_TIMEOUT_IN_SECONDS} seconds"
+    echo "Failed to connect to the proxy(${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT}) after ${DEFAULT_TIMEOUT_IN_SECONDS} seconds"
     exit 1
   fi
 }
@@ -54,13 +54,13 @@ function wait_for_redis {
     if [[ "${?}" -eq 0 ]]; then
       break
     fi
-    echo ".";
+    echo "waiting for redis ...";
     TIMER=$(( TIMER - 1 ))
     sleep 1
   done
 
   if [[ "${TIMER}" -eq 0 ]]; then
-    echo "Failed to connect after ${DEFAULT_TIMEOUT_IN_SECONDS} seconds"
+    echo "Failed to connect to redis (${REDIS_PORT_6379_TCP_ADDR}:${REDIS_PORT_6379_TCP_PORT}) after ${DEFAULT_TIMEOUT_IN_SECONDS} seconds"
     exit 1
   fi
 }
