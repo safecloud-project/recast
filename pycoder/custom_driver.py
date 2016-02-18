@@ -31,12 +31,9 @@ class ECStripingDriver(object):
 
         fragments = []
         offset = 0
-        for i in range(self.k - 1):
-            fragments.append(data_bytes[offset:fragment_size])
+        for i in range(self.k):
+            fragments.append(data_bytes[offset:offset + fragment_size])
             offset += fragment_size
-
-        fragments.append(data_bytes[offset:last_fragment_size])
-
         return fragments
 
     def decode(self, fragment_payloads, ranges=None,
