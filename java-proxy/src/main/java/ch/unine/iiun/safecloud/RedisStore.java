@@ -20,7 +20,7 @@ public class RedisStore implements Store {
     private ErasureClient erasure;
 
     @Autowired(required = true)
-    private EncoderDecoder bypass;
+    private ByPassEncoderDecoder bypass;
 
     public byte[] get(final String path) throws MissingResourceException, IOException {
         if (path == null) {
@@ -62,10 +62,10 @@ public class RedisStore implements Store {
 
     public EncoderDecoder getEncoderDecoder() {
         final String ecType = System.getenv("EC_TYPE");
-        if (ecType != null && ecType.equalsIgnoreCase("bypass")) {
-            return bypass;
+        if (ecType != null && ecType.trim().equalsIgnoreCase("bypass")) {
+            return this.bypass;
         }
-        return erasure;
+        return this.erasure;
     }
 
     public void setEncoderDecoder(final EncoderDecoder encoderDecoder) {
