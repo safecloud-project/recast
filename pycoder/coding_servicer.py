@@ -10,8 +10,8 @@ from pyeclib.ec_iface import ECDriver
 from custom_driver import ECStripingDriver
 from pylonghair_driver import PylonghairDriver
 
-config = ConfigParser()
-config.read("pycoder.cfg")
+CONFIG = ConfigParser()
+CONFIG.read("pycoder.cfg")
 
 def bytes_to_strips(k, m, payload):
     """Transforms a byte string in a list of bytes string"""
@@ -24,7 +24,13 @@ def bytes_to_strips(k, m, payload):
 
 def strips_to_bytes(strips):
     """Flatens a list of byte strings in single byte string"""
-    return "".join(strips)
+    flattened_bytes = ""
+    for strip in strips:
+        if isinstance(strip, bytearray):
+            flattened_bytes += str(strip)
+        else:
+            flattened_bytes += strip
+    return flattened_bytes
 
 class Eraser(object):
     """A wrapper for pyeclib erasure coding driver (ECDriver)"""
@@ -49,14 +55,17 @@ class Eraser(object):
         strips = bytes_to_strips(self.k, self.m, data)
         return self.driver.decode(strips)
 
-EC_K = int(os.environ.get("EC_K", config.get("ec", "k")))
-EC_M = int(os.environ.get("EC_M", config.get("ec", "m")))
-EC_TYPE = os.environ.get("EC_TYPE", config.get("ec", "type"))
+EC_K = int(os.environ.get("EC_K", CONFIG.get("ec", "k")))
+EC_M = int(os.environ.get("EC_M", CONFIG.get("ec", "m")))
+EC_TYPE = os.environ.get("EC_TYPE", CONFIG.get("ec", "type"))
 
 ERASER = Eraser(EC_K, EC_M, EC_TYPE)
 
 class CodingService(BetaEncoderDecoderServicer):
-    """An Encoder/Decoder built on top of playcloud.proto that can be loaded by a GRPC server"""
+    """
+    An Encoder/Decoder built on top of playcloud.proto that can be loaded by a
+    GRPC server
+    """
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
         reply = EncodeReply()
