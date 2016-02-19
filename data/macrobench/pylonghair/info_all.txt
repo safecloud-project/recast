@@ -9,12 +9,12 @@ arch_bits:64
 multiplexing_api:epoll
 gcc_version:4.9.2
 process_id:1
-run_id:ea6548f1dc6730a63b7dec5e63e9663f81f80691
+run_id:4ba9522bfb327ac7d24a728024aebabe164ee462
 tcp_port:6379
-uptime_in_seconds:42
+uptime_in_seconds:80
 uptime_in_days:0
 hz:10
-lru_clock:13048917
+lru_clock:13059232
 config_file:
 
 # Clients
@@ -24,20 +24,20 @@ client_biggest_input_buf:0
 blocked_clients:0
 
 # Memory
-used_memory:982872
-used_memory_human:959.84K
-used_memory_rss:7888896
-used_memory_peak:982872
-used_memory_peak_human:959.84K
+used_memory:4195338192
+used_memory_human:3.91G
+used_memory_rss:3151364096
+used_memory_peak:4228833872
+used_memory_peak_human:3.94G
 used_memory_lua:36864
-mem_fragmentation_ratio:8.03
+mem_fragmentation_ratio:0.75
 mem_allocator:jemalloc-3.6.0
 
 # Persistence
 loading:0
-rdb_changes_since_last_save:0
+rdb_changes_since_last_save:500
 rdb_bgsave_in_progress:0
-rdb_last_save_time:1455889451
+rdb_last_save_time:1455899728
 rdb_last_bgsave_status:ok
 rdb_last_bgsave_time_sec:-1
 rdb_current_bgsave_time_sec:-1
@@ -50,13 +50,13 @@ aof_last_bgrewrite_status:ok
 aof_last_write_status:ok
 
 # Stats
-total_connections_received:11
-total_commands_processed:1
-instantaneous_ops_per_sec:0
-total_net_input_bytes:51
-total_net_output_bytes:12
-instantaneous_input_kbps:0.00
-instantaneous_output_kbps:0.00
+total_connections_received:10
+total_commands_processed:512
+instantaneous_ops_per_sec:5
+total_net_input_bytes:2936048191
+total_net_output_bytes:2584
+instantaneous_input_kbps:28518.54
+instantaneous_output_kbps:0.03
 rejected_connections:0
 sync_full:0
 sync_partial_ok:0
@@ -80,15 +80,17 @@ repl_backlog_first_byte_offset:0
 repl_backlog_histlen:0
 
 # CPU
-used_cpu_sys:0.13
-used_cpu_user:0.12
+used_cpu_sys:14.15
+used_cpu_user:1.59
 used_cpu_sys_children:0.01
 used_cpu_user_children:0.00
 
 # Commandstats
-cmdstat_ping:calls=1,usec=3,usec_per_call=3.00
+cmdstat_set:calls=500,usec=7354,usec_per_call=14.71
+cmdstat_ping:calls=12,usec=23,usec_per_call=1.92
 
 # Cluster
 cluster_enabled:0
 
 # Keyspace
+db0:keys=500,expires=0,avg_ttl=0

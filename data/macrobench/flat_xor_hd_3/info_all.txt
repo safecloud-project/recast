@@ -9,12 +9,12 @@ arch_bits:64
 multiplexing_api:epoll
 gcc_version:4.9.2
 process_id:1
-run_id:08f00f5a2f64ed43ab3cd4727250b934193eae0a
+run_id:79e8d6dc047d68cb5a4f3a6eaee0df392e2c82d6
 tcp_port:6379
-uptime_in_seconds:80
+uptime_in_seconds:88
 uptime_in_days:0
 hz:10
-lru_clock:13049200
+lru_clock:13059535
 config_file:
 
 # Clients
@@ -26,8 +26,8 @@ blocked_clients:0
 # Memory
 used_memory:4195338192
 used_memory_human:3.91G
-used_memory_rss:4195377152
-used_memory_peak:4220445248
+used_memory_rss:4199522304
+used_memory_peak:4220445280
 used_memory_peak_human:3.93G
 used_memory_lua:36864
 mem_fragmentation_ratio:1.00
@@ -37,7 +37,7 @@ mem_allocator:jemalloc-3.6.0
 loading:0
 rdb_changes_since_last_save:500
 rdb_bgsave_in_progress:0
-rdb_last_save_time:1455889696
+rdb_last_save_time:1455900023
 rdb_last_bgsave_status:ok
 rdb_last_bgsave_time_sec:-1
 rdb_current_bgsave_time_sec:-1
@@ -51,11 +51,11 @@ aof_last_write_status:ok
 
 # Stats
 total_connections_received:10
-total_commands_processed:505
-instantaneous_ops_per_sec:8
-total_net_input_bytes:3146374093
-total_net_output_bytes:2535
-instantaneous_input_kbps:50566.46
+total_commands_processed:500
+instantaneous_ops_per_sec:7
+total_net_input_bytes:3146374023
+total_net_output_bytes:2500
+instantaneous_input_kbps:38630.75
 instantaneous_output_kbps:0.04
 rejected_connections:0
 sync_full:0
@@ -80,14 +80,13 @@ repl_backlog_first_byte_offset:0
 repl_backlog_histlen:0
 
 # CPU
-used_cpu_sys:18.79
-used_cpu_user:1.65
+used_cpu_sys:20.20
+used_cpu_user:2.08
 used_cpu_sys_children:0.01
 used_cpu_user_children:0.00
 
 # Commandstats
-cmdstat_set:calls=500,usec=6731,usec_per_call=13.46
-cmdstat_ping:calls=5,usec=19,usec_per_call=3.80
+cmdstat_set:calls=500,usec=7171,usec_per_call=14.34
 
 # Cluster
 cluster_enabled:0
