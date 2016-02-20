@@ -7,6 +7,28 @@ import math
 
 from pylonghair import fec_encode, fec_decode
 
+def split_and_number(strips, missing_indices):
+    """
+    Number contiguous elements in an array with the information of the missing
+    indices.
+    """
+    remapped_strips = []
+    j = 0
+    missing_indices.sort()
+    for i in range(len(strips)):
+        if j in missing_indices:
+            while j in missing_indices:
+                j += 1
+        remapped_strips.append((j, strips[i]))
+        j += 1
+    return remapped_strips
+
+def fill_missing(strips, missing_indices):
+    blocks = split_and_number(strips, missing_indices)
+    block_size = len(strips[0])
+    for index in missing_indices:
+        blocks.append((index, bytearray(block_size)))
+    return blocks
 
 class PylonghairDriver(object):
     """
@@ -42,5 +64,28 @@ class PylonghairDriver(object):
             offset = row * block_size
             block_data = strips[row]
             blocks.append((row, block_data))
+
+        print "len(blocks):", len(blocks)
+        for block in blocks:
+            print "\tblock[0]:", block[0]
         fec_decode(self.k, self.m, block_size, blocks)
+        return "".join(map(lambda x: x[1], blocks))
+
+    def reconstruct(self, strips, missing_indices):
+        print "self.k =", self.k
+        block_size = len(strips[0])
+        length_of_available_data = self.k - len(missing_indices)
+        blocks = split_and_number(strips[:length_of_available_data], missing_indices)
+        # blocks = fill_missing(strips[:length_of_available_data], missing_indices)
+        # blocks.extend(strips[length_of_available_data:])
+        print "len(blocks):", len(blocks)
+        index = self.k
+        for strip in strips[length_of_available_data:]:
+            blocks.append((index, strip))
+            index += 1
+        print "len(blocks):", len(blocks)
+        for block in blocks:
+            print "\tbock.index:", block[0]
+        fec_decode(self.k, self.m, block_size, blocks)
+        print "Hello, World!"
         return "".join(map(lambda x: x[1], blocks))
