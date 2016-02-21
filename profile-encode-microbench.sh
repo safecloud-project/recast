@@ -1,10 +1,9 @@
 #! /bin/bash
-###############################################################################
-# microbench.sh                                                               #
-#                                                                             #
-# Benchmarks a GRPC enabled encoder/decoder implementing the behaviour        #
-# defined in playclcoud.proto.                                                #
-###############################################################################
+################################################################################
+# microbench.sh                                                                #
+#                                                                              #
+# Gest cProfile from microbenches                                              #
+################################################################################
 
 source ./utils.sh
 
@@ -33,7 +32,8 @@ mkdir -p "${DATA_DIRECTORY}"
 
 
 for size in "${SIZES[@]}"; do
-	ADJUSTED_SIZE="$((size * 1024 * 1024))"
-	docker run -it --rm -v "${PWD}/xpdata/cprofile":/opt/xpdata/cprofile pyeclib-microbencher \
-        bash -c "eval ${ENV_FILE_CONTENT} && python -m cProfile -o /opt/xpdata/cprofile/${EC_TYPE}/${size}MB.cProfile /usr/local/src/app/microbench_local_encode.py ${ADJUSTED_SIZE} > /dev/null"
+	SIZE_IN_BYTES="$((size * 1024 * 1024))"
+	docker run -it --rm -v "${PWD}/xpdata/cprofile":/opt/xpdata/cprofile pyeclib-microbencher bash -c "eval ${ENV_FILE_CONTENT} && python -m cProfile -o /opt/xpdata/cprofile/${EC_TYPE}/${size}MB-encode.cProfile /usr/local/src/app/microbench_local_encode.py ${SIZE_IN_BYTES} > /dev/null"
+	docker run -it --rm -v "${PWD}/xpdata/cprofile":/opt/xpdata/cprofile pyeclib-microbencher bash -c "eval ${ENV_FILE_CONTENT} && python -m cProfile -o /opt/xpdata/cprofile/${EC_TYPE}/${size}MB-decode.cProfile /usr/local/src/app/microbench_local_decode.py ${SIZE_IN_BYTES} > /dev/null"
+	docker run -it --rm -v "${PWD}/xpdata/cprofile":/opt/xpdata/cprofile pyeclib-microbencher bash -c "eval ${ENV_FILE_CONTENT} && python -m cProfile -o /opt/xpdata/cprofile/${EC_TYPE}/${size}MB-reconstruct.cProfile /usr/local/src/app/microbench_local_reconstruct.py ${SIZE_IN_BYTES} > /dev/null"
 done
