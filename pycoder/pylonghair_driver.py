@@ -61,7 +61,6 @@ class PylonghairDriver(object):
         block_size = len(strips[0])
         blocks = []
         for row in range(self.k):
-            offset = row * block_size
             block_data = strips[row]
             blocks.append((row, block_data))
 
@@ -76,16 +75,13 @@ class PylonghairDriver(object):
         block_size = len(strips[0])
         length_of_available_data = self.k - len(missing_indices)
         blocks = split_and_number(strips[:length_of_available_data], missing_indices)
-        # blocks = fill_missing(strips[:length_of_available_data], missing_indices)
-        # blocks.extend(strips[length_of_available_data:])
-        print "len(blocks):", len(blocks)
-        index = self.k
-        for strip in strips[length_of_available_data:]:
-            blocks.append((index, strip))
-            index += 1
-        print "len(blocks):", len(blocks)
-        for block in blocks:
-            print "\tbock.index:", block[0]
+        for i in range(len(missing_indices)):
+            blocks.append((self.k + i, blocks[self.k + i]))
         fec_decode(self.k, self.m, block_size, blocks)
-        print "Hello, World!"
-        return "".join(map(lambda x: x[1], blocks))
+        reconstructed = []
+        reconstructed_indices = sorted(missing_indices)
+        for i in range(len(reconstructed_indices)):
+            actual_index = reconstructed_indices[i]
+            reconstructed_block = blocks[length_of_available_data + i]
+            reconstructed.append((actual_index, reconstructed_block))
+        return reconstructed
