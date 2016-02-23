@@ -56,9 +56,9 @@ class PylonghairDriver(object):
         """
         Encodes data using Cauchy Reed Solomon codes
         """
-        block_size = int(math.ceil((0.0 + len(data)) / self.k))
+        block_size = compute_block_size(len(data), self.k)
         parity = bytearray(self.m * block_size)
-        fec_encode(self.k, self.m, block_size, data, parity)
+        assert fec_encode(self.k, self.m, block_size, data, parity) == 0
         strips = []
         for i in range(0, len(data), block_size):
             strips.append(data[i: i + block_size])
