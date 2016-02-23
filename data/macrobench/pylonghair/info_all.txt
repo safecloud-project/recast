@@ -4,17 +4,17 @@ redis_git_sha1:00000000
 redis_git_dirty:0
 redis_build_id:a78685547bf4f42c
 redis_mode:standalone
-os:Linux 3.13.0-77-generic x86_64
+os:Linux 3.13.0-76-generic x86_64
 arch_bits:64
 multiplexing_api:epoll
 gcc_version:4.9.2
 process_id:1
-run_id:4ba9522bfb327ac7d24a728024aebabe164ee462
+run_id:f082fcc5f1fb63f80bca5a680b22ca9ae5e8c8ea
 tcp_port:6379
-uptime_in_seconds:80
+uptime_in_seconds:83
 uptime_in_days:0
 hz:10
-lru_clock:13059232
+lru_clock:13375205
 config_file:
 
 # Clients
@@ -26,9 +26,9 @@ blocked_clients:0
 # Memory
 used_memory:4195338192
 used_memory_human:3.91G
-used_memory_rss:3151364096
-used_memory_peak:4228833872
-used_memory_peak_human:3.94G
+used_memory_rss:3150196736
+used_memory_peak:4253999648
+used_memory_peak_human:3.96G
 used_memory_lua:36864
 mem_fragmentation_ratio:0.75
 mem_allocator:jemalloc-3.6.0
@@ -37,7 +37,7 @@ mem_allocator:jemalloc-3.6.0
 loading:0
 rdb_changes_since_last_save:500
 rdb_bgsave_in_progress:0
-rdb_last_save_time:1455899728
+rdb_last_save_time:1456215698
 rdb_last_bgsave_status:ok
 rdb_last_bgsave_time_sec:-1
 rdb_current_bgsave_time_sec:-1
@@ -51,11 +51,11 @@ aof_last_write_status:ok
 
 # Stats
 total_connections_received:10
-total_commands_processed:512
+total_commands_processed:502
 instantaneous_ops_per_sec:5
-total_net_input_bytes:2936048191
-total_net_output_bytes:2584
-instantaneous_input_kbps:28518.54
+total_net_input_bytes:2936048051
+total_net_output_bytes:2514
+instantaneous_input_kbps:32677.32
 instantaneous_output_kbps:0.03
 rejected_connections:0
 sync_full:0
@@ -80,14 +80,14 @@ repl_backlog_first_byte_offset:0
 repl_backlog_histlen:0
 
 # CPU
-used_cpu_sys:14.15
-used_cpu_user:1.59
+used_cpu_sys:28.57
+used_cpu_user:3.22
 used_cpu_sys_children:0.01
 used_cpu_user_children:0.00
 
 # Commandstats
-cmdstat_set:calls=500,usec=7354,usec_per_call=14.71
-cmdstat_ping:calls=12,usec=23,usec_per_call=1.92
+cmdstat_set:calls=500,usec=7269,usec_per_call=14.54
+cmdstat_ping:calls=2,usec=6,usec_per_call=3.00
 
 # Cluster
 cluster_enabled:0
