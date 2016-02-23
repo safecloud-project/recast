@@ -71,14 +71,10 @@ class PylonghairDriver(object):
         Decodes strips of data encoded using the PylonghairDriver's encode
         method
         """
-        block_size = len(strips[0])
+        block_size = len(strips[len(strips) - 1])
         blocks = []
-        for row in range(self.k):
-            block_data = strips[row]
-            blocks.append((row, block_data))
-
-        print "len(blocks):", len(blocks)
-        for block in blocks:
-            print "\tblock[0]:", block[0]
-        fec_decode(self.k, self.m, block_size, blocks)
-        return "".join(map(lambda x: x[1], blocks))
+        data_blocks = strips[:len(strips) - self.m]
+        for row, data in enumerate(data_blocks):
+            blocks.append((row, data))
+        assert fec_decode(self.k, self.m, block_size, blocks) == 0
+        return "".join([strip[1] for strip in blocks])
