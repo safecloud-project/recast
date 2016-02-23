@@ -82,19 +82,3 @@ class PylonghairDriver(object):
             print "\tblock[0]:", block[0]
         fec_decode(self.k, self.m, block_size, blocks)
         return "".join(map(lambda x: x[1], blocks))
-
-    def reconstruct(self, strips, missing_indices):
-        print "self.k =", self.k
-        block_size = len(strips[0])
-        length_of_available_data = self.k - len(missing_indices)
-        blocks = split_and_number(strips[:length_of_available_data], missing_indices)
-        for i in range(len(missing_indices)):
-            blocks.append((self.k + i, blocks[self.k + i]))
-        fec_decode(self.k, self.m, block_size, blocks)
-        reconstructed = []
-        reconstructed_indices = sorted(missing_indices)
-        for i in range(len(reconstructed_indices)):
-            actual_index = reconstructed_indices[i]
-            reconstructed_block = blocks[length_of_available_data + i]
-            reconstructed.append((actual_index, reconstructed_block))
-        return reconstructed
