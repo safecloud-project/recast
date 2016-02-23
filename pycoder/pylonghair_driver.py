@@ -73,8 +73,9 @@ class PylonghairDriver(object):
         """
         block_size = len(strips[len(strips) - 1])
         blocks = []
-        data_blocks = strips[:len(strips) - self.m]
+        number_of_data_blocks = len(strips) - self.m
+        data_blocks = strips[:number_of_data_blocks]
         for row, data in enumerate(data_blocks):
             blocks.append((row, data))
-        assert fec_decode(self.k, self.m, block_size, blocks) == 0
+        assert fec_decode(number_of_data_blocks, self.m, block_size, blocks) == 0
         return "".join([strip[1] for strip in blocks])
