@@ -30,6 +30,19 @@ def fill_missing(strips, missing_indices):
         blocks.append((index, bytearray(block_size)))
     return blocks
 
+def compute_block_size(data_length, k):
+    """
+    Returns a block_size that is appropriate for block size for longhair.
+    In order to use longhair the BLOCK SIZE MUST BE A MULTIPLE OF 8.
+    """
+    assert k > 0
+    block_size = (data_length + 0.0) / k
+    if (block_size % 8) == 0:
+        return int(block_size)
+    if block_size < 8:
+        return 8
+    return int(math.ceil(block_size / 8)) * 8
+
 class PylonghairDriver(object):
     """
     An erasure coding driver for pylonghair
