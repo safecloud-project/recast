@@ -84,7 +84,7 @@ shift
 # Set the number of concurrent requests sent by ab_playcloud to # of cores * 2
 readonly CONCURRENT_REQUESTS="$(( $(grep -c ^processor /proc/cpuinfo) * 2 ))"
 
-cd client_bash/
+cd clients
 docker build -t client .
 cd -
 mkdir -p xpdata/
