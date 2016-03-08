@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 function print_help() {
 	echo -e "Usage: $0 <requests> <concurrent requests> <payload size> [server]\n"
 	echo "Arguments:"
@@ -22,7 +23,9 @@ BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
 DATA_FILE="${BASE_DIR}/random${PAYLOAD_SIZE}.dat"
 if [ ! -f "${DATA_FILE}" ]; then
 	echo "File ${DATA_FILE} could not be found"
-	exit 1
+	echo -n "Creating data file..."
+	"${BASE_DIR}/gen_random_data.sh" "${PAYLOAD_SIZE}" 2>/dev/null
+	echo "done"
 fi
 SERVER="${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT}"
 if [[ $# -ge 4 ]]; then
