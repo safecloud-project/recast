@@ -26,9 +26,9 @@ RUN git checkout v1.1.1 --quiet && ./autogen.sh && ./configure && make && make t
 RUN pip install --upgrade --quiet cython grpcio==0.11.0b1 pyeclib==1.2.0 protobuf==3.0.0a3
 
 # Install pylonghair
-RUN git clone https://github.com/sampot/pylonghair /usr/local/src/app --quiet
-WORKDIR /usr/local/src/app/
-RUN python setup.py build_ext --inplace
+WORKDIR /tmp/pylonghair
+RUN git clone https://github.com/sampot/pylonghair . --quiet
+RUN python setup.py install
 
 # Expose port to other containers
 EXPOSE 1234

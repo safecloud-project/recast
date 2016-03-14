@@ -8,6 +8,392 @@ public final class Playcloud {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public interface StripOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Strip)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional bytes data = 1;</code>
+     */
+    com.google.protobuf.ByteString getData();
+  }
+  /**
+   * Protobuf type {@code Strip}
+   *
+   * <pre>
+   *Data types
+   * </pre>
+   */
+  public  static final class Strip extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Strip)
+      StripOrBuilder {
+    // Use Strip.newBuilder() to construct.
+    private Strip(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private Strip() {
+      data_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private Strip(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+
+              data_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw new RuntimeException(e.setUnfinishedMessage(this));
+      } catch (java.io.IOException e) {
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ch.unine.iiun.safecloud.Playcloud.internal_static_Strip_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ch.unine.iiun.safecloud.Playcloud.internal_static_Strip_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              ch.unine.iiun.safecloud.Playcloud.Strip.class, ch.unine.iiun.safecloud.Playcloud.Strip.Builder.class);
+    }
+
+    public static final int DATA_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString data_;
+    /**
+     * <code>optional bytes data = 1;</code>
+     */
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!data_.isEmpty()) {
+        output.writeBytes(1, data_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!data_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, data_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static ch.unine.iiun.safecloud.Playcloud.Strip parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(ch.unine.iiun.safecloud.Playcloud.Strip prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Strip}
+     *
+     * <pre>
+     *Data types
+     * </pre>
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Strip)
+        ch.unine.iiun.safecloud.Playcloud.StripOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ch.unine.iiun.safecloud.Playcloud.internal_static_Strip_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ch.unine.iiun.safecloud.Playcloud.internal_static_Strip_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                ch.unine.iiun.safecloud.Playcloud.Strip.class, ch.unine.iiun.safecloud.Playcloud.Strip.Builder.class);
+      }
+
+      // Construct using ch.unine.iiun.safecloud.Playcloud.Strip.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        data_ = com.google.protobuf.ByteString.EMPTY;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ch.unine.iiun.safecloud.Playcloud.internal_static_Strip_descriptor;
+      }
+
+      public ch.unine.iiun.safecloud.Playcloud.Strip getDefaultInstanceForType() {
+        return ch.unine.iiun.safecloud.Playcloud.Strip.getDefaultInstance();
+      }
+
+      public ch.unine.iiun.safecloud.Playcloud.Strip build() {
+        ch.unine.iiun.safecloud.Playcloud.Strip result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public ch.unine.iiun.safecloud.Playcloud.Strip buildPartial() {
+        ch.unine.iiun.safecloud.Playcloud.Strip result = new ch.unine.iiun.safecloud.Playcloud.Strip(this);
+        result.data_ = data_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof ch.unine.iiun.safecloud.Playcloud.Strip) {
+          return mergeFrom((ch.unine.iiun.safecloud.Playcloud.Strip)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(ch.unine.iiun.safecloud.Playcloud.Strip other) {
+        if (other == ch.unine.iiun.safecloud.Playcloud.Strip.getDefaultInstance()) return this;
+        if (other.getData() != com.google.protobuf.ByteString.EMPTY) {
+          setData(other.getData());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        ch.unine.iiun.safecloud.Playcloud.Strip parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (ch.unine.iiun.safecloud.Playcloud.Strip) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes data = 1;</code>
+       */
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>optional bytes data = 1;</code>
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes data = 1;</code>
+       */
+      public Builder clearData() {
+        
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Strip)
+    }
+
+    // @@protoc_insertion_point(class_scope:Strip)
+    private static final ch.unine.iiun.safecloud.Playcloud.Strip DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new ch.unine.iiun.safecloud.Playcloud.Strip();
+    }
+
+    public static ch.unine.iiun.safecloud.Playcloud.Strip getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Strip>
+        PARSER = new com.google.protobuf.AbstractParser<Strip>() {
+      public Strip parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new Strip(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<Strip> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Strip> getParserForType() {
+      return PARSER;
+    }
+
+    public ch.unine.iiun.safecloud.Playcloud.Strip getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface EncodeRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:EncodeRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -545,9 +931,28 @@ public final class Playcloud {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional bytes enc_blocks = 1;</code>
+     * <code>repeated .Strip strips = 1;</code>
      */
-    com.google.protobuf.ByteString getEncBlocks();
+    java.util.List<ch.unine.iiun.safecloud.Playcloud.Strip> 
+        getStripsList();
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    ch.unine.iiun.safecloud.Playcloud.Strip getStrips(int index);
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    int getStripsCount();
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    java.util.List<? extends ch.unine.iiun.safecloud.Playcloud.StripOrBuilder> 
+        getStripsOrBuilderList();
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    ch.unine.iiun.safecloud.Playcloud.StripOrBuilder getStripsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code EncodeReply}
@@ -561,7 +966,7 @@ public final class Playcloud {
       super(builder);
     }
     private EncodeReply() {
-      encBlocks_ = com.google.protobuf.ByteString.EMPTY;
+      strips_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -589,8 +994,11 @@ public final class Playcloud {
               break;
             }
             case 10: {
-
-              encBlocks_ = input.readBytes();
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                strips_ = new java.util.ArrayList<ch.unine.iiun.safecloud.Playcloud.Strip>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              strips_.add(input.readMessage(ch.unine.iiun.safecloud.Playcloud.Strip.parser(), extensionRegistry));
               break;
             }
           }
@@ -602,6 +1010,9 @@ public final class Playcloud {
             new com.google.protobuf.InvalidProtocolBufferException(
                 e.getMessage()).setUnfinishedMessage(this));
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          strips_ = java.util.Collections.unmodifiableList(strips_);
+        }
         makeExtensionsImmutable();
       }
     }
@@ -617,13 +1028,39 @@ public final class Playcloud {
               ch.unine.iiun.safecloud.Playcloud.EncodeReply.class, ch.unine.iiun.safecloud.Playcloud.EncodeReply.Builder.class);
     }
 
-    public static final int ENC_BLOCKS_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString encBlocks_;
+    public static final int STRIPS_FIELD_NUMBER = 1;
+    private java.util.List<ch.unine.iiun.safecloud.Playcloud.Strip> strips_;
     /**
-     * <code>optional bytes enc_blocks = 1;</code>
+     * <code>repeated .Strip strips = 1;</code>
      */
-    public com.google.protobuf.ByteString getEncBlocks() {
-      return encBlocks_;
+    public java.util.List<ch.unine.iiun.safecloud.Playcloud.Strip> getStripsList() {
+      return strips_;
+    }
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    public java.util.List<? extends ch.unine.iiun.safecloud.Playcloud.StripOrBuilder> 
+        getStripsOrBuilderList() {
+      return strips_;
+    }
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    public int getStripsCount() {
+      return strips_.size();
+    }
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    public ch.unine.iiun.safecloud.Playcloud.Strip getStrips(int index) {
+      return strips_.get(index);
+    }
+    /**
+     * <code>repeated .Strip strips = 1;</code>
+     */
+    public ch.unine.iiun.safecloud.Playcloud.StripOrBuilder getStripsOrBuilder(
+        int index) {
+      return strips_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -638,8 +1075,8 @@ public final class Playcloud {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!encBlocks_.isEmpty()) {
-        output.writeBytes(1, encBlocks_);
+      for (int i = 0; i < strips_.size(); i++) {
+        output.writeMessage(1, strips_.get(i));
       }
     }
 
@@ -648,9 +1085,9 @@ public final class Playcloud {
       if (size != -1) return size;
 
       size = 0;
-      if (!encBlocks_.isEmpty()) {
+      for (int i = 0; i < strips_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, encBlocks_);
+          .computeMessageSize(1, strips_.get(i));
       }
       memoizedSize = size;
       return size;
@@ -759,12 +1196,17 @@ public final class Playcloud {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getStripsFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
-        encBlocks_ = com.google.protobuf.ByteString.EMPTY;
-
+        if (stripsBuilder_ == null) {
+          strips_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          stripsBuilder_.clear();
+        }
         return this;
       }
 
@@ -787,7 +1229,16 @@ public final class Playcloud {
 
       public ch.unine.iiun.safecloud.Playcloud.EncodeReply buildPartial() {
         ch.unine.iiun.safecloud.Playcloud.EncodeReply result = new ch.unine.iiun.safecloud.Playcloud.EncodeReply(this);
-        result.encBlocks_ = encBlocks_;
+        int from_bitField0_ = bitField0_;
+        if (stripsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            strips_ = java.util.Collections.unmodifiableList(strips_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.strips_ = strips_;
+        } else {
+          result.strips_ = stripsBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -803,8 +1254,31 @@ public final class Playcloud {
 
       public Builder mergeFrom(ch.unine.iiun.safecloud.Playcloud.EncodeReply other) {
         if (other == ch.unine.iiun.safecloud.Playcloud.EncodeReply.getDefaultInstance()) return this;
-        if (other.getEncBlocks() != com.google.protobuf.ByteString.EMPTY) {
-          setEncBlocks(other.getEncBlocks());
+        if (stripsBuilder_ == null) {
+          if (!other.strips_.isEmpty()) {
+            if (strips_.isEmpty()) {
+              strips_ = other.strips_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureStripsIsMutable();
+              strips_.addAll(other.strips_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.strips_.isEmpty()) {
+            if (stripsBuilder_.isEmpty()) {
+              stripsBuilder_.dispose();
+              stripsBuilder_ = null;
+              strips_ = other.strips_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              stripsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getStripsFieldBuilder() : null;
+            } else {
+              stripsBuilder_.addAllMessages(other.strips_);
+            }
+          }
         }
         onChanged();
         return this;
@@ -831,34 +1305,246 @@ public final class Playcloud {
         }
         return this;
       }
+      private int bitField0_;
 
-      private com.google.protobuf.ByteString encBlocks_ = com.google.protobuf.ByteString.EMPTY;
+      private java.util.List<ch.unine.iiun.safecloud.Playcloud.Strip> strips_ =
+        java.util.Collections.emptyList();
+      private void ensureStripsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          strips_ = new java.util.ArrayList<ch.unine.iiun.safecloud.Playcloud.Strip>(strips_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          ch.unine.iiun.safecloud.Playcloud.Strip, ch.unine.iiun.safecloud.Playcloud.Strip.Builder, ch.unine.iiun.safecloud.Playcloud.StripOrBuilder> stripsBuilder_;
+
       /**
-       * <code>optional bytes enc_blocks = 1;</code>
+       * <code>repeated .Strip strips = 1;</code>
        */
-      public com.google.protobuf.ByteString getEncBlocks() {
-        return encBlocks_;
+      public java.util.List<ch.unine.iiun.safecloud.Playcloud.Strip> getStripsList() {
+        if (stripsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(strips_);
+        } else {
+          return stripsBuilder_.getMessageList();
+        }
       }
       /**
-       * <code>optional bytes enc_blocks = 1;</code>
+       * <code>repeated .Strip strips = 1;</code>
        */
-      public Builder setEncBlocks(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        encBlocks_ = value;
-        onChanged();
+      public int getStripsCount() {
+        if (stripsBuilder_ == null) {
+          return strips_.size();
+        } else {
+          return stripsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public ch.unine.iiun.safecloud.Playcloud.Strip getStrips(int index) {
+        if (stripsBuilder_ == null) {
+          return strips_.get(index);
+        } else {
+          return stripsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder setStrips(
+          int index, ch.unine.iiun.safecloud.Playcloud.Strip value) {
+        if (stripsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureStripsIsMutable();
+          strips_.set(index, value);
+          onChanged();
+        } else {
+          stripsBuilder_.setMessage(index, value);
+        }
         return this;
       }
       /**
-       * <code>optional bytes enc_blocks = 1;</code>
+       * <code>repeated .Strip strips = 1;</code>
        */
-      public Builder clearEncBlocks() {
-        
-        encBlocks_ = getDefaultInstance().getEncBlocks();
-        onChanged();
+      public Builder setStrips(
+          int index, ch.unine.iiun.safecloud.Playcloud.Strip.Builder builderForValue) {
+        if (stripsBuilder_ == null) {
+          ensureStripsIsMutable();
+          strips_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          stripsBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder addStrips(ch.unine.iiun.safecloud.Playcloud.Strip value) {
+        if (stripsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureStripsIsMutable();
+          strips_.add(value);
+          onChanged();
+        } else {
+          stripsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder addStrips(
+          int index, ch.unine.iiun.safecloud.Playcloud.Strip value) {
+        if (stripsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureStripsIsMutable();
+          strips_.add(index, value);
+          onChanged();
+        } else {
+          stripsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder addStrips(
+          ch.unine.iiun.safecloud.Playcloud.Strip.Builder builderForValue) {
+        if (stripsBuilder_ == null) {
+          ensureStripsIsMutable();
+          strips_.add(builderForValue.build());
+          onChanged();
+        } else {
+          stripsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder addStrips(
+          int index, ch.unine.iiun.safecloud.Playcloud.Strip.Builder builderForValue) {
+        if (stripsBuilder_ == null) {
+          ensureStripsIsMutable();
+          strips_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          stripsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder addAllStrips(
+          java.lang.Iterable<? extends ch.unine.iiun.safecloud.Playcloud.Strip> values) {
+        if (stripsBuilder_ == null) {
+          ensureStripsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, strips_);
+          onChanged();
+        } else {
+          stripsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder clearStrips() {
+        if (stripsBuilder_ == null) {
+          strips_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          stripsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public Builder removeStrips(int index) {
+        if (stripsBuilder_ == null) {
+          ensureStripsIsMutable();
+          strips_.remove(index);
+          onChanged();
+        } else {
+          stripsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public ch.unine.iiun.safecloud.Playcloud.Strip.Builder getStripsBuilder(
+          int index) {
+        return getStripsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public ch.unine.iiun.safecloud.Playcloud.StripOrBuilder getStripsOrBuilder(
+          int index) {
+        if (stripsBuilder_ == null) {
+          return strips_.get(index);  } else {
+          return stripsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public java.util.List<? extends ch.unine.iiun.safecloud.Playcloud.StripOrBuilder> 
+           getStripsOrBuilderList() {
+        if (stripsBuilder_ != null) {
+          return stripsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(strips_);
+        }
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public ch.unine.iiun.safecloud.Playcloud.Strip.Builder addStripsBuilder() {
+        return getStripsFieldBuilder().addBuilder(
+            ch.unine.iiun.safecloud.Playcloud.Strip.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public ch.unine.iiun.safecloud.Playcloud.Strip.Builder addStripsBuilder(
+          int index) {
+        return getStripsFieldBuilder().addBuilder(
+            index, ch.unine.iiun.safecloud.Playcloud.Strip.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Strip strips = 1;</code>
+       */
+      public java.util.List<ch.unine.iiun.safecloud.Playcloud.Strip.Builder> 
+           getStripsBuilderList() {
+        return getStripsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          ch.unine.iiun.safecloud.Playcloud.Strip, ch.unine.iiun.safecloud.Playcloud.Strip.Builder, ch.unine.iiun.safecloud.Playcloud.StripOrBuilder> 
+          getStripsFieldBuilder() {
+        if (stripsBuilder_ == null) {
+          stripsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              ch.unine.iiun.safecloud.Playcloud.Strip, ch.unine.iiun.safecloud.Playcloud.Strip.Builder, ch.unine.iiun.safecloud.Playcloud.StripOrBuilder>(
+                  strips_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          strips_ = null;
+        }
+        return stripsBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1829,6 +2515,11 @@ public final class Playcloud {
   }
 
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_Strip_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Strip_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_EncodeRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -1867,20 +2558,21 @@ public final class Playcloud {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017playcloud.proto\"\240\001\n\rEncodeRequest\022\017\n\007p" +
-      "ayload\030\001 \001(\014\022C\n\023encoding_parameters\030\002 \003(" +
-      "\0132&.EncodeRequest.EncodingParametersEntr" +
-      "y\0329\n\027EncodingParametersEntry\022\013\n\003key\030\001 \001(" +
-      "\t\022\r\n\005value\030\002 \001(\t:\0028\001\"!\n\013EncodeReply\022\022\n\ne" +
-      "nc_blocks\030\001 \001(\014\"\243\001\n\rDecodeRequest\022\022\n\nenc" +
-      "_blocks\030\001 \001(\014\022C\n\023decoding_parameters\030\002 \003" +
-      "(\0132&.DecodeRequest.DecodingParametersEnt" +
-      "ry\0329\n\027DecodingParametersEntry\022\013\n\003key\030\001 \001" +
-      "(\t\022\r\n\005value\030\002 \001(\t:\0028\001\" \n\013DecodeReply\022\021\n\t",
-      "dec_block\030\001 \001(\0142d\n\016EncoderDecoder\022(\n\006Enc" +
-      "ode\022\016.EncodeRequest\032\014.EncodeReply\"\000\022(\n\006D" +
-      "ecode\022\016.DecodeRequest\032\014.DecodeReply\"\000B\031\n" +
-      "\027ch.unine.iiun.safecloudb\006proto3"
+      "\n\017playcloud.proto\"\025\n\005Strip\022\014\n\004data\030\001 \001(\014" +
+      "\"\240\001\n\rEncodeRequest\022\017\n\007payload\030\001 \001(\014\022C\n\023e" +
+      "ncoding_parameters\030\002 \003(\0132&.EncodeRequest" +
+      ".EncodingParametersEntry\0329\n\027EncodingPara" +
+      "metersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:" +
+      "\0028\001\"%\n\013EncodeReply\022\026\n\006strips\030\001 \003(\0132\006.Str" +
+      "ip\"\243\001\n\rDecodeRequest\022\022\n\nenc_blocks\030\001 \001(\014" +
+      "\022C\n\023decoding_parameters\030\002 \003(\0132&.DecodeRe" +
+      "quest.DecodingParametersEntry\0329\n\027Decodin" +
+      "gParametersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002",
+      " \001(\t:\0028\001\" \n\013DecodeReply\022\021\n\tdec_block\030\001 \001" +
+      "(\0142d\n\016EncoderDecoder\022(\n\006Encode\022\016.EncodeR" +
+      "equest\032\014.EncodeReply\"\000\022(\n\006Decode\022\016.Decod" +
+      "eRequest\032\014.DecodeReply\"\000B\031\n\027ch.unine.iiu" +
+      "n.safecloudb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1894,8 +2586,14 @@ public final class Playcloud {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_EncodeRequest_descriptor =
+    internal_static_Strip_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_Strip_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Strip_descriptor,
+        new java.lang.String[] { "Data", });
+    internal_static_EncodeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_EncodeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_EncodeRequest_descriptor,
@@ -1907,13 +2605,13 @@ public final class Playcloud {
         internal_static_EncodeRequest_EncodingParametersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_EncodeReply_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_EncodeReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_EncodeReply_descriptor,
-        new java.lang.String[] { "EncBlocks", });
+        new java.lang.String[] { "Strips", });
     internal_static_DecodeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_DecodeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_DecodeRequest_descriptor,
@@ -1925,7 +2623,7 @@ public final class Playcloud {
         internal_static_DecodeRequest_DecodingParametersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_DecodeReply_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_DecodeReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_DecodeReply_descriptor,
