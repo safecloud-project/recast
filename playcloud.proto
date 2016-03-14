@@ -9,13 +9,17 @@ service EncoderDecoder {
 	rpc Decode (DecodeRequest) returns (DecodeReply) {}
 }
 
+//Data types
+message Strip {
+	bytes data = 1;
+}
 message EncodeRequest {
 	bytes payload = 1;
 	map<string,string> encoding_parameters = 2;
 }
 
 message EncodeReply {
-	bytes enc_blocks = 1;
+	repeated Strip strips = 1;
 }
 
 message DecodeRequest {

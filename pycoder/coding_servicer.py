@@ -5,6 +5,7 @@ import os
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
+from playcloud_pb2 import Strip
 from pyeclib.ec_iface import ECDriver
 
 from custom_driver import ECStripingDriver
@@ -47,8 +48,13 @@ class Eraser(object):
 
     def encode(self, data):
         """Encode a string of bytes in flattened string of byte strips"""
-        strips = self.driver.encode(data)
-        return strips_to_bytes(strips)
+        raw_strips = self.driver.encode(data)
+        strips = []
+        for raw_strip in raw_strips:
+            strip = Strip()
+            strip.data = raw_strip
+            strips.append(strip)
+        return strips
 
     def decode(self, data):
         """Decode a flattened string of byte strips in a string of bytes"""
@@ -69,7 +75,8 @@ class CodingService(BetaEncoderDecoderServicer):
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
         reply = EncodeReply()
-        reply.enc_blocks = ERASER.encode(request.payload)
+        strips = ERASER.encode(request.payload)
+        reply.strips.extend(strips)
         return reply
 
     def Decode(self, request, context):
