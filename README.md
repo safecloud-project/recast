@@ -4,7 +4,7 @@ An early repository for Safecloud's storage solution.
 
 ## Architecture
 
-Playcloud is split in components:
+Playcloud is split in 3 components:
 
 * proxy - A web server taking requests on port 3000
 * encoder-decoder - A enconding/decoding component
