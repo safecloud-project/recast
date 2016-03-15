@@ -1,6 +1,0 @@
-[{
-	"script":	"./bin/www",
-	"name":		"api",
-	"exec_mode":	"cluster",
-	"instances":	0
-}]
