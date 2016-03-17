@@ -24,22 +24,6 @@ public class TestRedisStore {
         }
     }
 
-    private static class MockedErasureClient extends ErasureClient {
-
-        public MockedErasureClient() throws IOException {
-        }
-
-        @Override
-        public byte[] encode(byte[] data) {
-            return data;
-        }
-
-        @Override
-        public byte[] decode(byte[] data) {
-            return data;
-        }
-    }
-
     private static JedisPool originalPool;
 
     @BeforeClass
@@ -140,7 +124,7 @@ public class TestRedisStore {
     @Test
     public void testPutNominal() throws MissingResourceException, IOException {
         RedisStore redisStore = new RedisStore();
-        redisStore.setEncoderDecoder(new MockedErasureClient());
+        redisStore.setEncoderDecoder(new ByPassEncoderDecoder());
         String path = "path";
         byte[] data = {1, 2, 3};
         String result = redisStore.put(path, data);

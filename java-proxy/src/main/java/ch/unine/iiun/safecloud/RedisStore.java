@@ -6,6 +6,13 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class RedisStore implements Store {
@@ -31,13 +38,32 @@ public class RedisStore implements Store {
         }
         byte[] raw;
         try (Jedis redis = POOL.getResource()) {
-            raw = redis.get(path.getBytes());
+            final String baseKey = path + "-*";
+            Set<String> keys = new TreeSet<>(new StripKeyComparator());
+            keys.addAll(redis.keys(baseKey));
+            if (keys.isEmpty()) {
+                throw new MissingResourceException("not found");
+            }
+            byte[][] keysAsArray = new byte[keys.size()][];
+            int i = 0;
+            for (String key: keys) {
+                System.out.println("Adding " + key  + " in position " + i);
+                keysAsArray[i] = key.getBytes();
+                i++;
+            }
+            List<byte[]> strips = redis.mget(keysAsArray).stream().filter(result -> result != null).collect(Collectors.toList());
+            int length = 0;
+            for (byte[] strip: strips) {
+                length += strip.length;
+            }
+            raw = new byte[length];
+            int offset = 0;
+            for (byte[] strip: strips) {
+                System.arraycopy(strip, 0, raw, offset, strip.length);
+                offset += strip.length;
+            }
         }
-        if (raw == null) {
-            throw new MissingResourceException("missing resource");
-        }
-        byte[] data = this.getEncoderDecoder().decode(raw);
-        return data;
+        return this.getEncoderDecoder().decode(raw);
     }
 
     public String put(final String path, final byte[] data) throws IOException {
@@ -53,9 +79,14 @@ public class RedisStore implements Store {
         if (data.length == 0) {
             throw new IllegalArgumentException("data argument cannot be an empty array of data");
         }
+        List<Playcloud.Strip> strips = this.getEncoderDecoder().encode(data);
         try (Jedis redis = POOL.getResource()) {
-            byte[] encoded = this.getEncoderDecoder().encode(data);
-            return redis.set(path.getBytes(), encoded);
+            for (int i = 0; i < strips.size(); i++) {
+                Playcloud.Strip strip = strips.get(i);
+                String key = path + "-" + i;
+                redis.set(key.getBytes(), strip.getData().toByteArray());
+            }
+            return path;
         }
 
     }
@@ -73,6 +104,21 @@ public class RedisStore implements Store {
             this.bypass = (ByPassEncoderDecoder) encoderDecoder;
         } else {
             this.erasure = (ErasureClient) encoderDecoder;
+        }
+    }
+
+    public static class StripKeyComparator implements Comparator<String> {
+        public static Pattern PATTERN = Pattern.compile("\\-(\\d+)$");
+
+        @Override
+        public int compare(String first, String second) {
+            Matcher matcher = PATTERN.matcher(first);
+            matcher.find();
+            int firstIndex = Integer.parseInt(matcher.group(1));
+            Matcher secondMatcher = PATTERN.matcher(second);
+            secondMatcher.find();
+            int secondIndex = Integer.parseInt(secondMatcher.group(1));
+            return firstIndex - secondIndex;
         }
     }
 }

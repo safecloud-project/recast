@@ -7,6 +7,8 @@ import io.grpc.netty.NettyChannelBuilder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Primary
 @Service(value = "grpc")
 public class ErasureClient implements EncoderDecoder {
@@ -29,17 +31,12 @@ public class ErasureClient implements EncoderDecoder {
         }
     }
 
-    public byte[] encode(final byte[] data) {
+    public List<Playcloud.Strip> encode(final byte[] data) {
         setUp();
         ByteString payload = ByteString.copyFrom(data);
         Playcloud.EncodeRequest request = Playcloud.EncodeRequest.newBuilder().setPayload(payload).build();
         Playcloud.EncodeReply reply = blockingStub.encode(request);
-        byte[] empty = {};
-        ByteString encodedData = ByteString.copyFrom((byte[])empty);
-        for (Playcloud.Strip strip: reply.getStripsList()) {
-            encodedData = encodedData.concat(strip.getData());
-        }
-        return encodedData.toByteArray();
+        return reply.getStripsList();
     }
 
     public byte[] decode(final byte[] data) {
