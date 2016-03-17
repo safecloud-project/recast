@@ -26,7 +26,11 @@ public class ByPassEncoderDecoder implements EncoderDecoder {
     }
 
     @Override
-    public byte[] decode(byte[] data) {
-        return data;
+    public byte[] decode(List<Playcloud.Strip> strips) {
+        ByteString data = ByteString.EMPTY;
+        for (Playcloud.Strip strip : strips) {
+            data = data.concat(strip.getData());
+        }
+        return data.toByteArray();
     }
 }

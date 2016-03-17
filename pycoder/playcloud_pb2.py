@@ -17,7 +17,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='playcloud.proto',
   package='',
   syntax='proto3',
-  serialized_pb=b'\n\x0fplaycloud.proto\"\x15\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\xa0\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x43\n\x13\x65ncoding_parameters\x18\x02 \x03(\x0b\x32&.EncodeRequest.EncodingParametersEntry\x1a\x39\n\x17\x45ncodingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"%\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\"\xa3\x01\n\rDecodeRequest\x12\x12\n\nenc_blocks\x18\x01 \x01(\x0c\x12\x43\n\x13\x64\x65\x63oding_parameters\x18\x02 \x03(\x0b\x32&.DecodeRequest.DecodingParametersEntry\x1a\x39\n\x17\x44\x65\x63odingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\" \n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x32\x64\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3'
+  serialized_pb=b'\n\x0fplaycloud.proto\"\x15\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\xa0\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x43\n\x13\x65ncoding_parameters\x18\x02 \x03(\x0b\x32&.EncodeRequest.EncodingParametersEntry\x1a\x39\n\x17\x45ncodingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"%\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\"\xa7\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x43\n\x13\x64\x65\x63oding_parameters\x18\x02 \x03(\x0b\x32&.DecodeRequest.DecodingParametersEntry\x1a\x39\n\x17\x44\x65\x63odingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\" \n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x32\x64\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3'
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -194,8 +194,8 @@ _DECODEREQUEST_DECODINGPARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=351,
-  serialized_end=408,
+  serialized_start=355,
+  serialized_end=412,
 )
 
 _DECODEREQUEST = _descriptor.Descriptor(
@@ -206,9 +206,9 @@ _DECODEREQUEST = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='enc_blocks', full_name='DecodeRequest.enc_blocks', index=0,
-      number=1, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
+      name='strips', full_name='DecodeRequest.strips', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -232,7 +232,7 @@ _DECODEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=245,
-  serialized_end=408,
+  serialized_end=412,
 )
 
 
@@ -262,14 +262,15 @@ _DECODEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=410,
-  serialized_end=442,
+  serialized_start=414,
+  serialized_end=446,
 )
 
 _ENCODEREQUEST_ENCODINGPARAMETERSENTRY.containing_type = _ENCODEREQUEST
 _ENCODEREQUEST.fields_by_name['encoding_parameters'].message_type = _ENCODEREQUEST_ENCODINGPARAMETERSENTRY
 _ENCODEREPLY.fields_by_name['strips'].message_type = _STRIP
 _DECODEREQUEST_DECODINGPARAMETERSENTRY.containing_type = _DECODEREQUEST
+_DECODEREQUEST.fields_by_name['strips'].message_type = _STRIP
 _DECODEREQUEST.fields_by_name['decoding_parameters'].message_type = _DECODEREQUEST_DECODINGPARAMETERSENTRY
 DESCRIPTOR.message_types_by_name['Strip'] = _STRIP
 DESCRIPTOR.message_types_by_name['EncodeRequest'] = _ENCODEREQUEST
