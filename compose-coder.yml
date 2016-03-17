@@ -1,4 +1,4 @@
-dummy-coder:
+coder:
   build: ./pycoder
   ports:
   - "1234:1234"
