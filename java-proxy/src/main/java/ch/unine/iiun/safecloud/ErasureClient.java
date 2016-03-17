@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 @Service(value = "grpc")
 public class ErasureClient implements EncoderDecoder {
 
-    public static final String DEFAULT_HOST = (System.getenv("DUMMY_CODER_PORT_1234_TCP_ADDR") != null) ? System.getenv("DUMMY_CODER_PORT_1234_TCP_ADDR") : "127.0.0.1";
-    public static final int DEFAULT_PORT = (System.getenv("DUMMY_CODER_PORT_1234_TCP_PORT") != null) ? Integer.parseInt(System.getenv("DUMMY_CODER_PORT_1234_TCP_PORT")) : 1234;
+    public static final String DEFAULT_HOST = (System.getenv("CODER_PORT_1234_TCP_ADDR") != null) ? System.getenv("CODER_PORT_1234_TCP_ADDR") : "127.0.0.1";
+    public static final int DEFAULT_PORT = (System.getenv("CODER_PORT_1234_TCP_PORT") != null) ? Integer.parseInt(System.getenv("CODER_PORT_1234_TCP_PORT")) : 1234;
 
 
     private ManagedChannelImpl channel;

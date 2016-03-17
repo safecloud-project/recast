@@ -6,15 +6,14 @@ proxy:
   - "3000:8080"
   links:
   - redis
-  - dummy-coder
+  - coder
   env_file:
     - ./erasure.env
 
 redis:
   image: redis
 
-dummy-coder:
-#  build: ./dummy-coder
+coder:
   build: ./pycoder
   env_file:
     - ./erasure.env
