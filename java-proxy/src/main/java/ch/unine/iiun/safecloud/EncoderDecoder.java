@@ -1,6 +1,8 @@
 package ch.unine.iiun.safecloud;
 
 
+import java.util.List;
+
 public interface EncoderDecoder {
     /**
      * Encode data.
@@ -8,7 +10,7 @@ public interface EncoderDecoder {
      * @param data Data to encode
      * @return Encoded data
      */
-    public byte[] encode(final byte[] data);
+    public List<Playcloud.Strip> encode(final byte[] data);
 
     /**
      * Decoded data
