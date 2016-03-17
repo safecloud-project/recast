@@ -14,24 +14,9 @@ from pylonghair_driver import PylonghairDriver
 CONFIG = ConfigParser()
 CONFIG.read("pycoder.cfg")
 
-def bytes_to_strips(k, m, payload):
-    """Transforms a byte string in a list of bytes string"""
-    disks = k + m
-    length = len(payload) / disks
-    strips = []
-    for i in xrange(0, len(payload), length):
-        strips.append(payload[i: i + length])
-    return strips
-
-def strips_to_bytes(strips):
-    """Flatens a list of byte strings in single byte string"""
-    flattened_bytes = ""
-    for strip in strips:
-        if isinstance(strip, bytearray):
-            flattened_bytes += str(strip)
-        else:
-            flattened_bytes += strip
-    return flattened_bytes
+def convert_playcloud_strips_to_pyeclib_strips(playcloud_strips):
+    """Extract the data bytes from alist of playcloud strips"""
+    return [strip.data for strip in playcloud_strips]
 
 class Eraser(object):
     """A wrapper for pyeclib erasure coding driver (ECDriver)"""
@@ -56,9 +41,9 @@ class Eraser(object):
             strips.append(strip)
         return strips
 
-    def decode(self, data):
-        """Decode a flattened string of byte strips in a string of bytes"""
-        strips = bytes_to_strips(self.k, self.m, data)
+    def decode(self, playcloud_strips):
+        """Decode byte strips in a string of bytes"""
+        strips = convert_playcloud_strips_to_pyeclib_strips(playcloud_strips)
         return self.driver.decode(strips)
 
 EC_K = int(os.environ.get("EC_K", CONFIG.get("ec", "k")))

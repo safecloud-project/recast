@@ -15,8 +15,8 @@ public interface EncoderDecoder {
     /**
      * Decoded data
      *
-     * @param data Data to decoded
+     * @param strips A list of data strips to decode
      * @return Decoded data
      */
-    public byte[] decode(final byte[] data);
+    public byte[] decode(final List<Playcloud.Strip> strips);
 }

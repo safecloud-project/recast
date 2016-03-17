@@ -39,10 +39,9 @@ public class ErasureClient implements EncoderDecoder {
         return reply.getStripsList();
     }
 
-    public byte[] decode(final byte[] data) {
+    public byte[] decode(final List<Playcloud.Strip> strips) {
         setUp();
-        ByteString payload = ByteString.copyFrom(data);
-        Playcloud.DecodeRequest request = Playcloud.DecodeRequest.newBuilder().setEncBlocks(payload).build();
+        Playcloud.DecodeRequest request = Playcloud.DecodeRequest.newBuilder().addAllStrips(strips).build();
         Playcloud.DecodeReply reply = blockingStub.decode(request);
         return reply.getDecBlock().toByteArray();
     }

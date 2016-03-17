@@ -23,7 +23,7 @@ message EncodeReply {
 }
 
 message DecodeRequest {
-	bytes enc_blocks = 1;
+	repeated Strip strips = 1;
 	map<string, string> decoding_parameters = 2;
 }
 

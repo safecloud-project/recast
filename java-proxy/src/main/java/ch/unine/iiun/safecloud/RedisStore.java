@@ -1,5 +1,6 @@
 package ch.unine.iiun.safecloud;
 
+import com.google.protobuf.ByteString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -46,24 +47,13 @@ public class RedisStore implements Store {
             }
             byte[][] keysAsArray = new byte[keys.size()][];
             int i = 0;
-            for (String key: keys) {
-                System.out.println("Adding " + key  + " in position " + i);
+            for (String key : keys) {
                 keysAsArray[i] = key.getBytes();
                 i++;
             }
-            List<byte[]> strips = redis.mget(keysAsArray).stream().filter(result -> result != null).collect(Collectors.toList());
-            int length = 0;
-            for (byte[] strip: strips) {
-                length += strip.length;
-            }
-            raw = new byte[length];
-            int offset = 0;
-            for (byte[] strip: strips) {
-                System.arraycopy(strip, 0, raw, offset, strip.length);
-                offset += strip.length;
-            }
+            List<Playcloud.Strip> strips = redis.mget(keysAsArray).stream().filter(result -> result != null).map(data -> Playcloud.Strip.newBuilder().setData(ByteString.copyFrom(data)).build()).collect(Collectors.toList());
+            return this.getEncoderDecoder().decode(strips);
         }
-        return this.getEncoderDecoder().decode(raw);
     }
 
     public String put(final String path, final byte[] data) throws IOException {
@@ -102,7 +92,8 @@ public class RedisStore implements Store {
     public void setEncoderDecoder(final EncoderDecoder encoderDecoder) {
         if (encoderDecoder instanceof ByPassEncoderDecoder) {
             this.bypass = (ByPassEncoderDecoder) encoderDecoder;
-        } else {
+        }
+        else {
             this.erasure = (ErasureClient) encoderDecoder;
         }
     }
