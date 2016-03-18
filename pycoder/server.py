@@ -19,9 +19,6 @@ if __name__ == "__main__":
     "m = " +    os.environ.get("EC_M", config.get("ec", "m")) + "\n" +\
     "type = " + os.environ.get("EC_TYPE", config.get("ec", "type")) + "\n"
     print MESSAGE
-    log_filename = "/tmp/pycoder-" + str(time.time()) + ".log"
-    with open(log_filename, "a+") as f:
-        f.write(MESSAGE)
     SERVER.start()
     try:
         while True:

@@ -70,15 +70,17 @@ public class RedisStore implements Store {
             throw new IllegalArgumentException("data argument cannot be an empty array of data");
         }
         List<Playcloud.Strip> strips = this.getEncoderDecoder().encode(data);
-        try (Jedis redis = POOL.getResource()) {
-            for (int i = 0; i < strips.size(); i++) {
-                Playcloud.Strip strip = strips.get(i);
-                String key = path + "-" + i;
-                redis.set(key.getBytes(), strip.getData().toByteArray());
-            }
-            return path;
+        byte[][] dataToStore = new byte[2 * strips.size()][];
+        for (int i = 0, j = 0; i < strips.size(); i++, j += 2) {
+            byte[] stripKey = (path + "-" + i).getBytes();
+            byte[] stripData = strips.get(i).getData().toByteArray();
+            dataToStore[j] = stripKey;
+            dataToStore[j + 1] = stripData;
         }
-
+        try (Jedis redis = POOL.getResource()) {
+            redis.mset(dataToStore);
+        }
+        return path;
     }
 
     public EncoderDecoder getEncoderDecoder() {

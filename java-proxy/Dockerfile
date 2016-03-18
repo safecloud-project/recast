@@ -9,6 +9,7 @@ RUN ln -s /usr/share/maven/bin/mvn /usr/local/bin/mvn
 
 COPY . /usr/src/app
 WORKDIR /usr/src/app
+RUN mvn clean --quiet
 RUN mvn clean package --quiet
 
 # Launch the server on container start-up
