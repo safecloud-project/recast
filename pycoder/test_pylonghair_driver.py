@@ -5,8 +5,8 @@ import os
 
 import pytest
 
-from pylonghair_driver import compute_block_size, split_and_number
-from pylonghair_driver import PylonghairDriver
+from custom_drivers import compute_block_size, split_and_number
+from custom_drivers import PylonghairDriver
 
 def test_remap_no_indices():
     data = [1, 2, 3, 4]
