@@ -4,12 +4,12 @@ import os
 
 from pyeclib.ec_iface import ECDriver
 
-from pycoder.custom_drivers import ECStripingDriver
-from pycoder.custom_drivers import PylonghairDriver
-from pycoder.playcloud_pb2 import BetaEncoderDecoderServicer
-from pycoder.playcloud_pb2 import DecodeReply
-from pycoder.playcloud_pb2 import EncodeReply
-from pycoder.playcloud_pb2 import Strip
+from custom_drivers import ECStripingDriver
+from custom_drivers import PylonghairDriver
+from playcloud_pb2 import BetaEncoderDecoderServicer
+from playcloud_pb2 import DecodeReply
+from playcloud_pb2 import EncodeReply
+from playcloud_pb2 import Strip
 
 CONFIG = ConfigParser()
 CONFIG.read("pycoder.cfg")
@@ -67,5 +67,5 @@ class CodingService(BetaEncoderDecoderServicer):
     def Decode(self, request, context):
         """Decode data sent in an DecodeRequest into a DecodeReply"""
         reply = DecodeReply()
-        reply.dec_block = ERASER.decode(request.enc_blocks)
+        reply.dec_block = ERASER.decode(request.strips)
         return reply
