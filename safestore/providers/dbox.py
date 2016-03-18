@@ -10,7 +10,7 @@ from dropbox.rest import ErrorResponse
 import ConfigParser
 
 config = ConfigParser.ConfigParser()
-config.read('ACCOUNTS.INI')
+config.read('../configuration/ACCOUNTS.INI')
 
 CLIENT_ID = config.get('DROPBOX', 'CLIENT_ID')
 CLIENT_SECRET = config.get('DROPBOX', 'CLIENT_SECRET')

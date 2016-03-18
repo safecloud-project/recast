@@ -15,7 +15,7 @@ import ConfigParser
 
 
 config = ConfigParser.ConfigParser()
-config.read('ACCOUNTS.INI')
+config.read('../configuration/ACCOUNTS.INI')
 
 CLIENT_ID = config.get('ONEDRIVE','CLIENT_ID')
 CLIENT_SECRET = config.get('ONEDRIVE','CLIENT_SECRET')
@@ -28,7 +28,7 @@ CODE_URI = config.get('ONEDRIVE','CODE_URI')
 class ODrive():
     def __init__(self):
         self.logger = logging.getLogger('onedrive')
-        db= dbprovider.DB()
+        db = dbprovider.DB()
         self.api_client = None
         self.api = api_v5.OneDriveAPI()
         self.api.client_id=CLIENT_ID
