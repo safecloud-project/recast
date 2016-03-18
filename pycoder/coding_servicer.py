@@ -2,19 +2,19 @@
 from ConfigParser import ConfigParser
 import os
 
-from playcloud_pb2 import BetaEncoderDecoderServicer
-from playcloud_pb2 import DecodeReply
-from playcloud_pb2 import EncodeReply
-from playcloud_pb2 import Strip
 from pyeclib.ec_iface import ECDriver
 
-from custom_driver import ECStripingDriver
-from pylonghair_driver import PylonghairDriver
+from pycoder.custom_drivers import ECStripingDriver
+from pycoder.custom_drivers import PylonghairDriver
+from pycoder.playcloud_pb2 import BetaEncoderDecoderServicer
+from pycoder.playcloud_pb2 import DecodeReply
+from pycoder.playcloud_pb2 import EncodeReply
+from pycoder.playcloud_pb2 import Strip
 
 CONFIG = ConfigParser()
 CONFIG.read("pycoder.cfg")
 
-def convert_playcloud_strips_to_pyeclib_strips(playcloud_strips):
+def convert_strips_to_bytes_list(playcloud_strips):
     """Extract the data bytes from alist of playcloud strips"""
     return [strip.data for strip in playcloud_strips]
 
@@ -43,7 +43,7 @@ class Eraser(object):
 
     def decode(self, playcloud_strips):
         """Decode byte strips in a string of bytes"""
-        strips = convert_playcloud_strips_to_pyeclib_strips(playcloud_strips)
+        strips = convert_strips_to_bytes_list(playcloud_strips)
         return self.driver.decode(strips)
 
 EC_K = int(os.environ.get("EC_K", CONFIG.get("ec", "k")))
