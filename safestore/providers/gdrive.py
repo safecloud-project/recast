@@ -19,7 +19,7 @@ import ConfigParser
 from ssl import SSLError
 
 config = ConfigParser.ConfigParser()
-config.read('ACCOUNTS.INI')
+config.read('../configuration/ACCOUNTS.INI')
 
 CLIENT_ID = config.get('GDRIVE', 'CLIENT_ID')
 CLIENT_SECRET = config.get('GDRIVE', 'CLIENT_SECRET')
@@ -39,7 +39,7 @@ class GDrive():
     def __init__(self):
         self.logger = logging.getLogger('gdrive')
 
-        if False:
+        if TEST:
             credentials = ServiceAccountCredentials.from_json_keyfile_name(
                 SERVICE_ACCOUNT, scopes=SCOPE)
         else:
