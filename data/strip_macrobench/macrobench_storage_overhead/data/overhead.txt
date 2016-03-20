@@ -1,0 +1,12 @@
+#DO NOT TOUCH THIS FILE, hand-generated from final results
+#each key-pair account for at least 4194432 bytes 
+#expected format of the input:
+#(encoder) (ratio striping/current) (raw_bytes)
+baseline\n(no-coding) 2097186051                  100
+isa\\_l\nrs\\_vand 2936611121          140.026121
+jerasure\nrs\\_cauchy 2953810037       140.846037
+jerasure\nrs\\_vand 2936618051         140.027051
+"liberasure\nflat\\_xor\\_3" 		3146374023        150.028023
+"liberasure\nflat\\_xor\\_4" 		3146374037        150.028037
+liberasure\nrs\\_vand 2936618023   140.027023
+longhair\ncauchy\\_256 2936048191                   139.999191
