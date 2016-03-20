@@ -1,0 +1,96 @@
+# Server
+redis_version:3.0.7
+redis_git_sha1:00000000
+redis_git_dirty:0
+redis_build_id:f09a0843cc9876c3
+redis_mode:standalone
+os:Linux 3.13.0-76-generic x86_64
+arch_bits:64
+multiplexing_api:epoll
+gcc_version:4.9.2
+process_id:1
+run_id:a9c88d37feb0494daefae33e48791a25ab0ebfbe
+tcp_port:6379
+uptime_in_seconds:118
+uptime_in_days:0
+hz:10
+lru_clock:15672652
+config_file:
+
+# Clients
+connected_clients:5
+client_longest_output_list:0
+client_biggest_input_buf:0
+blocked_clients:0
+
+# Memory
+used_memory:2955154400
+used_memory_human:2.75G
+used_memory_rss:3678826496
+used_memory_peak:2956775040
+used_memory_peak_human:2.75G
+used_memory_lua:36864
+mem_fragmentation_ratio:1.24
+mem_allocator:jemalloc-3.6.0
+
+# Persistence
+loading:0
+rdb_changes_since_last_save:7000
+rdb_bgsave_in_progress:0
+rdb_last_save_time:1458513110
+rdb_last_bgsave_status:ok
+rdb_last_bgsave_time_sec:-1
+rdb_current_bgsave_time_sec:-1
+aof_enabled:0
+aof_rewrite_in_progress:0
+aof_rewrite_scheduled:0
+aof_last_rewrite_time_sec:-1
+aof_current_rewrite_time_sec:-1
+aof_last_bgrewrite_status:ok
+aof_last_write_status:ok
+
+# Stats
+total_connections_received:6
+total_commands_processed:512
+instantaneous_ops_per_sec:5
+total_net_input_bytes:2936978691
+total_net_output_bytes:2584
+instantaneous_input_kbps:27959.55
+instantaneous_output_kbps:0.03
+rejected_connections:0
+sync_full:0
+sync_partial_ok:0
+sync_partial_err:0
+expired_keys:0
+evicted_keys:0
+keyspace_hits:0
+keyspace_misses:0
+pubsub_channels:0
+pubsub_patterns:0
+latest_fork_usec:0
+migrate_cached_sockets:0
+
+# Replication
+role:master
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+
+# CPU
+used_cpu_sys:18.92
+used_cpu_user:2.54
+used_cpu_sys_children:0.01
+used_cpu_user_children:0.01
+
+# Commandstats
+cmdstat_mset:calls=500,usec=1845537,usec_per_call=3691.07
+cmdstat_ping:calls=12,usec=23,usec_per_call=1.92
+
+# Cluster
+cluster_enabled:0
+
+# Keyspace
+db0:keys=7000,expires=0,avg_ttl=0

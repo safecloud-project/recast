@@ -1,0 +1,4565 @@
+File //random4.dat could not be found
+Creating data file...done
+This is ApacheBench, Version 2.3 <$Revision: 1706008 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 172.16.1.99 (be patient)
+INFO: PUT header == 
+---
+PUT / HTTP/1.0
+Content-length: 4194304
+Content-type: text/plain
+Host: 172.16.1.99:3000
+User-Agent: ApacheBench/2.3
+Accept: */*
+
+
+---
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+{"timestamp":1458513024710,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+{"timestamp":1458513024706,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+{"timestamp":1458513024710,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+{"timestamp":1458513024714,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+{"timestamp":1458513025103,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:24 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:25 GMT
+Connection: close
+
+{"timestamp":1458513025827,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:25 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:25 GMT
+Connection: close
+
+{"timestamp":1458513026161,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:25 GMT
+Connection: close
+
+{"timestamp":1458513026388,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:25 GMT
+Connection: close
+
+{"timestamp":1458513026555,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:25 GMT
+Connection: close
+
+{"timestamp":1458513026606,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:25 GMT
+Connection: close
+
+{"timestamp":1458513026791,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:26 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:26 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:26 GMT
+Connection: close
+
+{"timestamp":1458513027383,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:26 GMT
+Connection: close
+
+{"timestamp":1458513027478,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:26 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:26 GMT
+Connection: close
+
+{"timestamp":1458513027842,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:28 GMT
+Connection: close
+
+{"timestamp":1458513028204,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:28 GMT
+Connection: close
+
+{"timestamp":1458513028207,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:28 GMT
+Connection: close
+
+{"timestamp":1458513028291,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:28 GMT
+Connection: close
+
+{"timestamp":1458513028355,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:28 GMT
+Connection: close
+
+{"timestamp":1458513028920,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+{"timestamp":1458513029515,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+{"timestamp":1458513029891,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+{"timestamp":1458513030027,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:30 GMT
+Connection: close
+
+{"timestamp":1458513030756,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:31 GMT
+Connection: close
+
+{"timestamp":1458513031516,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:31 GMT
+Connection: close
+
+{"timestamp":1458513031622,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:31 GMT
+Connection: close
+
+{"timestamp":1458513032297,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:32 GMT
+Connection: close
+
+{"timestamp":1458513032596,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:32 GMT
+Connection: close
+
+{"timestamp":1458513032636,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:32 GMT
+Connection: close
+
+{"timestamp":1458513032709,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:32 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:32 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:32 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:32 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:33 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:33 GMT
+Connection: close
+
+{"timestamp":1458513033661,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:33 GMT
+Connection: close
+
+{"timestamp":1458513033935,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:33 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:33 GMT
+Connection: close
+
+{"timestamp":1458513034225,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:33 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:33 GMT
+Connection: close
+
+{"timestamp":1458513034505,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+{"timestamp":1458513035018,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+{"timestamp":1458513035045,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+{"timestamp":1458513035055,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+{"timestamp":1458513035485,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+{"timestamp":1458513035705,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+{"timestamp":1458513035794,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:34 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+{"timestamp":1458513036148,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+{"timestamp":1458513036201,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+{"timestamp":1458513036453,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+{"timestamp":1458513036685,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+{"timestamp":1458513036893,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:36 GMT
+Connection: close
+
+{"timestamp":1458513036964,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:37 GMT
+Connection: close
+
+{"timestamp":1458513037148,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:37 GMT
+Connection: close
+
+{"timestamp":1458513037586,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:37 GMT
+Connection: close
+
+{"timestamp":1458513037604,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:37 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:37 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:37 GMT
+Connection: close
+
+{"timestamp":1458513038037,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+{"timestamp":1458513038218,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+{"timestamp":1458513038442,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+{"timestamp":1458513038652,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+{"timestamp":1458513038902,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+{"timestamp":1458513039308,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+{"timestamp":1458513039555,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+{"timestamp":1458513039652,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+{"timestamp":1458513039990,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+Completed 100 requests
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:39 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+{"timestamp":1458513040479,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+{"timestamp":1458513041457,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:40 GMT
+Connection: close
+
+{"timestamp":1458513041457,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:41 GMT
+Connection: close
+
+{"timestamp":1458513041565,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:41 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:41 GMT
+Connection: close
+
+{"timestamp":1458513042014,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:41 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:41 GMT
+Connection: close
+
+{"timestamp":1458513042246,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:41 GMT
+Connection: close
+
+{"timestamp":1458513042418,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:42 GMT
+Connection: close
+
+{"timestamp":1458513042595,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:42 GMT
+Connection: close
+
+{"timestamp":1458513042738,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:42 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:42 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:42 GMT
+Connection: close
+
+{"timestamp":1458513043153,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:42 GMT
+Connection: close
+
+{"timestamp":1458513043307,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+{"timestamp":1458513043694,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+{"timestamp":1458513043896,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+{"timestamp":1458513044245,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+{"timestamp":1458513044458,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:43 GMT
+Connection: close
+
+{"timestamp":1458513044478,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:44 GMT
+Connection: close
+
+{"timestamp":1458513044703,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:44 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:44 GMT
+Connection: close
+
+{"timestamp":1458513044946,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:44 GMT
+Connection: close
+
+{"timestamp":1458513045169,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:44 GMT
+Connection: close
+
+{"timestamp":1458513045173,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:44 GMT
+Connection: close
+
+{"timestamp":1458513045345,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:44 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+{"timestamp":1458513045719,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+{"timestamp":1458513045923,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+{"timestamp":1458513046208,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+{"timestamp":1458513046434,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:45 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:46 GMT
+Connection: close
+
+{"timestamp":1458513046732,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:46 GMT
+Connection: close
+
+{"timestamp":1458513046873,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:46 GMT
+Connection: close
+
+{"timestamp":1458513047268,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:46 GMT
+Connection: close
+
+{"timestamp":1458513047304,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:46 GMT
+Connection: close
+
+{"timestamp":1458513047305,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:46 GMT
+Connection: close
+
+{"timestamp":1458513047317,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:46 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:47 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:47 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:47 GMT
+Connection: close
+
+{"timestamp":1458513048109,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:47 GMT
+Connection: close
+
+{"timestamp":1458513048234,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:47 GMT
+Connection: close
+
+{"timestamp":1458513048505,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:47 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:47 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:48 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:48 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:48 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:48 GMT
+Connection: close
+
+{"timestamp":1458513049638,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:48 GMT
+Connection: close
+
+{"timestamp":1458513049658,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:48 GMT
+Connection: close
+
+{"timestamp":1458513049671,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:48 GMT
+Connection: close
+
+{"timestamp":1458513049762,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:50 GMT
+Connection: close
+
+{"timestamp":1458513050007,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:50 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:50 GMT
+Connection: close
+
+{"timestamp":1458513050313,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:50 GMT
+Connection: close
+
+{"timestamp":1458513050458,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:50 GMT
+Connection: close
+
+{"timestamp":1458513050593,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:50 GMT
+Connection: close
+
+{"timestamp":1458513050773,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:50 GMT
+Connection: close
+
+{"timestamp":1458513050812,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+{"timestamp":1458513051073,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+{"timestamp":1458513051069,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+{"timestamp":1458513051305,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+{"timestamp":1458513051672,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+{"timestamp":1458513051763,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+{"timestamp":1458513051787,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:51 GMT
+Connection: close
+
+{"timestamp":1458513051985,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:52 GMT
+Connection: close
+
+{"timestamp":1458513052142,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:52 GMT
+Connection: close
+
+{"timestamp":1458513052483,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:52 GMT
+Connection: close
+
+{"timestamp":1458513052489,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:52 GMT
+Connection: close
+
+{"timestamp":1458513052475,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:52 GMT
+Connection: close
+
+{"timestamp":1458513052638,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:52 GMT
+Connection: close
+
+{"timestamp":1458513052801,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:52 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+{"timestamp":1458513053295,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+{"timestamp":1458513053305,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+{"timestamp":1458513053501,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+{"timestamp":1458513054007,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+{"timestamp":1458513054009,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+{"timestamp":1458513054105,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:53 GMT
+Connection: close
+
+{"timestamp":1458513054274,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+{"timestamp":1458513054544,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}Completed 200 requests
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+{"timestamp":1458513054774,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+{"timestamp":1458513055078,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+{"timestamp":1458513055091,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+{"timestamp":1458513055247,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:54 GMT
+Connection: close
+
+{"timestamp":1458513055524,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:55 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:55 GMT
+Connection: close
+
+{"timestamp":1458513055958,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:55 GMT
+Connection: close
+
+{"timestamp":1458513055984,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:55 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:55 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:55 GMT
+Connection: close
+
+{"timestamp":1458513056542,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:55 GMT
+Connection: close
+
+{"timestamp":1458513056558,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+{"timestamp":1458513057350,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:56 GMT
+Connection: close
+
+{"timestamp":1458513057684,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+{"timestamp":1458513057875,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+{"timestamp":1458513057965,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+{"timestamp":1458513058131,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+{"timestamp":1458513058191,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+{"timestamp":1458513058383,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:57 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:59 GMT
+Connection: close
+
+{"timestamp":1458513059042,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:59 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:59 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:59 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:59 GMT
+Connection: close
+
+{"timestamp":1458513059699,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:59 GMT
+Connection: close
+
+{"timestamp":1458513059705,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:30:59 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+{"timestamp":1458513060052,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+{"timestamp":1458513060623,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+{"timestamp":1458513060824,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+{"timestamp":1458513060823,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:00 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+{"timestamp":1458513061483,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+{"timestamp":1458513061652,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+{"timestamp":1458513061731,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+{"timestamp":1458513062007,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:01 GMT
+Connection: close
+
+{"timestamp":1458513062136,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+{"timestamp":1458513062600,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+{"timestamp":1458513062612,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+{"timestamp":1458513062636,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+{"timestamp":1458513062639,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+{"timestamp":1458513063265,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+{"timestamp":1458513063357,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:02 GMT
+Connection: close
+
+{"timestamp":1458513063462,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+{"timestamp":1458513063768,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+{"timestamp":1458513063791,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+{"timestamp":1458513064122,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+{"timestamp":1458513064373,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:03 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:04 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:04 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:04 GMT
+Connection: close
+
+{"timestamp":1458513065160,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:04 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:04 GMT
+Connection: close
+
+{"timestamp":1458513065527,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:04 GMT
+Connection: close
+
+{"timestamp":1458513065784,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:04 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+{"timestamp":1458513065996,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+{"timestamp":1458513066045,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+{"timestamp":1458513066203,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+{"timestamp":1458513066886,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+{"timestamp":1458513066906,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:05 GMT
+Connection: close
+
+{"timestamp":1458513066911,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:07 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:07 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:07 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:07 GMT
+Connection: close
+
+{"timestamp":1458513067639,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:07 GMT
+Connection: close
+
+{"timestamp":1458513067777,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:07 GMT
+Connection: close
+
+{"timestamp":1458513067987,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:07 GMT
+Connection: close
+
+{"timestamp":1458513068185,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:08 GMT
+Connection: close
+
+{"timestamp":1458513068285,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:08 GMT
+Connection: close
+
+{"timestamp":1458513068373,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:08 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:08 GMT
+Connection: close
+
+{"timestamp":1458513068886,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:08 GMT
+Connection: close
+
+{"timestamp":1458513068890,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:08 GMT
+Connection: close
+
+{"timestamp":1458513068943,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:08 GMT
+Connection: close
+
+{"timestamp":1458513069170,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+{"timestamp":1458513069409,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}Completed 300 requests
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+{"timestamp":1458513069642,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+{"timestamp":1458513069806,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+{"timestamp":1458513070000,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+{"timestamp":1458513070102,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:09 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+{"timestamp":1458513070542,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+{"timestamp":1458513071093,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+{"timestamp":1458513071323,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:10 GMT
+Connection: close
+
+{"timestamp":1458513071457,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:11 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:11 GMT
+Connection: close
+
+{"timestamp":1458513071875,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:11 GMT
+Connection: close
+
+{"timestamp":1458513072204,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:11 GMT
+Connection: close
+
+{"timestamp":1458513072231,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:11 GMT
+Connection: close
+
+{"timestamp":1458513072315,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:11 GMT
+Connection: close
+
+{"timestamp":1458513072330,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+{"timestamp":1458513072657,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+{"timestamp":1458513072656,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+{"timestamp":1458513072884,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+{"timestamp":1458513073006,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+{"timestamp":1458513073473,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+{"timestamp":1458513073539,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:12 GMT
+Connection: close
+
+{"timestamp":1458513073548,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:13 GMT
+Connection: close
+
+{"timestamp":1458513073757,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:13 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:13 GMT
+Connection: close
+
+{"timestamp":1458513074145,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:13 GMT
+Connection: close
+
+{"timestamp":1458513074246,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:13 GMT
+Connection: close
+
+{"timestamp":1458513074263,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:13 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:13 GMT
+Connection: close
+
+{"timestamp":1458513074517,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513074763,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513074775,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513075030,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513075269,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513075459,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513075467,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513075636,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:14 GMT
+Connection: close
+
+{"timestamp":1458513075652,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:15 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:15 GMT
+Connection: close
+
+{"timestamp":1458513075959,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:15 GMT
+Connection: close
+
+{"timestamp":1458513076281,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:15 GMT
+Connection: close
+
+{"timestamp":1458513076385,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:15 GMT
+Connection: close
+
+{"timestamp":1458513076402,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:15 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:15 GMT
+Connection: close
+
+{"timestamp":1458513076719,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+{"timestamp":1458513076936,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+{"timestamp":1458513077071,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+{"timestamp":1458513077686,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+{"timestamp":1458513077712,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+{"timestamp":1458513077721,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:16 GMT
+Connection: close
+
+{"timestamp":1458513077727,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:17 GMT
+Connection: close
+
+{"timestamp":1458513077983,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:17 GMT
+Connection: close
+
+{"timestamp":1458513078180,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:17 GMT
+Connection: close
+
+{"timestamp":1458513078327,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:17 GMT
+Connection: close
+
+{"timestamp":1458513078422,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:17 GMT
+Connection: close
+
+{"timestamp":1458513078605,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:17 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:17 GMT
+Connection: close
+
+{"timestamp":1458513078886,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+{"timestamp":1458513079030,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+{"timestamp":1458513079249,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+{"timestamp":1458513079367,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+{"timestamp":1458513079638,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+{"timestamp":1458513079857,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+{"timestamp":1458513079861,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:19 GMT
+Connection: close
+
+{"timestamp":1458513079968,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:20 GMT
+Connection: close
+
+{"timestamp":1458513080080,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:20 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:20 GMT
+Connection: close
+
+{"timestamp":1458513080342,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:20 GMT
+Connection: close
+
+{"timestamp":1458513080471,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:20 GMT
+Connection: close
+
+{"timestamp":1458513080634,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:20 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:20 GMT
+Connection: close
+
+{"timestamp":1458513080920,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:21 GMT
+Connection: close
+
+{"timestamp":1458513081091,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:21 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:21 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:21 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:21 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:21 GMT
+Connection: close
+
+{"timestamp":1458513082071,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:21 GMT
+Connection: close
+
+{"timestamp":1458513082083,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+{"timestamp":1458513082639,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+{"timestamp":1458513082642,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+{"timestamp":1458513082648,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:22 GMT
+Connection: close
+
+{"timestamp":1458513083186,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:23 GMT
+Connection: close
+
+{"timestamp":1458513083356,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:23 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:23 GMT
+Connection: close
+
+{"timestamp":1458513083614,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+Completed 400 requests
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:23 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:23 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:23 GMT
+Connection: close
+
+{"timestamp":1458513084048,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:23 GMT
+Connection: close
+
+{"timestamp":1458513084311,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:24 GMT
+Connection: close
+
+{"timestamp":1458513084482,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:24 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:24 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:24 GMT
+Connection: close
+
+{"timestamp":1458513085129,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:24 GMT
+Connection: close
+
+{"timestamp":1458513085149,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:24 GMT
+Connection: close
+
+{"timestamp":1458513085323,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:24 GMT
+Connection: close
+
+{"timestamp":1458513085332,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:25 GMT
+Connection: close
+
+{"timestamp":1458513085525,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:25 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:25 GMT
+Connection: close
+
+{"timestamp":1458513086032,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:25 GMT
+Connection: close
+
+{"timestamp":1458513086043,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:25 GMT
+Connection: close
+
+{"timestamp":1458513086048,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:25 GMT
+Connection: close
+
+{"timestamp":1458513086145,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:25 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+{"timestamp":1458513087003,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+{"timestamp":1458513087462,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+{"timestamp":1458513087465,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:26 GMT
+Connection: close
+
+{"timestamp":1458513087483,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:27 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:27 GMT
+Connection: close
+
+{"timestamp":1458513088166,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:27 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:27 GMT
+Connection: close
+
+{"timestamp":1458513088319,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:27 GMT
+Connection: close
+
+{"timestamp":1458513088461,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:27 GMT
+Connection: close
+
+{"timestamp":1458513088636,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:27 GMT
+Connection: close
+
+{"timestamp":1458513088830,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+{"timestamp":1458513089301,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+{"timestamp":1458513089372,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+{"timestamp":1458513089784,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:29 GMT
+Connection: close
+
+{"timestamp":1458513090146,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+{"timestamp":1458513090311,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+{"timestamp":1458513090335,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+{"timestamp":1458513090480,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+{"timestamp":1458513091027,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+{"timestamp":1458513091029,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:30 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+{"timestamp":1458513091806,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+{"timestamp":1458513091818,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:31 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+{"timestamp":1458513093027,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+{"timestamp":1458513093260,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+{"timestamp":1458513093280,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+{"timestamp":1458513093284,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+{"timestamp":1458513093297,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:32 GMT
+Connection: close
+
+{"timestamp":1458513093559,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+{"timestamp":1458513094086,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+{"timestamp":1458513094115,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+{"timestamp":1458513094218,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+{"timestamp":1458513094521,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+{"timestamp":1458513094666,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+{"timestamp":1458513094791,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:33 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:34 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:34 GMT
+Connection: close
+
+{"timestamp":1458513095110,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:34 GMT
+Connection: close
+
+{"timestamp":1458513095642,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:34 GMT
+Connection: close
+
+{"timestamp":1458513095646,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:34 GMT
+Connection: close
+
+{"timestamp":1458513095653,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:34 GMT
+Connection: close
+
+{"timestamp":1458513095762,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:34 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+{"timestamp":1458513096345,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+{"timestamp":1458513096447,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+{"timestamp":1458513096599,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+{"timestamp":1458513097012,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+{"timestamp":1458513097055,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+{"timestamp":1458513097063,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:36 GMT
+Connection: close
+
+{"timestamp":1458513097085,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:37 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:37 GMT
+Connection: close
+
+{"timestamp":1458513097753,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:37 GMT
+Connection: close
+
+{"timestamp":1458513097787,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:37 GMT
+Connection: close
+
+{"timestamp":1458513097789,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:37 GMT
+Connection: close
+
+{"timestamp":1458513097820,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:37 GMT
+Connection: close
+
+{"timestamp":1458513098087,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:37 GMT
+Connection: close
+
+{"timestamp":1458513098270,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:38 GMT
+Connection: close
+
+{"timestamp":1458513098490,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:38 GMT
+Connection: close
+
+{"timestamp":1458513098642,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:38 GMT
+Connection: close
+
+{"timestamp":1458513098778,"status":500,"error":"Internal Server Error","exception":"io.grpc.StatusRuntimeException","message":"UNKNOWN: ","path":"/"}Completed 500 requests
+Finished 500 requests
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+LOG: header received:
+HTTP/1.1 500 Internal Server Error
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Date: Sun, 20 Mar 2016 22:31:38 GMT
+Connection: close
+
+
+WARNING: Response code not 2xx (500)
+
+
+Server Software:        Apache-Coyote/1.1
+Server Hostname:        172.16.1.99
+Server Port:            3000
+
+Document Path:          /
+Document Length:        150 bytes
+
+Concurrency Level:      4
+Time taken for tests:   75.997 seconds
+Complete requests:      500
+Failed requests:        0
+Non-2xx responses:      500
+Total transferred:      158500 bytes
+Total body sent:        2097219500
+HTML transferred:       75000 bytes
+Requests per second:    6.58 [#/sec] (mean)
+Time per request:       607.974 [ms] (mean)
+Time per request:       151.993 [ms] (mean, across all concurrent requests)
+Transfer rate:          2.04 [Kbytes/sec] received
+                        26949.40 kb/s sent
+                        26951.44 kb/s total
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    5  20.5      0     249
+Processing:   275  602 150.5    590    1634
+Waiting:      234  558 146.5    545    1465
+Total:        275  607 158.4    593    1635
+
+Percentage of the requests served within a certain time (ms)
+  50%    593
+  66%    649
+  75%    681
+  80%    701
+  90%    773
+  95%    830
+  98%    938
+  99%   1132
+ 100%   1635 (longest request)
