@@ -39,4 +39,4 @@ class SignedHashedXorDriver:
          raised
         """
         self.assym.verify(signature, message_data)
-        return body[1]
+        return message_data

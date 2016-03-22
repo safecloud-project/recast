@@ -2,7 +2,8 @@ from safestore.encryption.xor_driver import XorDriver
 from safestore.encryption.hashed_xor_driver import HashedXorDriver, Hash, IntegrityException
 from safestore.encryption.signed_xor_driver import SignedXorDriver
 from safestore.encryption.signed_hashed_xor_driver import SignedHashedXorDriver
-
+from safestore.encryption.aes_driver import AESDriver
+from safestore.encryption.shamir_driver import ShamirDriver
 
 import ConfigParser
 
@@ -83,8 +84,32 @@ class TestSignedHashedXorDriver(TestXorDriver):
     def setUp(self):
         self.message = random_message()
         self.n_blocks = get_random_number_of_blocks()
-        self.driver = SignedHashedXorDriver(self.n_blocks)
+        self.driver = SignedHashedXorDriver(self.n_blocks, Hash.sha1)
 
+
+class TestAESDriver(unittest.TestCase):
+
+    def setUp(self):
+        self.message = random_message()
+        self.driver = AESDriver()
+
+    def test_encode_decode(self):
+
+        encoded = self.driver.encode(self.message)
+        decoded = self.driver.decode(encoded)
+        self.assertEqual(self.message, decoded)
+
+class TestShamirDriver(unittest.TestCase):
+
+    def setUp(self):
+        self.message = random_message()
+        self.driver = ShamirDriver(5, 2)
+
+    def test_encode_decode(self):
+
+        encoded = self.driver.encode(self.message)
+        decoded = self.driver.decode(encoded)
+        self.assertEqual(self.message, decoded)
 
 
 
@@ -105,6 +130,14 @@ def suite_signed_hashed_xor_driver():
     tests = ['test_encode', 'test_encode_decode']
     return unittest.TestSuite(map(TestSignedHashedXorDriver, tests))
 
+def suite_aes_driver():
+    tests = ['test_encode_decode']
+    return unittest.TestSuite(map(TestAESDriver, tests))
+
+def suite_shamir_driver():
+    tests = ['test_encode_decode']
+    return unittest.TestSuite(map(TestShamirDriver, tests))
+
 
 if __name__ == '__main__':
     for i in range(0, n_tests):
@@ -112,6 +145,8 @@ if __name__ == '__main__':
         suite2 = suite_hashed_xor_driver()
         suite3 = suite_signed_xor_driver()
         suite4 = suite_signed_hashed_xor_driver()
+        suite5 = suite_aes_driver()
+        suite6 = suite_shamir_driver()
 
-        all_tests = unittest.TestSuite([suite1, suite2, suite3])
+        all_tests = unittest.TestSuite([suite1, suite2, suite3, suite4, suite5, suite6])
         unittest.TextTestRunner(verbosity=0).run(all_tests)
