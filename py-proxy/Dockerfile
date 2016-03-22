@@ -1,5 +1,5 @@
 from gerasim13/alpine-pypy
-RUN pip install --upgrade pip falcon gunicorn
-COPY proxy.py /
-EXPOSE 8080:8000
-ENTRYPOINT ["pypy", "proxy.py"]
+COPY * /usr/local/src/app/
+RUN pip install --upgrade --requirement /usr/local/src/app/requirements.txt
+EXPOSE 8000
+ENTRYPOINT ["pypy", "/usr/local/src/app/proxy.py"]
