@@ -2,23 +2,30 @@
 from wsgiref import simple_server
 import falcon
 
-class Proxy:
-    def on_get(self, req, resp):
-        """Handles GET requests"""
-        resp.status = falcon.HTTP_200  # This is the default status
+class FileResource(object):
 
-    def on_post(self, req, resp):
-        """Handles POST requests"""
-        resp.status = falcon.HTTP_201  # This is the default status        
+    @staticmethod
+    def on_get(req, resp):
+        resp.status = falcon.HTTP_200
+        resp.body = req.path
+        return resp
 
+    @staticmethod
+    def on_put(req, resp):
+        """Handles PUT requests"""
+        try:
+            data = req.stream.read()
+            resp.status = falcon.HTTP_200
+            resp.body = str(len(data)) + " bytes received"
+            return resp
+        except Exception as error:
+            resp.status = falcon.HTTP_500
+            resp.body = str(error)
+            return resp
 
-# falcon.API instances are callable WSGI apps
-app = falcon.API()
-proxy = Proxy()
-# proxy will handle all requests to the '/' URL path
-app.add_route('/', proxy)
+API = falcon.API(media_type="application/octet-stream")
+API.add_route("/", FileResource())
 
-# Useful for debugging problems in your API; works with pdb.set_trace()
-if __name__ == '__main__':
-    httpd = simple_server.make_server('0.0.0.0', 8000, app)
-    httpd.serve_forever()
+if __name__ == "__main__":
+    HTTPD = simple_server.make_server("0.0.0.0", 8000, API)
+    HTTPD.serve_forever()
