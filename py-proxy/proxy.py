@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 """
 A python implementation of playcloud's proxy server
 """
@@ -6,7 +5,7 @@ A python implementation of playcloud's proxy server
 import os
 import uuid
 
-from bottle import run, request
+from bottle import request, response, run
 import bottle
 import redis
 
@@ -18,6 +17,19 @@ REDIS = redis.StrictRedis(host=HOST, port=PORT, db=0)
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
 APP = bottle.app()
+
+@APP.route("/<key>", method="GET")
+def get(key):
+    """
+    Handles GET requests to retrieve data stored under <key> from playcloud
+
+    key -- Key under which the data should have been stored
+    """
+    data = REDIS.get(key)
+    if data is None:
+        response.status = 404
+        return ""
+    return data
 
 def store(key=None, data=None):
     """
