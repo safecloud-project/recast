@@ -33,4 +33,5 @@ readonly PROTO=$1
 echo "PROTO=${PROTO}"
 
 protoc -I . --python_out=pycoder/ --grpc_out=pycoder/ --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${PROTO}"
+protoc -I . --python_out=py-proxy/ --grpc_out=py-proxy/ --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${PROTO}"
 protoc -I . --java_out=java-proxy/src/main/java --grpc-java_out=java-proxy/src/main/java --plugin=protoc-gen-grpc-java="${GRPC_JAVA_ROOT}"/compiler/build/binaries/java_pluginExecutable/protoc-gen-grpc-java "${PROTO}"
