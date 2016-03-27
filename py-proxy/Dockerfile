@@ -1,5 +1,12 @@
-from gerasim13/alpine-pypy
+FROM dburihabwa/grpc-compiler-0.11-flat
+
+RUN apt-get update && \
+    apt-get upgrade      --assume-yes --quiet && \
+    apt-get dist-upgrade --assume-yes --quiet && \
+    apt-get autoremove   --assume-yes --quiet && \
+    apt-get autoclean    --assume-yes --quiet
 COPY * /usr/local/src/app/
-RUN pip install --upgrade --requirement /usr/local/src/app/requirements.txt
+WORKDIR /usr/local/src/app
+RUN pip install --upgrade --requirement requirements.txt
 EXPOSE 8000
-ENTRYPOINT ["pypy", "/usr/local/src/app/proxy.py"]
+#ENTRYPOINT ["python", "/usr/local/src/app/proxy.py"]
