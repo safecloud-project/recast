@@ -1,9 +1,0 @@
-Build with:
-docker build -t playcloud/py-proxy .
-Run with:
-docker run --rm -ti -p 8080:8000 playcloud/py-proxy
-
-To use the ab clien with this py-proxy (without the -T param requests fail):
-ab -n 10 -p random1.dat  -v 5 -T application/x-www-form-urlencoded http://192.168.99.100:8080/
-
-
