@@ -30,6 +30,14 @@ WORKDIR /tmp/pylonghair
 RUN git clone https://github.com/sampot/pylonghair . --quiet
 RUN python setup.py install
 
+#Install safestore dependecies
+RUN pip install pycrypto
+RUN pip install dropbox
+RUN pip install --upgrade google-api-python-client
+RUN pip install python-onedrive
+RUN pip install futures
+RUN pip install cryptography
+RUN pip install secretsharing
 # Expose port to other containers
 EXPOSE 1234
 
