@@ -42,6 +42,9 @@ RUN pip install secretsharing
 EXPOSE 1234
 
 # Copy server sources
-COPY * /usr/local/src/app/
+COPY *py /usr/local/src/app/
+COPY pycoder.cfg /usr/local/src/app/
+COPY safestore /usr/local/src/app/safestore
+
 WORKDIR /usr/local/src/app/
 ENTRYPOINT ["/usr/bin/python", "/usr/local/src/app/server.py"]
