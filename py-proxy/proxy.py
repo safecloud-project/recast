@@ -3,6 +3,7 @@ A python implementation of playcloud's proxy server
 """
 
 import os
+import re
 import uuid
 
 from bottle import request, response, run
@@ -35,7 +36,7 @@ def get(key):
 
     key -- Key under which the data should have been stored
     """
-    strip_keys = REDIS.keys(key + "-*")
+    strip_keys = sorted(REDIS.keys(key + "-*"), key=lambda k: int(re.search(r"(\d)+$", k).group(0)))
     if len(strip_keys) == 0:
         response.status = 404
         return ""
