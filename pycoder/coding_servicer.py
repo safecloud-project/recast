@@ -71,14 +71,13 @@ class DriverFactory():
 
 
 
-def bytes_to_strips(k, m, payload):
-    """Transforms a byte string in a list of bytes string"""
-    disks=k + m
-    length=len(payload) / disks
-    strips=[]
-    for i in xrange(0, len(payload), length):
-        strips.append(payload[i: i + length])
-    return strips
+    def encode(self, data):
+        """Encode a string of bytes in flattened string of byte strips"""
+        return self.driver.encode(data)
+
+    def decode(self, strips):
+        """Decode byte strips in a string of bytes"""
+        return self.driver.decode(strips)
 
 
 def strips_to_bytes(strips):
@@ -125,12 +124,19 @@ class CodingService(BetaEncoderDecoderServicer):
 
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
-        reply=EncodeReply()
-        reply.enc_blocks=ERASER.encode(request.payload)
+        reply = EncodeReply()
+        raw_strips = self.driver.encode(request.payload)
+        strips = []
+        for raw_strip in raw_strips:
+            strip = Strip()
+            strip.data = raw_strip
+            strips.append(strip)
+        reply.strips.extend(strips)
         return reply
 
     def Decode(self, request, context):
         """Decode data sent in an DecodeRequest into a DecodeReply"""
-        reply=DecodeReply()
-        reply.dec_block=ERASER.decode(request.enc_blocks)
+        reply = DecodeReply()
+        strips = convert_strips_to_bytes_list(request.strips)
+        reply.dec_block = self.driver.decode(strips)
         return reply
