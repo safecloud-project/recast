@@ -2,6 +2,7 @@
 # coding=utf8
 
 import httplib2
+import os
 import safestore.db.db_provider as dbprovider
 import safestore.handler.defines as defines
 
@@ -19,7 +20,8 @@ import ConfigParser
 from ssl import SSLError
 
 config = ConfigParser.ConfigParser()
-config.read('../configuration/ACCOUNTS.INI')
+HERE = os.path.abspath(os.path.dirname(__file__))
+config.read(os.path.join(HERE, '../configuration/ACCOUNTS.INI'))
 
 CLIENT_ID = config.get('GDRIVE', 'CLIENT_ID')
 CLIENT_SECRET = config.get('GDRIVE', 'CLIENT_SECRET')
@@ -31,7 +33,7 @@ CODE_URI = config.get('GDRIVE', 'CODE_URI')
 
 TEST = config.getboolean('MAIN', 'TEST')
 if TEST:
-    SERVICE_ACCOUNT = config.get('GDRIVE', 'SERVICE_ACCOUNT')
+    SERVICE_ACCOUNT = os.path.join(os.path.dirname(__file__), config.get('GDRIVE', 'SERVICE_ACCOUNT'))
 
 
 class GDrive():

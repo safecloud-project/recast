@@ -2,6 +2,7 @@
 # coding=utf8
 
 import logging
+import os
 import sys
 import safestore.handler.defines as defines
 import safestore.db.db_provider as dbprovider
@@ -15,7 +16,9 @@ import ConfigParser
 
 
 config = ConfigParser.ConfigParser()
-config.read('../configuration/ACCOUNTS.INI')
+HERE = os.path.abspath(os.path.dirname(__file__))
+config.read(os.path.join(HERE, '../configuration/ACCOUNTS.INI'))
+
 
 CLIENT_ID = config.get('ONEDRIVE','CLIENT_ID')
 CLIENT_SECRET = config.get('ONEDRIVE','CLIENT_SECRET')
@@ -141,5 +144,3 @@ class ODrive():
 
     def getUserName(self):
         return requests.get("https://apis.live.net/v5.0/me?access_token="+self.api.auth_access_token).json()['name']
-
-

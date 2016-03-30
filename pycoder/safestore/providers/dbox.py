@@ -2,6 +2,7 @@
 # coding=utf8
 
 import logging
+import os
 import safestore.db.db_provider as dbprovider
 import sys
 
@@ -10,7 +11,8 @@ from dropbox.rest import ErrorResponse
 import ConfigParser
 
 config = ConfigParser.ConfigParser()
-config.read('../configuration/ACCOUNTS.INI')
+HERE = os.path.abspath(os.path.dirname(__file__))
+config.read(os.path.join(HERE, '../configuration/ACCOUNTS.INI'))
 
 CLIENT_ID = config.get('DROPBOX', 'CLIENT_ID')
 CLIENT_SECRET = config.get('DROPBOX', 'CLIENT_SECRET')
