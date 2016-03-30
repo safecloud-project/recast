@@ -19,7 +19,7 @@ from safestore.encryption.aes_driver import AESDriver
 from safestore.encryption.shamir_driver import ShamirDriver
 
 CONFIG = ConfigParser()
-CONFIG.read("pycoder.cfg")
+CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
 
 
 class DriverFactory():
@@ -30,8 +30,10 @@ class DriverFactory():
                         'hashed_xor_driver': self.hash_xor_driver,
                         'signed_hashed_xor_driver': self.signed_hashed_xor_driver,
                         'shamir': self.shamir,
-                        'signed_xor_driver': self.signed_xor_driver
-                        'erasure_driver': self.erasure_driver}
+                        'signed_xor_driver': self.signed_xor_driver,
+                        'ec': self.erasure_driver,
+                        'aes_driver': self.aes_driver
+                        }
 
     def xor(self):
         return XorDriver(CONFIG.getint("xor", "n_blocks")
