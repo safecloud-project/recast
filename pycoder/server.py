@@ -8,7 +8,7 @@ from coding_servicer import CodingService
 
 if __name__ == "__main__":
     config = ConfigParser()
-    config.read("pycoder.cfg")
+    config.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
     PYCODER_LISTEN_ADDRESS = os.environ.get(
         "GRPC_LISTEN_ADDRESS", config.get("main", "listen_address"))
     PYCODER_LISTEN_PORT = os.environ.get(

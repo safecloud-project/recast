@@ -8,7 +8,7 @@ import ConfigParser
 
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.join(os.path.dirname(__file__), '../configuration/ACCOUNTS.INI'))
+config.read(os.path.join(os.path.dirname(__file__), '../ACCOUNTS.INI'))
 KEY_PATH = config.get('MAIN', 'KEY_PATH')
 PRIVATE_KEY = config.get('MAIN', 'PRIVATE_KEY')
 PUBLIC_KEY = config.get('MAIN', 'PUBLIC_KEY')
