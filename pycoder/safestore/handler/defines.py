@@ -41,9 +41,9 @@ OFFLINE = 2
 # changes type definition
 #{ [string path : TYPE : OP] }
 HOME_DIR = expanduser("~")
-APP_DIR = HOME_DIR + PATH_SEPARATOR
-DB_PATH = APP_DIR + PATH_SEPARATOR
-APP_DIR_SEP = APP_DIR + PATH_SEPARATOR
+APP_DIR = HOME_DIR
+DB_PATH = os.path.join(APP_DIR, "data.db")
+APP_DIR_SEP = os.path.join(APP_DIR, PATH_SEPARATOR)
 TEMP_PATH = "/tmp/"  # APP_DIR
 
 # APPLICATION SETTINGS

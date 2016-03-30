@@ -3,10 +3,9 @@
 A python implementation of the playcloud proxy.
 
 ## Build
-
-Build with:
+To build a docker image of the py-proxy, move to the root of the playcloud project and type in the following command:
 ```bash
-docker build -t playcloud/py-proxy .
+docker build -f py-proxy/Dockerfile -t py-proxy .
 ```
 ## Run
 Run with:

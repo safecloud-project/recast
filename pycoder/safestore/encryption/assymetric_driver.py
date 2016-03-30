@@ -1,4 +1,5 @@
 
+import os
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
@@ -7,7 +8,7 @@ import ConfigParser
 
 
 config = ConfigParser.ConfigParser()
-config.read('../configuration/ACCOUNTS.INI')
+config.read(os.path.join(os.path.dirname(__file__), '../configuration/ACCOUNTS.INI'))
 KEY_PATH = config.get('MAIN', 'KEY_PATH')
 PRIVATE_KEY = config.get('MAIN', 'PRIVATE_KEY')
 PUBLIC_KEY = config.get('MAIN', 'PUBLIC_KEY')
@@ -15,7 +16,7 @@ PASSW = config.get('MAIN', 'PASSW')
 
 
 def _load_private_key():
-    path = KEY_PATH + PRIVATE_KEY
+    path = os.path.join(KEY_PATH, PRIVATE_KEY)
     with open(path, "rb") as key_file:
         private_key = serialization.load_pem_private_key(
             key_file.read(),
@@ -26,7 +27,7 @@ def _load_private_key():
 
 
 def _load_public_key():
-    path = KEY_PATH + PUBLIC_KEY
+    path = os.path.join(KEY_PATH, PUBLIC_KEY)
     with open(path, "rb") as key_file:
         private_key = serialization.load_pem_public_key(
             key_file.read(),
