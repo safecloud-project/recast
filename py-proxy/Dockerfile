@@ -6,10 +6,12 @@ RUN apt-get update && \
     apt-get autoremove   --assume-yes --quiet && \
     apt-get autoclean    --assume-yes --quiet && \
     apt-get install      --assume-yes --quiet python-numpy
-COPY py-proxy  /usr/local/src/py-proxy
-COPY safestore /usr/local/lib/python2.7/dist-packages/safestore
+
+
+COPY *  /usr/local/src/py-proxy/
+
 WORKDIR /usr/local/src/
-RUN pip install --upgrade --requirement py-proxy/requirements.txt && \
-    pip install --upgrade --requirement /usr/local/lib/python2.7/dist-packages/safestore/requirements.txt
+RUN pip install --upgrade --requirement py-proxy/requirements.txt
+
 EXPOSE 8000
 ENTRYPOINT ["python", "/usr/local/src/py-proxy/proxy.py"]
