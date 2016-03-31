@@ -44,6 +44,8 @@ EXPOSE 1234
 COPY *py /usr/local/src/app/
 COPY pycoder.cfg /usr/local/src/app/
 COPY safestore /usr/local/src/app/safestore
-
+COPY test_files  /usr/local/src/app/test_files
+COPY safestore/keys /usr/local/src/app/safestore/keys
+COPY logging.conf /usr/local/src/app/
 WORKDIR /usr/local/src/app/
 ENTRYPOINT ["/usr/bin/python", "/usr/local/src/app/server.py"]

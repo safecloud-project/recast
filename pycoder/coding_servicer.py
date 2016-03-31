@@ -1,6 +1,8 @@
 """Wrapper for pyeclib encoders using GRPC"""
 from ConfigParser import ConfigParser
 import os
+import logging
+import logging.config
 
 from pyeclib.ec_iface import ECDriver
 
@@ -21,11 +23,18 @@ from safestore.encryption.shamir_driver import ShamirDriver
 CONFIG = ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
 
+log_config = os.getenv("LOG_CONFIG", "/usr/local/src/app/logging.conf")
+logging.config.fileConfig(log_config)
+
+logger = logging.getLogger("pycoder")
+
 
 class DriverFactory():
 
-    def __init__(self):
-        self.driver = CONFIG.get("main", "grpc")
+    def __init__(self, config):
+        self.config = config
+        self.driver = config.get("main", "driver")
+        logger.info("Selected driver was {}".format(self.driver))
         self.drivers = {'xor': self.xor,
                         'hashed_xor_driver': self.hash_xor_driver,
                         'signed_hashed_xor_driver': self.signed_hashed_xor_driver,
@@ -125,13 +134,21 @@ class CodingService(BetaEncoderDecoderServicer):
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
         reply = EncodeReply()
+        logger.debug("Going to encode {}".format(request.payload))
+
         raw_strips = self.driver.encode(request.payload)
+        logger.debug("raw strips {}".format(raw_strips))
         strips = []
+        logger.debug("going to strip")
         for raw_strip in raw_strips:
             strip = Strip()
             strip.data = raw_strip
             strips.append(strip)
+        logger.debug("Resulting strips are {}".format(strips))
+
         reply.strips.extend(strips)
+        logger.debug("Strips extended")
+
         return reply
 
     def Decode(self, request, context):
