@@ -93,7 +93,6 @@ def store(key=None, data=None):
 
     strips = CLIENT_STUB.Encode(
         encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).strips
-    logger.debug("Received encoded strings {}".format(strips))
     mset_data = {}
     for i, strip in enumerate(strips):
         strip_key = key + "-" + str(i)
