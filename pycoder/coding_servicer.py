@@ -134,20 +134,16 @@ class CodingService(BetaEncoderDecoderServicer):
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
         reply = EncodeReply()
-        logger.debug("Going to encode {}".format(request.payload))
+        logger.info("Received encode request")
 
         raw_strips = self.driver.encode(request.payload)
-        logger.debug("raw strips {}".format(raw_strips))
         strips = []
-        logger.debug("going to strip")
         for raw_strip in raw_strips:
             strip = Strip()
             strip.data = raw_strip
             strips.append(strip)
-        logger.debug("Resulting strips are {}".format(strips))
 
         reply.strips.extend(strips)
-        logger.debug("Strips extended")
 
         return reply
 
