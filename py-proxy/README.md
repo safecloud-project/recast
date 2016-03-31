@@ -10,7 +10,7 @@ docker build -f py-proxy/Dockerfile -t py-proxy .
 ## Run
 Run with:
 ```bash
-docker run --rm -ti -p 8080:8000 playcloud/py-proxy
+docker run --rm -ti -p 8080:8000 py-proxy
 ```
 
 You can test the proxy using an HTTP client such as [cURL](https://curl.haxx.se) using the following commands.
