@@ -32,9 +32,9 @@ class RedisProvider(object):
             data: Data to store in the database
             path: Key under which the data is stored
         Returns:
-            True if the insertion worked, false otherwise
+            True if the insertion worked, False otherwise
         """
-        self.redis.set(path, data)
+        return self.redis.set(path, data)
 
     def delete(self, path):
         """

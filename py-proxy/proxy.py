@@ -5,13 +5,11 @@ import logging
 import logging.config
 
 import os
-import re
 import uuid
 
 from bottle import request, response, run
 import bottle
 from grpc.beta import implementations
-import redis
 
 
 from playcloud_pb2 import beta_create_EncoderDecoder_stub, DecodeRequest, EncodeRequest, Strip
@@ -22,6 +20,7 @@ logging.config.fileConfig(log_config)
 logger = logging.getLogger("proxy")
 
 con_log = "Going to connect to {} in {}:{}"
+from safestore.providers.dispatcher import Dispatcher
 
 # GRPC setup
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 540
@@ -39,7 +38,7 @@ REDIS_PORT = int(os.getenv("REDIS_PORT_6379_TCP_PORT", 6379))
 
 logger.info(con_log.format("redis", REDIS_HOST, REDIS_PORT))
 
-REDIS = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+DISPACHER = Dispatcher()
 
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
@@ -53,18 +52,15 @@ def get(key):
 
     key -- Key under which the data should have been stored
     """
-    strip_keys = sorted(REDIS.keys(key + "-*"),
-                        key=lambda k: int(re.search(r"(\d)+$", k).group(0)))
-
-    logger.debug("Received get request for key {}".format(strip_keys))
-
-    if len(strip_keys) == 0:
+    logger.debug("Received get request for key {}".format(key))
+    blocks = DISPACHER.get(key)
+    if blocks is None:
         response.status = 404
         return ""
     strips = []
-    for data in REDIS.mget(strip_keys):
+    for block in blocks:
         strip = Strip()
-        strip.data = data
+        strip.data = block
         strips.append(strip)
 
     logger.debug("Received blocks from redis")
@@ -90,14 +86,9 @@ def store(key=None, data=None):
     encode_request = EncodeRequest()
     encode_request.payload = data
     logger.debug("Going to encode data")
-
-    strips = CLIENT_STUB.Encode(
-        encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).strips
-    mset_data = {}
-    for i, strip in enumerate(strips):
-        strip_key = key + "-" + str(i)
-        mset_data[strip_key] = strip.data
-    REDIS.mset(mset_data)
+    strips = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).strips
+    blocks = [strip.data for strip in strips]
+    DISPACHER.put(key, blocks)
     return key
 
 
