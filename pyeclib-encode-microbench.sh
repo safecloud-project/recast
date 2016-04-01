@@ -26,7 +26,8 @@ REPETITIONS="${2}"
 DATA_DIRECTORY="xpdata/pyeclib/$(basename "${EC_TYPE}")/"
 declare -a PAYLOAD_SIZES=("4" "16" "64")
 
-# Create data directory
+docker build -t pyeclib-microbencher -f Dockerfile .
+cd -
 mkdir -p "${DATA_DIRECTORY}"
 
 # Build image
