@@ -7,6 +7,7 @@ RUN apt-get update && \
     apt-get autoclean    --assume-yes --quiet && \
     apt-get install      --assume-yes --quiet python-numpy
 COPY .  /usr/local/src/py-proxy
+COPY safestore/data.db /root/data.db
 WORKDIR /usr/local/src/py-proxy
 RUN pip install --upgrade --requirement requirements.txt && \
     pip install --upgrade --requirement safestore/requirements.txt

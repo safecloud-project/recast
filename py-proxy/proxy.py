@@ -85,9 +85,11 @@ def store(key=None, data=None):
         key = str(uuid.uuid4())
     encode_request = EncodeRequest()
     encode_request.payload = data
-    logger.debug("Going to encode data")
+    logger.info("Going to request data encoding")
     strips = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).strips
     blocks = [strip.data for strip in strips]
+    logger.info("Received {} encoded blocks".format(len(blocks)))
+    logger.info("Going to store blocks with key {}".format(key))
     DISPACHER.put(key, blocks)
     return key
 
@@ -97,7 +99,7 @@ def put(key):
     """
     Handles PUT requests to store data into playcloud
     """
-    logger.debug("Received put request for key {}".format(key))
+    logger.info("Received put request for key {}".format(key))
 
     return store(key=key, data=request.body.getvalue())
 
