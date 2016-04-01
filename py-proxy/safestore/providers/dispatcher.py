@@ -1,3 +1,6 @@
+"""
+A component that distributes blocks for storage keeps track of their location
+"""
 import datetime
 
 import logging
@@ -12,6 +15,9 @@ logger = logging.getLogger("dispatcher")
 
 
 class Providers(Enum):
+    """
+    Enumeration of all the storage providers supported by the Dispatcher
+    """
     redis = 0
     gdrive = 1
     dropbox = 2
@@ -58,8 +64,9 @@ class Dispatcher(object):
         provider_keys = self.providers.keys()
         number_of_providers = len(provider_keys)
         loop_temp = "Going to put block {} with key {} in provider {}"
+        index_format_length = len(str(len(blocks)))
         for i, block in enumerate(blocks):
-            key = path + "-" + str(i).zfill(len(str(len(blocks))))
+            key = path + "-" + str(i).zfill(index_format_length)
             provider_key = provider_keys[i % number_of_providers]
             provider = self.providers[provider_key]
 
@@ -80,12 +87,12 @@ class Dispatcher(object):
         metadata = self.files.get(path)
         if metadata is None:
             return None
-        provider_names = [k for k in metadata.blocks.keys()
+        provider_keys = [k for k in metadata.blocks.keys()
                           if len(metadata.blocks[k]) > 0]
         data = {}
-        for name in provider_names:
-            provider = self.providers[name]
-            block_keys = metadata.blocks[name]
+        for provider_key in provider_keys:
+            provider = self.providers[provider_key]
+            block_keys = metadata.blocks[provider_key]
             for block_key in block_keys:
                 data[block_key] = provider.get(block_key)
         return [data[key] for key in sorted(data.keys())]
