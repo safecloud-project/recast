@@ -5,6 +5,7 @@
 # Benchmarks a pyeclib encoder/decoder                                        #
 ###############################################################################
 
+
 source ./utils.sh
 
 function print_usage {
@@ -20,24 +21,22 @@ if [[ "${#}" -ne 2 ]]; then
 fi
 
 ENV_FILE="${1}"
-ENV_FILE_CONTENT="$(cat "${ENV_FILE}")"
+ENV_VARIABLES="$(cat ${ENV_FILE}  | sed -e s/export/-e/ | sed -e ':a;N;$!ba;s/\n/ /g')"
 REPETITIONS="${2}"
-source "${ENV_FILE}"
 DATA_DIRECTORY="xpdata/pyeclib/$(basename "${EC_TYPE}")/"
-declare -a SIZES=("4" "16" "64")
+declare -a PAYLOAD_SIZES=("4" "16" "64")
 
-cp pycoder/custom_drivers.py microbencher/custom_drivers.py
-cp pycoder/__init__.py microbencher/__init__.py
-cd microbencher
-docker build -t pyeclib-microbencher -f pyeclib.Dockerfile .
-cd -
+# Create data directory
 mkdir -p "${DATA_DIRECTORY}"
 
+# Build image
+cd pycoder/
+docker build -t pycoder-microbench .
+cd ../
 
-for size in "${SIZES[@]}"; do
+for size in "${PAYLOAD_SIZES[@]}"; do
 	PAYLOAD_SIZE_IN_MB="$((size * 1024 * 1024))"
 	for rep in $(seq "${REPETITIONS}"); do
-		docker run -it --rm -v "${PWD}/xpdata/pyeclib":/opt/xpdata/pyeclib pyeclib-microbencher \
-                bash -c "eval ${ENV_FILE_CONTENT} && /usr/local/src/app/microbench_local_decode.py ${PAYLOAD_SIZE_IN_MB} > /opt/$DATA_DIRECTORY/microbench-decode-${size}MB-${rep}.dat"
+		docker run --interactive --tty --rm --volume "${PWD}/xpdata/pyeclib":/opt/xpdata/pyeclib  ${ENV_VARIABLES} --entrypoint /usr/local/src/app/microbench_local_decode.py pycoder-microbench "${PAYLOAD_SIZE_IN_MB}" > $DATA_DIRECTORY/microbench-decode-${size}MB-${rep}.dat
 	done
 done
