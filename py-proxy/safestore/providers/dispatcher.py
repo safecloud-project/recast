@@ -38,8 +38,8 @@ class Dispatcher(object):
 
     def __init__(self):
         self.providers = {
-            Providers.dropbox: DBox(),
-            Providers.gdrive: GDrive(),
+            # Providers.dropbox: DBox(),
+            # Providers.gdrive: GDrive(),
             Providers.redis: RedisProvider()
         }
         self.files = {}
