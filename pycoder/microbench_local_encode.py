@@ -4,10 +4,8 @@ import os
 import sys
 import time
 
-from pyeclib.ec_iface import ECDriver
-
-from custom_drivers import ECStripingDriver
-from custom_drivers import PylonghairDriver
+from coding_servicer import DriverFactory
+from ConfigParser import ConfigParser
 
 
 def print_usage():
@@ -27,22 +25,13 @@ if __name__ == "__main__":
     DATA = os.urandom(SIZE)
     REQUESTS = 1000
 
-    # Load driver
-    EC_K = int(os.environ.get("EC_K", 10))
-    EC_M = int(os.environ.get("EC_M", 4))
-    EC_TYPE = os.environ.get("EC_TYPE", "liberasurecode_rs_vand")
-    DRIVER = None
-    if EC_TYPE == "pylonghair":
-        DRIVER = PylonghairDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
-    elif EC_TYPE == "striping":
-        DRIVER = ECStripingDriver(k=EC_K, m=EC_M, hd=None)
-    else:
-        DRIVER = ECDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
+    CONFIG = ConfigParser()
+    CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
 
-    # Start benchmark
-    print "About to encode ", REQUESTS, " payloads of size ", SIZE, " bytes (", \
-    (DRIVER.ec_type if hasattr(DRIVER, "ec_type") else EC_TYPE), ", k =", DRIVER.k, \
-    ", m =", DRIVER.m, ")"
+    factory = DriverFactory(CONFIG)
+
+    DRIVER = factory.get_driver()
+
     for i in range(REQUESTS):
         start = time.clock()
         DRIVER.encode(DATA)
