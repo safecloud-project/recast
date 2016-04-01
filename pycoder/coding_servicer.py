@@ -134,9 +134,13 @@ class CodingService(BetaEncoderDecoderServicer):
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
         reply = EncodeReply()
-        logger.info("Received encode request")
+        logger.info("Received encode request for {}".format(request.payload))
 
         raw_strips = self.driver.encode(request.payload)
+
+        log_temp = "Encoded and returned {} raw_strips"
+        logger.info(log_temp.format(len(raw_strips)))
+
         strips = []
         for raw_strip in raw_strips:
             strip = Strip()
@@ -144,12 +148,16 @@ class CodingService(BetaEncoderDecoderServicer):
             strips.append(strip)
 
         reply.strips.extend(strips)
-
+        log_temp = "Request encoded, returning reply with {} strips"
+        logger.info(log_temp.format(len(strips)))
         return reply
 
     def Decode(self, request, context):
         """Decode data sent in an DecodeRequest into a DecodeReply"""
+        logger.info("Received decode request")
+
         reply = DecodeReply()
         strips = convert_strips_to_bytes_list(request.strips)
         reply.dec_block = self.driver.decode(strips)
+        logger.info("Request decoded, returning reply")
         return reply

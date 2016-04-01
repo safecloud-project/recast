@@ -33,7 +33,8 @@ CODE_URI = config.get('GDRIVE', 'CODE_URI')
 
 TEST = config.getboolean('MAIN', 'TEST')
 if TEST:
-    SERVICE_ACCOUNT = os.path.join(os.path.dirname(__file__), config.get('GDRIVE', 'SERVICE_ACCOUNT'))
+    SERVICE_ACCOUNT = os.path.join(os.path.dirname(
+        __file__), config.get('GDRIVE', 'SERVICE_ACCOUNT'))
 
 
 class GDrive():
@@ -41,11 +42,11 @@ class GDrive():
     def __init__(self):
         self.logger = logging.getLogger('gdrive')
 
-        if TEST:
-            credentials = ServiceAccountCredentials.from_json_keyfile_name(
-                SERVICE_ACCOUNT, scopes=SCOPE)
-        else:
-            credentials = self._login_account()
+        # if TEST:
+        #    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+        #        SERVICE_ACCOUNT, scopes=SCOPE)
+        # else:
+        credentials = self._login_account()
         http = httplib2.Http()
         http = credentials.authorize(http)
         self.drive_service = build('drive', 'v2', http=http)

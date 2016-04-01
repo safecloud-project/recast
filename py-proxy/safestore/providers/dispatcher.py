@@ -1,14 +1,21 @@
 import datetime
 
+import logging
+import logging.config
+
 from enum import Enum
 from dbox import DBox
 from gdrive import GDrive
 from redis_provider import RedisProvider
 
+logger = logging.getLogger("dispatcher")
+
+
 class Providers(Enum):
     redis = 0
     gdrive = 1
     dropbox = 2
+
 
 class Metadata(object):
     """
@@ -21,6 +28,7 @@ class Metadata(object):
         self.blocks = {}
         for provider in Providers:
             self.blocks[provider] = []
+
 
 class Dispatcher(object):
     """
@@ -36,7 +44,6 @@ class Dispatcher(object):
         }
         self.files = {}
 
-
     def put(self, path, blocks):
         """
         Distribute blocks among different providers and a data struct
@@ -50,10 +57,14 @@ class Dispatcher(object):
         self.files[path] = metadata
         provider_keys = self.providers.keys()
         number_of_providers = len(provider_keys)
+        loop_temp = "Going to put block {} with key {} in provider {}"
         for i, block in enumerate(blocks):
             key = path + "-" + str(i).zfill(len(str(len(blocks))))
             provider_key = provider_keys[i % number_of_providers]
             provider = self.providers[provider_key]
+
+            logger.debug(loop_temp.format(i, key, provider_key))
+
             provider.put(block, key)
             metadata.blocks[provider_key].append(key)
         return metadata
@@ -69,11 +80,12 @@ class Dispatcher(object):
         metadata = self.files.get(path)
         if metadata is None:
             return None
-        provider_names = [k for k in metadata.blocks.keys() if len(metadata.blocks[k]) > 0]
+        provider_names = [k for k in metadata.blocks.keys()
+                          if len(metadata.blocks[k]) > 0]
         data = {}
         for name in provider_names:
             provider = self.providers[name]
             block_keys = metadata.blocks[name]
             for block_key in block_keys:
-                data[block_key]= provider.get(block_key)
+                data[block_key] = provider.get(block_key)
         return [data[key] for key in sorted(data.keys())]
