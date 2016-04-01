@@ -34,6 +34,5 @@ WORKDIR /usr/local/src/app/
 RUN python setup.py build_ext --inplace
 
 # Copy server sources
-ADD *.py /usr/local/src/app/
-ADD pylonghair_driver.py /usr/local/src/app/
+COPY . /usr/local/src/app/
 WORKDIR /usr/local/src/app/

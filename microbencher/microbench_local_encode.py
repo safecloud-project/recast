@@ -4,10 +4,11 @@ import os
 import sys
 import time
 
-from custom_driver import ECStripingDriver
 from pyeclib.ec_iface import ECDriver
 
-from pylonghair_driver import PylonghairDriver
+from custom_drivers import ECStripingDriver
+from custom_drivers import PylonghairDriver
+
 
 def print_usage():
     """Prints the usage message"""
