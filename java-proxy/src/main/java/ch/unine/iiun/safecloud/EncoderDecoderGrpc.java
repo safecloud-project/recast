@@ -173,65 +173,34 @@ public class EncoderDecoderGrpc {
     }
   }
 
-  private static final int METHODID_ENCODE = 0;
-  private static final int METHODID_DECODE = 1;
-
-  private static class MethodHandlers<Req, Resp> implements
-      io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
-      io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
-      io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
-      io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final EncoderDecoder serviceImpl;
-    private final int methodId;
-
-    public MethodHandlers(EncoderDecoder serviceImpl, int methodId) {
-      this.serviceImpl = serviceImpl;
-      this.methodId = methodId;
-    }
-
-    @java.lang.SuppressWarnings("unchecked")
-    public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
-      switch (methodId) {
-        case METHODID_ENCODE:
-          serviceImpl.encode((ch.unine.iiun.safecloud.Playcloud.EncodeRequest) request,
-              (io.grpc.stub.StreamObserver<ch.unine.iiun.safecloud.Playcloud.EncodeReply>) responseObserver);
-          break;
-        case METHODID_DECODE:
-          serviceImpl.decode((ch.unine.iiun.safecloud.Playcloud.DecodeRequest) request,
-              (io.grpc.stub.StreamObserver<ch.unine.iiun.safecloud.Playcloud.DecodeReply>) responseObserver);
-          break;
-        default:
-          throw new AssertionError();
-      }
-    }
-
-    @java.lang.SuppressWarnings("unchecked")
-    public io.grpc.stub.StreamObserver<Req> invoke(
-        io.grpc.stub.StreamObserver<Resp> responseObserver) {
-      switch (methodId) {
-        default:
-          throw new AssertionError();
-      }
-    }
-  }
-
   public static io.grpc.ServerServiceDefinition bindService(
       final EncoderDecoder serviceImpl) {
     return io.grpc.ServerServiceDefinition.builder(SERVICE_NAME)
-        .addMethod(
-          METHOD_ENCODE,
-          asyncUnaryCall(
-            new MethodHandlers<
+      .addMethod(
+        METHOD_ENCODE,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
               ch.unine.iiun.safecloud.Playcloud.EncodeRequest,
-              ch.unine.iiun.safecloud.Playcloud.EncodeReply>(
-                serviceImpl, METHODID_ENCODE)))
-        .addMethod(
-          METHOD_DECODE,
-          asyncUnaryCall(
-            new MethodHandlers<
+              ch.unine.iiun.safecloud.Playcloud.EncodeReply>() {
+            @java.lang.Override
+            public void invoke(
+                ch.unine.iiun.safecloud.Playcloud.EncodeRequest request,
+                io.grpc.stub.StreamObserver<ch.unine.iiun.safecloud.Playcloud.EncodeReply> responseObserver) {
+              serviceImpl.encode(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_DECODE,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
               ch.unine.iiun.safecloud.Playcloud.DecodeRequest,
-              ch.unine.iiun.safecloud.Playcloud.DecodeReply>(
-                serviceImpl, METHODID_DECODE)))
-        .build();
+              ch.unine.iiun.safecloud.Playcloud.DecodeReply>() {
+            @java.lang.Override
+            public void invoke(
+                ch.unine.iiun.safecloud.Playcloud.DecodeRequest request,
+                io.grpc.stub.StreamObserver<ch.unine.iiun.safecloud.Playcloud.DecodeReply> responseObserver) {
+              serviceImpl.decode(request, responseObserver);
+            }
+          })).build();
   }
 }

@@ -21,13 +21,13 @@ RUN rm -rf /protobuf-3.0.0-beta-1
 # Install GRPC
 RUN git clone https://github.com/grpc/grpc /grpc
 WORKDIR /grpc
-RUN git checkout release-0_11 && make && make install
+RUN git checkout release-0_11 --quiet && make && make install
 
 # Install grpc-java
 RUN git clone --quiet https://github.com/grpc/grpc-java /grpc-java \
     && update-ca-certificates --fresh
 WORKDIR /grpc-java/compiler
-RUN ../gradlew java_pluginExecutable
+RUN git checkout v0.9.1 --quiet && ../gradlew java_pluginExecutable && ../gradlew test
 
 # Cleanup
 RUN apt-get --assume-yes --quiet autoremove && apt-get --assume-yes --quiet autoclean
