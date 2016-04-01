@@ -48,4 +48,4 @@ COPY test_files  /usr/local/src/app/test_files
 COPY safestore/keys /usr/local/src/app/safestore/keys
 COPY logging.conf /usr/local/src/app/
 WORKDIR /usr/local/src/app/
-ENTRYPOINT ["/usr/bin/python", "/usr/local/src/app/server.py"]
+ENTRYPOINT /usr/bin/python /usr/local/src/app/server.py
