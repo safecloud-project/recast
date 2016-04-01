@@ -5,7 +5,8 @@ RUN apt-get update && \
     apt-get dist-upgrade --assume-yes --quiet && \
     apt-get autoremove   --assume-yes --quiet && \
     apt-get autoclean    --assume-yes --quiet && \
-    apt-get install      --assume-yes --quiet python-numpy
+    apt-get install      --assume-yes --quiet python-numpy \
+    apt-get install      --assume-yes --quiet python-pip
 COPY .  /usr/local/src/py-proxy
 COPY safestore/data.db /root/data.db
 WORKDIR /usr/local/src/py-proxy
