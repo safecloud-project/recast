@@ -31,12 +31,6 @@ DATA_DIRECTORY="results/microbench/encode/${FOLDER}"
 
 echo $DATA_DIRECTORY
 
-declare -a SIZES=("4" "16" "64")
-
-#cd pycoder
-#docker build -t pycoder-micro -f microbencher.Dockerfile .
-#cd ..
-
 declare -a PAYLOAD_SIZES=("4" "16" "64")
 
 mkdir -p "${DATA_DIRECTORY}"
@@ -51,7 +45,7 @@ for size in "${PAYLOAD_SIZES[@]}"; do
 	for rep in $(seq "${REPETITIONS}"); do
 		cd microbencher
 
-		cp DockerfileTemplate Dockerfile
+		cp EncodeDockerfileTemplate Dockerfile
 
 		#Add aparemter to the docker file
 		sed -i "s|{DATA_DIR}|${DATA_DIRECTORY}|g" Dockerfile

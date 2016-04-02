@@ -26,7 +26,6 @@ if __name__ == "__main__":
         print_usage()
         sys.exit(0)
     SIZE = int(sys.argv[1])
-    REQUESTS = int()
     REQUESTS = int(sys.argv[2])
     req = "Received bench request with Size {}"
     print req.format(SIZE, REQUESTS)
@@ -34,11 +33,14 @@ if __name__ == "__main__":
     CONFIG.read('pycoder.cfg')
 
     if os.environ.get("DRIVER", "") is "shamir":
+        print "is shamir"
         DATA = randomword(SIZE)
-        print (len(DATA))
+        print(len(DATA))
     else:
+        print "not shamir"
         DATA = os.urandom(SIZE)
         print(len(DATA))
+    print(DATA)
 
     factory = DriverFactory(CONFIG)
     DRIVER = factory.get_driver()
