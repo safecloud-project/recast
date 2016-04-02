@@ -47,6 +47,7 @@ class DriverFactory():
     def xor(self):
         nblocks = self.config.getint("xor", "n_blocks")
         nblocks = int(os.environ.get("NBLOCKS", nblocks))
+        logger.info("{} nblocks".format(nblocks))
         return XorDriver(nblocks)
 
     def hash_xor_driver(self):
@@ -54,6 +55,7 @@ class DriverFactory():
         nblocks = int(os.environ.get("NBLOCKS", nblocks))
         hash = self.config.get("hashed_xor_driver", "hash")
         hash = os.environ.get('HASH', hash)
+        logger.info("{} nblocks and {} hash".format(nblocks, hash))
         return HashedDriver(HashedXorDriver(nblocks, Hash[hash]))
 
     def signed_hashed_xor_driver(self):
@@ -61,6 +63,7 @@ class DriverFactory():
         nblocks = int(os.environ.get("NBLOCKS", nblocks))
         hash = self.config.get("signed_hashed_xor_driver", "hash")
         hash = os.environ.get('HASH', hash)
+        logger.info("{} nblocks and {} hash".format(nblocks, hash))
         return HashedDriver(SignedHashedXorDriver(nblocks, Hash[hash]))
 
     def shamir(self):
@@ -69,18 +72,25 @@ class DriverFactory():
         nblocks = int(os.environ.get("NBLOCKS", nblocks))
         threshold = int(os.environ.get("THRESHOLD", nblocks))
 
+        logger.info("{} nblocks and {} threshold".format(nblocks, threshold))
+
         return ShamirDriver(nblocks, threshold)
 
     def signed_xor_driver(self):
         nblocks = self.config.getint("signed_xor_driver", "n_blocks")
         nblocks = int(os.environ.get("NBLOCKS", nblocks))
+        logger.info("{} nblocks".format(nblocks))
         return SignedXorDriver(nblocks)
 
     def erasure_driver(self):
-        EC_K=int(os.environ.get("EC_K", CONFIG.get("ec", "k")))
-        EC_M=int(os.environ.get("EC_M", CONFIG.get("ec", "m")))
-        EC_TYPE=os.environ.get("EC_TYPE", CONFIG.get("ec", "type"))
-        return Eraser(EC_K, EC_M, EC_TYPE)
+        ec_k = int(os.environ.get("EC_K", self.config.get("ec", "k")))
+        ec_m = int(os.environ.get("EC_M", self.config.get("ec", "m")))
+        ec_type = os.environ.get("EC_TYPE", self.config.get("ec", "type"))
+        logger.info("{} ec_k, {} ec_m, {} ec_type".format(ec_k, ec_m, ec_type))
+        return Eraser(ec_k, ec_m, ec_type)
+
+    def aes_driver(self):
+        return AESDriver()
 
     def get_driver(self):
         return self.drivers[self.driver]
