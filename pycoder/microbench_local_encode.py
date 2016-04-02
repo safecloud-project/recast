@@ -31,8 +31,9 @@ if __name__ == "__main__":
     print req.format(SIZE, REQUESTS)
     CONFIG = ConfigParser()
     CONFIG.read('pycoder.cfg')
-
-    if os.environ.get("DRIVER", "") is "shamir":
+    driver_name = os.environ.get("DRIVER", "shamir")
+    print driver_name
+    if driver_name is "shamir":
         print "is shamir"
         DATA = randomword(SIZE)
         print(len(DATA))
@@ -40,7 +41,6 @@ if __name__ == "__main__":
         print "not shamir"
         DATA = os.urandom(SIZE)
         print(len(DATA))
-    print(DATA)
 
     factory = DriverFactory(CONFIG)
     DRIVER = factory.get_driver()
