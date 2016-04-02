@@ -3,6 +3,8 @@
 import os
 import sys
 import time
+import random
+import string
 
 from coding_servicer import DriverFactory
 from ConfigParser import ConfigParser
@@ -16,18 +18,27 @@ def print_usage():
     print "\trequests   number of requests\n"
 
 
+def randomword(length):
+    return ''.join(random.choice(string.lowercase) for i in range(length))
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print_usage()
         sys.exit(0)
     SIZE = int(sys.argv[1])
-    DATA = os.urandom(SIZE)
     REQUESTS = int()
     REQUESTS = int(sys.argv[2])
     req = "Received bench request with Size {}"
     print req.format(SIZE, REQUESTS)
     CONFIG = ConfigParser()
     CONFIG.read('pycoder.cfg')
+
+    if os.environ.get("DRIVER", "") is "shamir":
+        DATA = randomword(SIZE)
+        print (len(DATA))
+    else:
+        DATA = os.urandom(SIZE)
+        print(len(DATA))
 
     factory = DriverFactory(CONFIG)
     DRIVER = factory.get_driver()
