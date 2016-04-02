@@ -33,7 +33,7 @@ if __name__ == "__main__":
     CONFIG.read('pycoder.cfg')
     driver_name = os.environ.get("DRIVER", "shamir")
     print driver_name
-    if driver_name is "shamir":
+    if driver_name == "shamir":
         print "is shamir"
         DATA = randomword(SIZE)
         print(len(DATA))
