@@ -4,5 +4,5 @@ for f in $FILES
 do
     # repetitions
     # requests
-    ./pyeclib-encode-microbench.sh "$f" "1" "100"
+    ./pyeclib-encode-microbench.sh "$f" "10" "100"
 done
