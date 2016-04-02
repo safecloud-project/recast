@@ -33,7 +33,8 @@ class DriverFactory():
 
     def __init__(self, config):
         self.config = config
-        self.driver = config.get("main", "driver")
+        driver = config.get("main", "driver")
+        self.driver = os.environ.get("DRIVER", driver)
         logger.info("Selected driver was {}".format(self.driver))
         self.drivers = {'xor': self.xor,
                         'hashed_xor_driver': self.hash_xor_driver,
