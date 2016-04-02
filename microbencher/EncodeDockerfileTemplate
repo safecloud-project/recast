@@ -1,14 +1,10 @@
 FROM pycoder-micro
 
-RUN apt-get install && apt-get install dstat --assume-yes --quiet
-
 COPY * /usr/local/src/app/
 
 WORKDIR /usr/local/src/app/
 
 {ENV}
-
-RUN nohup dstat -t -c -d -m -n --output /{DATA_DIR}/microbench-encode-{SIZE}MB-{REP}.csv > /dev/null 
 
 
 ENTRYPOINT /usr/bin/python /usr/local/src/app/microbench_local_encode.py "{PAYLOAD}"  "{REQ}" > /{DATA_DIR}/microbench-encode-{SIZE}MB-{REP}.dat
