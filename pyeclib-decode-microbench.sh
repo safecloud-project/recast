@@ -2,9 +2,9 @@
 ###############################################################################
 # microbench.sh                                                               #
 #                                                                             #
-# Benchmarks a pyeclib encoder/decoder                                        #
+# Benchmarks a GRPC enabled encoder/decoder implementing the behaviour        #
+# defined in playclcoud.proto.                                                #
 ###############################################################################
-
 
 source ./utils.sh
 
@@ -13,9 +13,10 @@ function print_usage {
 	echo -e "Arguments:"
 	echo -e "\tenv-file           Environment file containing the values that should be used by the encoder/decoder"
 	echo -e "\trepetitions        Number of repetitions"
+	echo -e "\trequests           Number of requests"
 }
 
-if [[ "${#}" -ne 2 ]]; then
+if [[ "${#}" -ne 3 ]]; then
 	print_usage
 	exit 0
 fi
@@ -23,25 +24,43 @@ fi
 ENV_FILE="${1}"
 ENV_VARIABLES="$(cat ${ENV_FILE}  | sed -e s/export/-e/ | sed -e ':a;N;$!ba;s/\n/ /g')"
 REPETITIONS="${2}"
-DATA_DIRECTORY="xpdata/pyeclib/$(basename "${EC_TYPE}")/"
-declare -a SIZES=("4" "16" "64")
+REQUESTS=${3}
+#source "${ENV_FILE}"
+FOLDER=${ENV_FILE:6:-4}
+DATA_DIRECTORY="results/microbench/decode/${FOLDER}"
 
-cp pycoder/pylonghair_driver.py microbencher/pylonghair_driver.py
-cp pycoder/custom_driver.py microbencher/custom_driver.py
-cp pycoder/__init__.py microbencher/__init__.py
-cd microbencher
-docker build -t pyeclib-microbencher -f Dockerfile .
-cd -
+echo $DATA_DIRECTORY
+
+declare -a PAYLOAD_SIZES=("4" "16" "64")
+
 mkdir -p "${DATA_DIRECTORY}"
 
-# Build image
 cd pycoder/
-docker build -t pycoder-microbench .
-cd ../
+docker build -t pycoder-micro -f microbencher.Dockerfile .
+cd ..
+
 
 for size in "${PAYLOAD_SIZES[@]}"; do
 	PAYLOAD_SIZE_IN_MB="$((size * 1024 * 1024))"
 	for rep in $(seq "${REPETITIONS}"); do
-		docker run --interactive --tty --rm --volume "${PWD}/xpdata/pyeclib":/opt/xpdata/pyeclib  ${ENV_VARIABLES} --entrypoint /usr/local/src/app/microbench_local_decode.py pycoder-microbench "${PAYLOAD_SIZE_IN_MB}" > $DATA_DIRECTORY/microbench-decode-${size}MB-${rep}.dat
+		cd microbencher
+
+		cp DecodeDockerfileTemplate Dockerfile
+
+		#Add aparemter to the docker file
+		sed -i "s|{DATA_DIR}|${DATA_DIRECTORY}|g" Dockerfile
+		sed -i "s/{PAYLOAD}/${PAYLOAD_SIZE_IN_MB}/g" Dockerfile
+		sed -i "s/{REQ}/${REQUESTS}/g" Dockerfile
+		sed -i "s/{SIZE}/${size}/g" Dockerfile
+		sed -i "s/{REP}/${rep}/g" Dockerfile
+
+		#Add enviroment variables to the docker file
+		sed -i "/{ENV}/r ../${ENV_FILE}" Dockerfile
+		sed -i "/{ENV}/d" Dockerfile
+		
+		docker build -t pycoder-microbencher -f Dockerfile .
+		cd ..
+		docker run --rm --volume "${PWD}/${DATA_DIRECTORY}":/$DATA_DIRECTORY pycoder-microbencher
+	
 	done
 done
