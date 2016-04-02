@@ -1,8 +1,6 @@
 FROM pycoder-micro
 
 
-VOLUME {DATA_DIR}
-
 COPY * /usr/local/src/app/
 
 WORKDIR /usr/local/src/app/
