@@ -45,25 +45,35 @@ class DriverFactory():
                         }
 
     def xor(self):
-        return XorDriver(CONFIG.getint("xor", "n_blocks")
+        nblocks = self.config.getint("xor", "n_blocks")
+        nblocks = int(os.environ.get("NBLOCKS", nblocks))
+        return XorDriver(nblocks)
 
     def hash_xor_driver(self):
-        nblocks=CONFIG.getint("hashed_xor_driver", "n_blocks")
-        hash=CONFIG.get("hashed_xor_driver", "hash")
-        return HashedXorDriver(nblocks, hash)
+        nblocks = self.config.getint("hashed_xor_driver", "n_blocks")
+        nblocks = int(os.environ.get("NBLOCKS", nblocks))
+        hash = self.config.get("hashed_xor_driver", "hash")
+        hash = os.environ.get('HASH', hash)
+        return HashedDriver(HashedXorDriver(nblocks, Hash[hash]))
 
     def signed_hashed_xor_driver(self):
-        nblocks=CONFIG.getint("signed_hashed_xor_driver", "n_blocks")
-        hash=CONFIG.get("signed_hashed_xor_driver", "hash")
-        return SignedHashedXorDriver(nblocks, hash)
+        nblocks = self.config.getint("signed_hashed_xor_driver", "n_blocks")
+        nblocks = int(os.environ.get("NBLOCKS", nblocks))
+        hash = self.config.get("signed_hashed_xor_driver", "hash")
+        hash = os.environ.get('HASH', hash)
+        return HashedDriver(SignedHashedXorDriver(nblocks, Hash[hash]))
 
     def shamir(self):
-        nblocks=CONFIG.getint("shamir", "n_blocks")
-        threshold=CONFIG.getint("shamir", "threshold")
-        return Shamir(nblocks, hash)
+        nblocks = self.config.getint("shamir", "n_blocks")
+        threshold = self.config.getint("shamir", "threshold")
+        nblocks = int(os.environ.get("NBLOCKS", nblocks))
+        threshold = int(os.environ.get("THRESHOLD", nblocks))
+
+        return ShamirDriver(nblocks, threshold)
 
     def signed_xor_driver(self):
-        nblocks=CONFIG.getint("signed_xor_driver", "n_blocks")
+        nblocks = self.config.getint("signed_xor_driver", "n_blocks")
+        nblocks = int(os.environ.get("NBLOCKS", nblocks))
         return SignedXorDriver(nblocks)
 
     def erasure_driver(self):
