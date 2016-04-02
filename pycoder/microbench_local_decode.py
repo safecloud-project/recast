@@ -3,45 +3,47 @@
 import os
 import sys
 import time
+import random
+import string
 
-from pyeclib.ec_iface import ECDriver
+from coding_servicer import DriverFactory
+from ConfigParser import ConfigParser
 
-from custom_drivers import ECStripingDriver
-from custom_drivers import PylonghairDriver
+
+def randomword(length):
+    return ''.join(random.choice(string.lowercase) for i in range(length))
+
 
 def print_usage():
     """Prints the usage message"""
-    print "Usage:", sys.argv[0], " size"
-    print ""
-    print "Benchmark pyeclib erasure coding libraries"
-    print ""
+    print "Microbenchmark for multiple encoding libraries\n"
     print "Arguments:"
-    print "\tsize       Size of the payload to decode in bytes"
+    print "\tsize       Size of the payload to encode in bytes\n"
+    print "\trequests   number of requests\n"
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print_usage()
         sys.exit(0)
     SIZE = int(sys.argv[1])
-    DATA = os.urandom(SIZE)
-    REQUESTS = 1000
+    REQUESTS = int(sys.argv[2])
+    req = "Received bench request with Size {}"
+    print req.format(SIZE, REQUESTS)
+    CONFIG = ConfigParser()
+    CONFIG.read('pycoder.cfg')
 
-    # Load driver
-    EC_K = int(os.environ.get("EC_K", 10))
-    EC_M = int(os.environ.get("EC_M", 4))
-    EC_TYPE = os.environ.get("EC_TYPE", "liberasure_rs_vand")
-    DRIVER = None
-    if EC_TYPE == "pylonghair":
-        DRIVER = PylonghairDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
-    elif EC_TYPE == "striping":
-        DRIVER = ECStripingDriver(k=EC_K, m=0, hd=None)
+    if os.environ.get("DRIVER", "") is "shamir":
+        print "is shamir"
+        DATA = randomword(SIZE)
+        print(len(DATA))
     else:
-        DRIVER = ECDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
+        print "not shamir"
+        DATA = os.urandom(SIZE)
+        print(len(DATA))
+    print(DATA)
+    factory = DriverFactory(CONFIG)
+    DRIVER = factory.get_driver()
 
-    # Start benchmark
-    print "About to decode ", REQUESTS, " payloads of size ", SIZE, " bytes (",\
-    (DRIVER.ec_type if hasattr(DRIVER, "ec_type") else EC_TYPE), ", k =", DRIVER.k, \
-    ", m =", DRIVER.m, ")"
     ENCODED = DRIVER.encode(DATA)
     for i in range(REQUESTS):
         start = time.clock()
