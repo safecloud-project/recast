@@ -1,0 +1,13 @@
+FROM pycoder-micro
+
+
+VOLUME {DATA_DIR}
+
+COPY * /usr/local/src/app/
+
+WORKDIR /usr/local/src/app/
+
+{ENV}
+
+
+ENTRYPOINT /usr/bin/python /usr/local/src/app/microbench_local_encode.py "{PAYLOAD}"  "{REQ}" > /{DATA_DIR}/microbench-encode-{SIZE}MB-{REP}.dat
