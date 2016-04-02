@@ -47,7 +47,6 @@ cd ../
 for size in "${PAYLOAD_SIZES[@]}"; do
 	PAYLOAD_SIZE_IN_MB="$((size * 1024 * 1024))"
 	for rep in $(seq "${REPETITIONS}"); do
-		docker run -it --rm -v "${PWD}/${DATA_DIRECTORY}":/opt/$DATA_DIRECTORY pyeclib-microbencher \
-                bash -c "eval ${ENV_FILE_CONTENT} && /usr/local/src/app/microbench_local_encode.py ${ADJUSTED_SIZE} ${REQUESTS} > /opt/$DATA_DIRECTORY/microbench-encode-${size}MB-${rep}.dat"
+		docker run --interactive --tty --rm --volume "${PWD}/${DATA_DIRECTORY}":/opt/$DATA_DIRECTORY  ${ENV_VARIABLES} --entrypoint /usr/local/src/app/microbench_local_encode.py pycoder-microbench "${PAYLOAD_SIZE_IN_MB}" > $DATA_DIRECTORY/microbench-encode-${size}MB-${rep}.dat
 	done
 done
