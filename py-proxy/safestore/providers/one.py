@@ -111,14 +111,18 @@ class ODrive():
             for mfile in files:
                 link=mfile['id']
                 self.api.delete(link)
-            self.api.delete(url)
+            if path!='/':
+                self.api.delete(url)
         except DoesNotExists:
             return None
         except (ProtocolError,SSLError,BadStatusLine,ResponseNotReady),e:
             #Try again
             print "Error"+str(e)
-            self.clean()
+            self.clean(path)
 
+    def clear(self):
+        self.clean("/")
+    
     def delete(self,path):
         self.logger.debug("Delete path:"+path)
         try:
