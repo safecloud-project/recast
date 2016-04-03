@@ -93,8 +93,11 @@ class DBox():
         self.logger.debug("Clean")
         for mfile in self.api_client.metadata(path, file_limit=25000)["contents"]:
             self.api_client.file_delete(mfile["path"])
-        self.api_client.file_delete(path)
+        #self.api_client.file_delete(path)
         # 406 (Not Acceptable) status
+
+    def clear(self):
+        self.clean("/")
 
     def quota(self):
         """Returns the current free space in bytes in the Drive

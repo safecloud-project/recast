@@ -104,7 +104,7 @@ class GDrive():
         if len(paths) == 1 or paths[1] == '':
             paths = ['', '']
             parent_id = "root"
-        print(paths)
+        #print(paths)
 
         for i in range(1, len(paths) - 1):
             if parent_id:
@@ -237,11 +237,15 @@ class GDrive():
                 except HttpError, error:
                     print 'An error occurred: %s' % error
                     break
-            self.drive_service.files().delete(fileId=folder_id).execute()
+            if(folder_id!='root'):
+                self.drive_service.files().delete(fileId=folder_id).execute()
         except (HttpError, SSLError, BadStatusLine), e:
             print e
             # self.clean()
 
+    def clear(self):
+        self.clean("root")
+    
     def listChildren(self, path):
         '''
         TODO
