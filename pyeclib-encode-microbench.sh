@@ -31,15 +31,15 @@ DATA_DIRECTORY="results/microbench/encode/${FOLDER}"
 
 echo $DATA_DIRECTORY
 
-#declare -a PAYLOAD_SIZES=("4" "16" "64")
+declare -a PAYLOAD_SIZES=("4" "16" "64")
 
-declare -a PAYLOAD_SIZES=("4")
 
 mkdir -p "${DATA_DIRECTORY}"
 
 cd pycoder/
 docker build -t pycoder-micro -f microbencher.Dockerfile .
 cd ..
+mkdir -p ${DATA_DIRECTORY}
 
 
 for size in "${PAYLOAD_SIZES[@]}"; do
@@ -62,7 +62,6 @@ for size in "${PAYLOAD_SIZES[@]}"; do
 		
 		docker build -t pycoder-microbencher -f Dockerfile .
 		cd ..
-		mkdir -p ${DATA_DIRECTORY}
 		dstat -t -c -d -m -n > ${DATA_DIRECTORY}/microbench-encode-${size}MB-${rep}.csv  &
 		docker run --rm --volume "${PWD}/${DATA_DIRECTORY}":/$DATA_DIRECTORY pycoder-microbencher
 		kill -9 $!

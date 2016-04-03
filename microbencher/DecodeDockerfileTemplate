@@ -8,4 +8,4 @@ WORKDIR /usr/local/src/app/
 {ENV}
 
 
-ENTRYPOINT /usr/bin/python /usr/local/src/app/microbench_local_encode.py "{PAYLOAD}"  "{REQ}" > /{DATA_DIR}/microbench-encode-{SIZE}MB-{REP}.dat
+ENTRYPOINT /usr/bin/python /usr/local/src/app/microbench_local_decode.py "{PAYLOAD}"  "{REQ}" > /{DATA_DIR}/microbench-decode-{SIZE}MB-{REP}.dat
