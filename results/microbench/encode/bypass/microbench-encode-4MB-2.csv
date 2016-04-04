@@ -1,0 +1,6 @@
+[7l----system---- ----total-cpu-usage---- -dsk/total- ------memory-usage----- -net/total-
+     time     |usr sys idl wai hiq siq| read  writ| used  buff  cach  free| recv  send
+03-04 12:49:41|  2   1  94   2   0   0| 639k  926k| 424M  183M 2659M 3545M|   0     0 
+03-04 12:49:42|  6   6  84   4   0   0|   0   624k| 452M  183M 2659M 3517M| 474B  168B
+03-04 12:49:43|  5   8  88   0   0   0|   0     0 | 462M  183M 2660M 3507M| 356B  250B
+03-04 12:49:44|  5   5  89   1   0   0|   0   208k| 430M  183M 2660M 3538M| 674B  598B
