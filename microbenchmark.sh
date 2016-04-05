@@ -13,5 +13,5 @@ for f in $FILES
 do
     # repetitions
     # requests
-    ./pyeclib-decode-microbench.sh "$f" $REPETITIONS $REPETITIONS
+    ./pyeclib-decode-microbench.sh "$f" $REPETITIONS $REQUESTS
 done
