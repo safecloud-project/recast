@@ -60,11 +60,11 @@ for size in "${PAYLOAD_SIZES[@]}"; do
 		#Add enviroment variables to the docker file
 		sed -i "/{ENV}/r ../${ENV_FILE}" Dockerfile
 		sed -i "/{ENV}/d" Dockerfile
-		
+
 		docker build -t pycoder-microbencher -f Dockerfile .
 		cd ..
-		dstat -t -c -d -m -n > ${DATA_DIRECTORY}/microbench-encode-${size}MB-${rep}.csv > /dev/null &
+		dstat -t -c -d -m -n > ${DATA_DIRECTORY}/microbench-decode-${size}MB-${rep}.csv > /dev/null &
 		docker run --rm --volume "${PWD}/${DATA_DIRECTORY}":/$DATA_DIRECTORY pycoder-microbencher
-		kill -9 $!	
+		kill -9 $!
 	done
 done
