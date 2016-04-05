@@ -1,7 +1,7 @@
 FILES=dockerenv/*
 
 REPETITIONS=10
-REQUESTS=1000
+REQUESTS=100
 for f in $FILES
 do
     # repetitions
