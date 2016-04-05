@@ -1,6 +1,11 @@
-[7l----system---- ----total-cpu-usage---- -dsk/total- ------memory-usage----- -net/total-
-     time     |usr sys idl wai hiq siq| read  writ| used  buff  cach  free| recv  send
-03-04 12:50:19|  2   1  94   2   0   0| 631k  944k| 423M  184M 2660M 3544M|   0     0 
-03-04 12:50:20|  5   5  85   5   0   0|   0   600k| 445M  184M 2660M 3521M| 396B  168B
-03-04 12:50:21|  5   8  87   0   0   0|   0   160k| 463M  184M 2660M 3503M| 142B  250B
-03-04 12:50:22|  6   5  89   0   0   0|   0   176k| 432M  184M 2660M 3535M| 864B  508B
+"Dstat 0.7.2 CSV output"
+"Author:","Dag Wieers <dag@wieers.com>",,,,"URL:","http://dag.wieers.com/home-made/dstat/"
+"Host:","swarm-start",,,,"User:","ubuntu"
+"Cmdline:","dstat -t -c -d -m -n --output results/microbench/encode/bypass/microbench-encode-4MB-6.csv",,,,"Date:","05 Apr 2016 15:55:21 UTC"
+
+"system","total cpu usage",,,,,,"dsk/total",,"memory usage",,,,"net/total",
+"time","usr","sys","idl","wai","hiq","siq","read","writ","used","buff","cach","free","recv","send"
+05-04 15:55:21,9.436,2.352,87.951,0.261,0.0,0.000,31834.098,64368.418,482902016.0,281038848.0,2810408960.0,3567226880.0,0.0,0.0
+05-04 15:55:22,6.068,5.689,84.450,3.793,0.0,0.0,0.0,679936.0,513531904.0,281038848.0,2810662912.0,3536343040.0,538.0,90.0
+05-04 15:55:23,4.631,7.885,87.484,0.0,0.0,0.0,0.0,139264.0,524124160.0,281038848.0,2810707968.0,3525705728.0,292.0,168.0
+05-04 15:55:24,5.436,4.551,88.116,1.896,0.0,0.0,0.0,335872.0,494841856.0,281038848.0,2810724352.0,3554971648.0,1.84467440737e+19,1.84467440737e+19
