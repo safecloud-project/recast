@@ -31,9 +31,7 @@ DATA_DIRECTORY="results/microbench/decode/${FOLDER}"
 
 echo $DATA_DIRECTORY
 
-#declare -a PAYLOAD_SIZES=("4" "16" "64")
-
-declare -a PAYLOAD_SIZES=("4")
+declare -a PAYLOAD_SIZES=("4" "16" "64")
 
 mkdir -p "${DATA_DIRECTORY}"
 
