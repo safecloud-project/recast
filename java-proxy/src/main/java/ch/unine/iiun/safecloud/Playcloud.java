@@ -953,6 +953,12 @@ public final class Playcloud {
      */
     ch.unine.iiun.safecloud.Playcloud.StripOrBuilder getStripsOrBuilder(
         int index);
+
+    /**
+     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getEncodingParameters();
   }
   /**
    * Protobuf type {@code EncodeReply}
@@ -1001,6 +1007,18 @@ public final class Playcloud {
               strips_.add(input.readMessage(ch.unine.iiun.safecloud.Playcloud.Strip.parser(), extensionRegistry));
               break;
             }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                encodingParameters_ = com.google.protobuf.MapField.newMapField(
+                    EncodingParametersDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              encodingParameters = input.readMessage(
+                  EncodingParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              encodingParameters_.getMutableMap().put(encodingParameters.getKey(), encodingParameters.getValue());
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -1021,6 +1039,17 @@ public final class Playcloud {
       return ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeReply_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetEncodingParameters();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeReply_fieldAccessorTable
@@ -1063,6 +1092,36 @@ public final class Playcloud {
       return strips_.get(index);
     }
 
+    public static final int ENCODING_PARAMETERS_FIELD_NUMBER = 2;
+    private static final class EncodingParametersDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeReply_EncodingParametersEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> encodingParameters_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetEncodingParameters() {
+      if (encodingParameters_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            EncodingParametersDefaultEntryHolder.defaultEntry);
+     }
+      return encodingParameters_;
+    }
+    /**
+     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     */
+
+    public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
+      return internalGetEncodingParameters().getMap();
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1078,6 +1137,15 @@ public final class Playcloud {
       for (int i = 0; i < strips_.size(); i++) {
         output.writeMessage(1, strips_.get(i));
       }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetEncodingParameters().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        output.writeMessage(2, encodingParameters);
+      }
     }
 
     public int getSerializedSize() {
@@ -1088,6 +1156,16 @@ public final class Playcloud {
       for (int i = 0; i < strips_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, strips_.get(i));
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetEncodingParameters().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, encodingParameters);
       }
       memoizedSize = size;
       return size;
@@ -1177,6 +1255,28 @@ public final class Playcloud {
         return ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeReply_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetEncodingParameters();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableEncodingParameters();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeReply_fieldAccessorTable
@@ -1207,6 +1307,7 @@ public final class Playcloud {
         } else {
           stripsBuilder_.clear();
         }
+        internalGetMutableEncodingParameters().clear();
         return this;
       }
 
@@ -1239,6 +1340,8 @@ public final class Playcloud {
         } else {
           result.strips_ = stripsBuilder_.build();
         }
+        result.encodingParameters_ = internalGetEncodingParameters();
+        result.encodingParameters_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -1280,6 +1383,8 @@ public final class Playcloud {
             }
           }
         }
+        internalGetMutableEncodingParameters().mergeFrom(
+            other.internalGetEncodingParameters());
         onChanged();
         return this;
       }
@@ -1545,6 +1650,50 @@ public final class Playcloud {
           strips_ = null;
         }
         return stripsBuilder_;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> encodingParameters_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetEncodingParameters() {
+        if (encodingParameters_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              EncodingParametersDefaultEntryHolder.defaultEntry);
+       }
+        return encodingParameters_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableEncodingParameters() {
+        onChanged();;
+        if (encodingParameters_ == null) {
+          encodingParameters_ = com.google.protobuf.MapField.newMapField(
+              EncodingParametersDefaultEntryHolder.defaultEntry);
+        }
+        if (!encodingParameters_.isMutable()) {
+          encodingParameters_ = encodingParameters_.copy();
+        }
+        return encodingParameters_;
+      }
+      /**
+       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       */
+      public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
+        return internalGetEncodingParameters().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       */
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableEncodingParameters() {
+        return internalGetMutableEncodingParameters().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       */
+      public Builder putAllEncodingParameters(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        getMutableEncodingParameters().putAll(values);
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2439,6 +2588,12 @@ public final class Playcloud {
      * <code>optional bytes dec_block = 1;</code>
      */
     com.google.protobuf.ByteString getDecBlock();
+
+    /**
+     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getEncodingParameters();
   }
   /**
    * Protobuf type {@code DecodeReply}
@@ -2484,6 +2639,18 @@ public final class Playcloud {
               decBlock_ = input.readBytes();
               break;
             }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                encodingParameters_ = com.google.protobuf.MapField.newMapField(
+                    EncodingParametersDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              encodingParameters = input.readMessage(
+                  EncodingParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              encodingParameters_.getMutableMap().put(encodingParameters.getKey(), encodingParameters.getValue());
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -2501,6 +2668,17 @@ public final class Playcloud {
       return ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeReply_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetEncodingParameters();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeReply_fieldAccessorTable
@@ -2508,6 +2686,7 @@ public final class Playcloud {
               ch.unine.iiun.safecloud.Playcloud.DecodeReply.class, ch.unine.iiun.safecloud.Playcloud.DecodeReply.Builder.class);
     }
 
+    private int bitField0_;
     public static final int DEC_BLOCK_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString decBlock_;
     /**
@@ -2515,6 +2694,36 @@ public final class Playcloud {
      */
     public com.google.protobuf.ByteString getDecBlock() {
       return decBlock_;
+    }
+
+    public static final int ENCODING_PARAMETERS_FIELD_NUMBER = 2;
+    private static final class EncodingParametersDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeReply_EncodingParametersEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> encodingParameters_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetEncodingParameters() {
+      if (encodingParameters_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            EncodingParametersDefaultEntryHolder.defaultEntry);
+     }
+      return encodingParameters_;
+    }
+    /**
+     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     */
+
+    public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
+      return internalGetEncodingParameters().getMap();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2532,6 +2741,15 @@ public final class Playcloud {
       if (!decBlock_.isEmpty()) {
         output.writeBytes(1, decBlock_);
       }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetEncodingParameters().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        output.writeMessage(2, encodingParameters);
+      }
     }
 
     public int getSerializedSize() {
@@ -2542,6 +2760,16 @@ public final class Playcloud {
       if (!decBlock_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(1, decBlock_);
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetEncodingParameters().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, encodingParameters);
       }
       memoizedSize = size;
       return size;
@@ -2631,6 +2859,28 @@ public final class Playcloud {
         return ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeReply_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetEncodingParameters();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableEncodingParameters();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeReply_fieldAccessorTable
@@ -2656,6 +2906,7 @@ public final class Playcloud {
         super.clear();
         decBlock_ = com.google.protobuf.ByteString.EMPTY;
 
+        internalGetMutableEncodingParameters().clear();
         return this;
       }
 
@@ -2678,7 +2929,12 @@ public final class Playcloud {
 
       public ch.unine.iiun.safecloud.Playcloud.DecodeReply buildPartial() {
         ch.unine.iiun.safecloud.Playcloud.DecodeReply result = new ch.unine.iiun.safecloud.Playcloud.DecodeReply(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         result.decBlock_ = decBlock_;
+        result.encodingParameters_ = internalGetEncodingParameters();
+        result.encodingParameters_.makeImmutable();
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -2697,6 +2953,8 @@ public final class Playcloud {
         if (other.getDecBlock() != com.google.protobuf.ByteString.EMPTY) {
           setDecBlock(other.getDecBlock());
         }
+        internalGetMutableEncodingParameters().mergeFrom(
+            other.internalGetEncodingParameters());
         onChanged();
         return this;
       }
@@ -2722,6 +2980,7 @@ public final class Playcloud {
         }
         return this;
       }
+      private int bitField0_;
 
       private com.google.protobuf.ByteString decBlock_ = com.google.protobuf.ByteString.EMPTY;
       /**
@@ -2749,6 +3008,50 @@ public final class Playcloud {
         
         decBlock_ = getDefaultInstance().getDecBlock();
         onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> encodingParameters_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetEncodingParameters() {
+        if (encodingParameters_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              EncodingParametersDefaultEntryHolder.defaultEntry);
+       }
+        return encodingParameters_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableEncodingParameters() {
+        onChanged();;
+        if (encodingParameters_ == null) {
+          encodingParameters_ = com.google.protobuf.MapField.newMapField(
+              EncodingParametersDefaultEntryHolder.defaultEntry);
+        }
+        if (!encodingParameters_.isMutable()) {
+          encodingParameters_ = encodingParameters_.copy();
+        }
+        return encodingParameters_;
+      }
+      /**
+       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       */
+      public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
+        return internalGetEncodingParameters().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       */
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableEncodingParameters() {
+        return internalGetMutableEncodingParameters().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       */
+      public Builder putAllEncodingParameters(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        getMutableEncodingParameters().putAll(values);
         return this;
       }
       public final Builder setUnknownFields(
@@ -2830,6 +3133,11 @@ public final class Playcloud {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_EncodeReply_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_EncodeReply_EncodingParametersEntry_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_EncodeReply_EncodingParametersEntry_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_DecodeRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -2844,6 +3152,11 @@ public final class Playcloud {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_DecodeReply_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_DecodeReply_EncodingParametersEntry_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_DecodeReply_EncodingParametersEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2858,16 +3171,22 @@ public final class Playcloud {
       "ncoding_parameters\030\002 \003(\0132&.EncodeRequest" +
       ".EncodingParametersEntry\0329\n\027EncodingPara" +
       "metersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:" +
-      "\0028\001\"%\n\013EncodeReply\022\026\n\006strips\030\001 \003(\0132\006.Str" +
-      "ip\"\247\001\n\rDecodeRequest\022\026\n\006strips\030\001 \003(\0132\006.S" +
-      "trip\022C\n\023decoding_parameters\030\002 \003(\0132&.Deco" +
-      "deRequest.DecodingParametersEntry\0329\n\027Dec" +
-      "odingParametersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005val",
-      "ue\030\002 \001(\t:\0028\001\" \n\013DecodeReply\022\021\n\tdec_block" +
-      "\030\001 \001(\0142d\n\016EncoderDecoder\022(\n\006Encode\022\016.Enc" +
-      "odeRequest\032\014.EncodeReply\"\000\022(\n\006Decode\022\016.D" +
-      "ecodeRequest\032\014.DecodeReply\"\000B\031\n\027ch.unine" +
-      ".iiun.safecloudb\006proto3"
+      "\0028\001\"\243\001\n\013EncodeReply\022\026\n\006strips\030\001 \003(\0132\006.St" +
+      "rip\022A\n\023encoding_parameters\030\002 \003(\0132$.Encod" +
+      "eReply.EncodingParametersEntry\0329\n\027Encodi" +
+      "ngParametersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030" +
+      "\002 \001(\t:\0028\001\"\247\001\n\rDecodeRequest\022\026\n\006strips\030\001 ",
+      "\003(\0132\006.Strip\022C\n\023decoding_parameters\030\002 \003(\013" +
+      "2&.DecodeRequest.DecodingParametersEntry" +
+      "\0329\n\027DecodingParametersEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022\r\n\005value\030\002 \001(\t:\0028\001\"\236\001\n\013DecodeReply\022\021\n\td" +
+      "ec_block\030\001 \001(\014\022A\n\023encoding_parameters\030\002 " +
+      "\003(\0132$.DecodeReply.EncodingParametersEntr" +
+      "y\0329\n\027EncodingParametersEntry\022\013\n\003key\030\001 \001(" +
+      "\t\022\r\n\005value\030\002 \001(\t:\0028\0012d\n\016EncoderDecoder\022(" +
+      "\n\006Encode\022\016.EncodeRequest\032\014.EncodeReply\"\000" +
+      "\022(\n\006Decode\022\016.DecodeRequest\032\014.DecodeReply",
+      "\"\000B\031\n\027ch.unine.iiun.safecloudb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2904,7 +3223,13 @@ public final class Playcloud {
     internal_static_EncodeReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_EncodeReply_descriptor,
-        new java.lang.String[] { "Strips", });
+        new java.lang.String[] { "Strips", "EncodingParameters", });
+    internal_static_EncodeReply_EncodingParametersEntry_descriptor =
+      internal_static_EncodeReply_descriptor.getNestedTypes().get(0);
+    internal_static_EncodeReply_EncodingParametersEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_EncodeReply_EncodingParametersEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_DecodeRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_DecodeRequest_fieldAccessorTable = new
@@ -2922,7 +3247,13 @@ public final class Playcloud {
     internal_static_DecodeReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_DecodeReply_descriptor,
-        new java.lang.String[] { "DecBlock", });
+        new java.lang.String[] { "DecBlock", "EncodingParameters", });
+    internal_static_DecodeReply_EncodingParametersEntry_descriptor =
+      internal_static_DecodeReply_descriptor.getNestedTypes().get(0);
+    internal_static_DecodeReply_EncodingParametersEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_DecodeReply_EncodingParametersEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

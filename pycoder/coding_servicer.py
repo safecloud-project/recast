@@ -169,6 +169,7 @@ class CodingService(BetaEncoderDecoderServicer):
             strips.append(strip)
 
         reply.strips.extend(strips)
+        reply.parameters["driver"] = os.environ.get("DRIVER", CONFIG.get("main", "driver"))
         log_temp = "Request encoded, returning reply with {} strips"
         logger.info(log_temp.format(len(strips)))
         return reply
@@ -180,5 +181,6 @@ class CodingService(BetaEncoderDecoderServicer):
         reply = DecodeReply()
         strips = convert_strips_to_bytes_list(request.strips)
         reply.dec_block = self.driver.decode(strips)
+        reply.parameters["driver"] = os.environ.get("DRIVER", CONFIG.get("main", "driver"))
         logger.info("Request decoded, returning reply")
         return reply
