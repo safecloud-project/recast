@@ -2,9 +2,9 @@
 A component that distributes blocks for storage keeps track of their location
 """
 import datetime
-
 import logging
 import logging.config
+import uuid
 
 from enum import Enum
 from dbox import DBox
@@ -22,6 +22,36 @@ class Providers(Enum):
     gdrive = 1
     dropbox = 2
 
+class ProviderFactory(object):
+    """
+    Creates storage providers based on configuration
+    """
+    def __init__(self):
+        self.initializers = {
+            Providers.dropbox.name: DBox,
+            Providers.gdrive.name: GDrive,
+            Providers.redis.name: RedisProvider
+        }
+
+    def get_provider(self, configuration={}):
+        """
+        Return a storage provider based on the values in a dictionary
+        Args:
+            configuration -- A dictionary with the parameters to initialize the
+                        storage provider
+        Retruns:
+            A storage provider
+        Raises:
+            Exception -- If the configuration dictionary does not have a type
+                key or the value under key is not supported by the factory
+        """
+        provider_type = configuration.get("type", None)
+        if provider_type is None:
+            raise Exception("configuration parameter must have a type key-value pair")
+        initializer = self.initializers.get(provider_type)
+        if initializer is None:
+            raise Exception("configuration type is not supported by the factory")
+        return initializer(configuration)
 
 class Metadata(object):
     """
@@ -32,9 +62,6 @@ class Metadata(object):
         self.path = path
         self.creation_date = datetime.datetime.now()
         self.blocks = {}
-        for provider in Providers:
-            self.blocks[provider] = []
-
 
 class Dispatcher(object):
     """
@@ -42,12 +69,12 @@ class Dispatcher(object):
     retrieve them
     """
 
-    def __init__(self):
-        self.providers = {
-            # Providers.dropbox: DBox(),
-            # Providers.gdrive: GDrive(),
-            Providers.redis: RedisProvider()
-        }
+    def __init__(self, providers_configuration=[]):
+        self.providers = {}
+        factory = ProviderFactory()
+        for configuration in providers_configuration:
+            provider = factory.get_provider(configuration)
+            self.providers[str(uuid.uuid4())] = provider
         self.files = {}
 
     def put(self, path, blocks):
@@ -73,7 +100,9 @@ class Dispatcher(object):
             logger.debug(loop_temp.format(i, key, provider_key))
 
             provider.put(block, key)
-            metadata.blocks[provider_key].append(key)
+            stored_blocks = metadata.blocks.get(provider_key, [])
+            stored_blocks.append(key)
+            metadata.blocks[provider_key] = stored_blocks
         return metadata
 
     def get(self, path):
