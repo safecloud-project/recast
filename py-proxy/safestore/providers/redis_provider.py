@@ -47,3 +47,9 @@ class RedisProvider(object):
             The number of keys deleted from the database
         """
         return self.redis.delete(path)
+
+    def clear(self):
+        """
+        Deletes all entries in the redis database
+        """
+        return self.redis.flushall()
