@@ -4,7 +4,10 @@ A component that distributes blocks for storage keeps track of their location
 import datetime
 import logging
 import logging.config
+import os
 import uuid
+
+import numpy
 
 from enum import Enum
 from dbox import DBox
@@ -62,6 +65,17 @@ class Metadata(object):
         self.path = path
         self.creation_date = datetime.datetime.now()
         self.blocks = {}
+        self.entangled_blocks = {}
+
+def xor(block_a, block_b):
+    """
+    'Private' function used to xor two blocks.
+    """
+    a = numpy.frombuffer(block_a, dtype='b')
+    b = numpy.frombuffer(block_b, dtype='b')
+    c = numpy.bitwise_xor(a, b)
+    r = c.tostring()
+    return r
 
 class Dispatcher(object):
     """
@@ -125,3 +139,21 @@ class Dispatcher(object):
             for block_key in block_keys:
                 data[block_key] = provider.get(block_key)
         return [data[key] for key in sorted(data.keys())]
+
+    def entangle(self, original_blocks):
+        """
+        Entangles a list of blocks with a chosen list of blocks
+        Args:
+            original_blocks -- A list of blocks to entangle
+        Returns:
+            A tuple with the original blocks, the metadata of the blocks used to
+            encode and the list of modified blocks
+        """
+        if len(original_blocks) == 0:
+            return ([], [], [])
+        block_length = len(original_blocks[0])
+        random_block = os.urandom(block_length)
+        entangled_blocks = []
+        for block in original_blocks:
+            entangled_blocks.append(xor(block, random_block))
+        return (original_blocks, [], entangled_blocks)
