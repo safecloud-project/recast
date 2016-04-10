@@ -10,9 +10,11 @@ class RedisProvider(object):
     A storage provider that stores data in a Redis database
     """
 
-    def __init__(self,
-                 host=os.getenv("REDIS_PORT_6379_TCP_ADDR", "127.0.0.1"),
-                 port=int(os.getenv("REDIS_PORT_6379_TCP_PORT", 6379))):
+    def __init__(self, configuration={
+                 "host": os.getenv("REDIS_PORT_6379_TCP_ADDR", "127.0.0.1"),
+                 "port": int(os.getenv("REDIS_PORT_6379_TCP_PORT", 6379))}):
+        host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "127.0.0.1"))
+        port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
         self.redis = redis.StrictRedis(host=host, port=port, db=0)
 
     def get(self, path):

@@ -1,9 +1,9 @@
 """
 A python implementation of playcloud's proxy server
 """
+import json
 import logging
 import logging.config
-
 import os
 import uuid
 
@@ -32,13 +32,10 @@ GRPC_CHANNEL = implementations.insecure_channel(CODER_HOST, CODER_PORT)
 
 CLIENT_STUB = beta_create_EncoderDecoder_stub(GRPC_CHANNEL)
 
-# Redis configuration
-REDIS_HOST = os.getenv("REDIS_PORT_6379_TCP_ADDR", "127.0.0.1")
-REDIS_PORT = int(os.getenv("REDIS_PORT_6379_TCP_PORT", 6379))
-
-logger.info(con_log.format("redis", REDIS_HOST, REDIS_PORT))
-
-DISPACHER = Dispatcher()
+# Dispatcher configuration
+with open(os.path.join(os.path.dirname(__file__), "dispatcher.json")) as dispatcher_configuration_file:
+    dispatcher_configuration = json.load(dispatcher_configuration_file)
+    DISPACHER = Dispatcher(dispatcher_configuration["providers"])
 
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
