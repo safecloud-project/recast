@@ -74,12 +74,18 @@ class Metadata(object):
         self.path = path
         self.creation_date = datetime.datetime.now()
         self.blocks = []
-        self.entangled_blocks = {}
+        self.entangling_blocks = []
 
 def xor(block_a, block_b):
     """
     'Private' function used to xor two blocks.
     """
+    # If a is longer than b, pad b
+    if len(block_a) > len(block_b):
+        for i in range(0, (len(block_a) - len(block_b))):
+            block_b = block_b + '0'
+    elif len(block_a) < len(block_b):
+        block_b = block_b[:len(block_a)]
     a = numpy.frombuffer(block_a, dtype='b')
     b = numpy.frombuffer(block_b, dtype='b')
     c = numpy.bitwise_xor(a, b)
@@ -110,12 +116,13 @@ class Dispatcher(object):
             A metadata object describing how the blocks have been stored
         """
         metadata = Metadata(path)
-        self.files[path] = metadata
         provider_keys = self.providers.keys()
         number_of_providers = len(provider_keys)
         loop_temp = "Going to put block {} with key {} in provider {}"
         index_format_length = len(str(len(blocks)))
-        for i, block_data in enumerate(blocks):
+        blocks, entangling_blocks, entangled_blocks = self.entangle(blocks)
+        metadata.entangling_blocks = entangling_blocks
+        for i, block_data in enumerate(entangled_blocks):
             key = path + "-" + str(i).zfill(index_format_length)
             provider_key = provider_keys[i % number_of_providers]
             provider = self.providers[provider_key]
@@ -124,6 +131,7 @@ class Dispatcher(object):
             metablock = MetaBlock(key, provider_key)
             provider.put(block_data, key)
             stored_blocks = metadata.blocks.append(metablock)
+        self.files[path] = metadata
         return metadata
 
     def get(self, path):
@@ -141,7 +149,7 @@ class Dispatcher(object):
         for metablock in metadata.blocks:
             provider = self.providers[metablock.provider]
             data[metablock.key] = provider.get(metablock.key)
-        return [data[key] for key in sorted(data.keys())]
+        return self.disentangle([data[key] for key in sorted(data.keys())], metadata.entangling_blocks)
 
     def entangle(self, original_blocks):
         """
@@ -155,11 +163,36 @@ class Dispatcher(object):
         if len(original_blocks) == 0:
             return ([], [], [])
         block_length = len(original_blocks[0])
-        random_block = self.get_random_block()
+        metablocks = []
+        metablock, random_block = self.get_random_block()
+        if metablock is None:
+            return (original_blocks, metablocks, original_blocks)
         entangled_blocks = []
         for block in original_blocks:
             entangled_blocks.append(xor(block, random_block))
-        return (original_blocks, [], entangled_blocks)
+        metablocks.append(metablock)
+        return (original_blocks, metablocks, entangled_blocks)
+
+    def disentangle(self, entangled_blocks, entangling_metablocks):
+        """
+        Disentangle a list of blocks
+        Args:
+            entangled_blocks -- A list of entangled blocks
+            entangling_metablocks --  A list of metablocks used to disentangle the
+                entangled blocks
+        Returns:
+            A list of disentangled blocks
+        """
+        entangling_blocks = []
+        for metablock in entangling_metablocks:
+            provider = self.providers[metablock.provider]
+            entangling_blocks.append(provider.get(metablock.key))
+        disentangled_blocks = []
+        for block in entangled_blocks:
+            for entangling_block in entangling_blocks:
+                block = xor(block, entangling_block)
+            disentangled_blocks.append(block)
+        return disentangled_blocks
 
     def get_random_block(self):
         """
@@ -169,7 +202,7 @@ class Dispatcher(object):
         """
         stored_filenames = self.files.keys()
         if len(stored_filenames) == 0:
-            return (MetaBlock(), b"")
+            return (None, None)
         filename = stored_filenames[0]
         metafile = self.files[filename]
         metablock = metafile.blocks[0]
