@@ -56,6 +56,15 @@ class ProviderFactory(object):
             raise Exception("configuration type is not supported by the factory")
         return initializer(configuration)
 
+class MetaBlock(object):
+    """
+    A class that represents a data block
+    """
+    def __init__(self, key, provider, creation_date=datetime.datetime.now()):
+        self.key = key
+        self.provider = provider
+        self.creation_date = creation_date
+
 class Metadata(object):
     """
     A class describing how a file has been stored in the system
@@ -64,7 +73,7 @@ class Metadata(object):
     def __init__(self, path):
         self.path = path
         self.creation_date = datetime.datetime.now()
-        self.blocks = {}
+        self.blocks = []
         self.entangled_blocks = {}
 
 def xor(block_a, block_b):
@@ -106,17 +115,15 @@ class Dispatcher(object):
         number_of_providers = len(provider_keys)
         loop_temp = "Going to put block {} with key {} in provider {}"
         index_format_length = len(str(len(blocks)))
-        for i, block in enumerate(blocks):
+        for i, block_data in enumerate(blocks):
             key = path + "-" + str(i).zfill(index_format_length)
             provider_key = provider_keys[i % number_of_providers]
             provider = self.providers[provider_key]
 
             logger.debug(loop_temp.format(i, key, provider_key))
-
-            provider.put(block, key)
-            stored_blocks = metadata.blocks.get(provider_key, [])
-            stored_blocks.append(key)
-            metadata.blocks[provider_key] = stored_blocks
+            metablock = MetaBlock(key, provider_key)
+            provider.put(block_data, key)
+            stored_blocks = metadata.blocks.append(metablock)
         return metadata
 
     def get(self, path):
@@ -130,14 +137,10 @@ class Dispatcher(object):
         metadata = self.files.get(path)
         if metadata is None:
             return None
-        provider_keys = [k for k in metadata.blocks.keys()
-                          if len(metadata.blocks[k]) > 0]
         data = {}
-        for provider_key in provider_keys:
-            provider = self.providers[provider_key]
-            block_keys = metadata.blocks[provider_key]
-            for block_key in block_keys:
-                data[block_key] = provider.get(block_key)
+        for metablock in metadata.blocks:
+            provider = self.providers[metablock.provider]
+            data[metablock.key] = provider.get(metablock.key)
         return [data[key] for key in sorted(data.keys())]
 
     def entangle(self, original_blocks):
@@ -152,8 +155,25 @@ class Dispatcher(object):
         if len(original_blocks) == 0:
             return ([], [], [])
         block_length = len(original_blocks[0])
-        random_block = os.urandom(block_length)
+        random_block = self.get_random_block()
         entangled_blocks = []
         for block in original_blocks:
             entangled_blocks.append(xor(block, random_block))
         return (original_blocks, [], entangled_blocks)
+
+    def get_random_block(self):
+        """
+        Returns a tuple with the information and a data block
+        Returns:
+            A tuple with metadata about a block (MetaBlock) and the block itself
+        """
+        stored_filenames = self.files.keys()
+        if len(stored_filenames) == 0:
+            return (MetaBlock(), b"")
+        filename = stored_filenames[0]
+        metafile = self.files[filename]
+        metablock = metafile.blocks[0]
+        provider_key = metablock.provider
+        block_key = metablock.key
+        block = self.providers[provider_key].get(block_key)
+        return (metablock, block)
