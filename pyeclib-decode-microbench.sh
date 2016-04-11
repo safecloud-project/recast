@@ -27,6 +27,8 @@ REPETITIONS="${2}"
 REQUESTS=${3}
 #source "${ENV_FILE}"
 FOLDER=${ENV_FILE:10:-4}
+
+echo $FOLDER
 DATA_DIRECTORY="results/microbench/decode/${FOLDER}"
 
 echo $DATA_DIRECTORY

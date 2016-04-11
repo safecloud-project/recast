@@ -1,11 +1,10 @@
 FROM pycoder-micro
 
-
 COPY * /usr/local/src/app/
 
 WORKDIR /usr/local/src/app/
 
-ENV DRIVER xor
-ENV NBLOCKS 3
+ENV splitter  aes
+ENV sec_measure  confd
 
-ENTRYPOINT /usr/bin/python /usr/local/src/app/microbench_local_decode.py "4194304"  "1" > /results/microbench/decode/xor/microbench-decode-4MB-1.dat
+ENTRYPOINT /usr/bin/python /usr/local/src/app/microbench_local_encode.py "67108864"  "1" > /results/microbench/encode/confd/aes/microbench-encode-64MB-1.dat

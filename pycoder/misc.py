@@ -1,12 +1,9 @@
 import random
 import string
-from safestore.aes_driver import AESDriver
+from safestore.shamir_driver import ShamirDriver
 
 
-aes_driver = AESDriver()
-
-#shamir = ShamirDriver(3, 2)
-#xor = XorDriver(3)
+driver = ShamirDriver(5, 2)
 
 msg = """
         0,203.508
@@ -22,7 +19,13 @@ msg = """
 def randomword(length):
     return ''.join(random.choice(string.lowercase) for i in range(length))
 
-print(len(aes_driver.encode(msg)))
+
+encoded = driver.encode(msg)
+encoded = map(lambda (x, y): str(x)+"<>"+y, encoded)
+print(encoded)
+rec_encoded = map(lambda x: (int(x.split('<>')[0]),x.split('<>')[1]), encoded)
+print (rec_encoded)
+print(driver.decode(rec_encoded))
 
 #message = randomword(110)
 # print message

@@ -5,7 +5,8 @@ import ConfigParser
 
 import os
 import unittest
-
+from os import listdir
+from os.path import isfile, join
 from faker import Faker
 
 config = ConfigParser.ConfigParser()
@@ -23,6 +24,7 @@ class TestDriverFactory(unittest.TestCase):
 
     def __init__(self, testname, config_file):
         super(TestDriverFactory, self).__init__(testname)
+        print(config_file)
         config = ConfigParser.ConfigParser()
         config.read(config_file)
         self.message = random_message()
@@ -36,22 +38,27 @@ class TestDriverFactory(unittest.TestCase):
         self.assertEqual(self.message, decoded)
 
 
+def files(path):
+    matches = []
+
+    for root, dirnames, filenames in os.walk(path):
+        for filename in filenames:
+            matches.append(root+"/"+filename)
+
+    return matches
+
+
 def suite_driver_factory():
     tests = ['test_encode_decode']
-    test_files = os.path.join(os.path.dirname(__file__), "test_files/")
-    config_files = ['xor_driver.cfg',
-                    'hashed_xor_driver.cfg',
-                    'signed_hashed_xor_driver.cfg',
-                    'signed_xor_driver.cfg',
-                    'erasure_driver.cfg',
-                    'aes_driver.cfg',
-                    'shamir.cfg']
+    test_path = os.path.join(os.path.dirname(__file__), "test_files/")
+    config_files = files(test_path)
 
     suite = unittest.TestSuite()
 
     for file in config_files:
         for test in tests:
-            suite.addTest(TestDriverFactory(test, os.path.join(test_files, file)))
+            suite.addTest(
+                TestDriverFactory(test, file))
 
     return suite
 
