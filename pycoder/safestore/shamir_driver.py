@@ -1,4 +1,4 @@
-from secretsharing import PlaintextToHexSecretSharer
+import gfshare
 
 class ShamirDriver:
 
@@ -7,27 +7,11 @@ class ShamirDriver:
         self.n_blocks = n_blocks
 
     def encode(self, data):
-        share = PlaintextToHexSecretSharer.split_secret
-        temp_data = data
-        res_data = []
-        while len(temp_data) > 100:
-            aux_data = temp_data[:100]
-            res_data.append(aux_data)
-            temp_data = temp_data[100:]
+        shares = gfshare.split( self.n_blocks, self.threshold, data)
+        encoded = map(lambda (x, y): str(x)+"<>"+y, shares)
 
-        res_data.append(temp_data)
-        secrets = []
-
-        for div_data in res_data:
-            secrets.append(share(div_data, self.threshold, self.n_blocks))
-        return [item for sublist in secrets for item in sublist]
+        return encoded
 
     def decode(self, data):
-        unshare = PlaintextToHexSecretSharer.recover_secret
-
-        blocks = []
-        for i in range(0, len(data), 3):
-            current_block = data[i:i + 3]
-            blocks.append(unshare(current_block))
-
-        return ''.join(blocks)
+        rec_data = map(lambda x: (int(x.split('<>')[0]),x.split('<>')[1]), data)
+        return gfshare.combine(rec_data)

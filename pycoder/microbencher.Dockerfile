@@ -37,6 +37,8 @@ WORKDIR /tmp/pylonghair
 RUN git clone https://github.com/sampot/pylonghair . --quiet
 RUN python setup.py install
 
+RUN apt-get install --assume-yes --quiet libgfshare-dev
+
 # Expose port to other containers
 EXPOSE 1234
 
@@ -49,3 +51,6 @@ COPY test_files  /usr/local/src/app/test_files
 COPY safestore/keys /usr/local/src/app/safestore/keys
 COPY logging.conf /usr/local/src/app/
 
+WORKDIR /usr/local/src/app
+
+ENTRYPOINT /usr/bin/python /usr/local/src/app/tests.py

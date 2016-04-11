@@ -13,12 +13,13 @@ from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
 from playcloud_pb2 import Strip
 
-from safestore.encryption.xor_driver import XorDriver
-from safestore.encryption.hashed_xor_driver import HashedXorDriver, Hash, IntegrityException
-from safestore.encryption.signed_xor_driver import SignedXorDriver
-from safestore.encryption.signed_hashed_xor_driver import SignedHashedXorDriver
-from safestore.encryption.aes_driver import AESDriver
-from safestore.encryption.shamir_driver import ShamirDriver
+from safestore.xor_driver import XorDriver
+from safestore.hashed_splitter_driver import HashedSplitterDriver, IntegrityException
+from safestore.signed_splitter_driver import SignedSplitterDriver
+from safestore.signed_hashed_splitter_driver import SignedHashedSplitterDriver
+from safestore.aes_driver import AESDriver
+from safestore.shamir_driver import ShamirDriver
+from safestore.assymetric_driver import AssymetricDriver
 
 CONFIG = ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
@@ -32,40 +33,62 @@ logger = logging.getLogger("pycoder")
 class DriverFactory():
 
     def __init__(self, config):
+
         self.config = config
-        driver = config.get("main", "driver")
-        self.driver = os.environ.get("DRIVER", driver)
-        logger.info("Selected driver was {}".format(self.driver))
-        self.drivers = {'xor': self.xor,
-                        'hashed_xor_driver': self.hash_xor_driver,
-                        'signed_hashed_xor_driver': self.signed_hashed_xor_driver,
-                        'shamir': self.shamir,
-                        'signed_xor_driver': self.signed_xor_driver,
-                        'ec': self.erasure_driver,
-                        'aes_driver': self.aes_driver
-                        }
+        self.splitter = os.environ.get(
+            "splitter", self.config.get("main", "splitter"))
+        self.sec_measure = os.environ.get(
+            "sec_measure", self.config.get("main", "sec_measure"))
+
+    def setup_driver(self):
+
+        splitters = {'xor': self.xor,
+                     'shamir': self.shamir,
+                     'ec': self.erasure_driver,
+                     'aes': self.aes_driver
+                     }
+
+        self.splitter_driver = splitters[self.splitter]()
+
+        measures = {  # just confidentiality
+            'confd': self.confd,
+            # confidentiality and integrity
+            'confd_int': self.confd_int,
+            # confidentiality and non-repudiation
+            'confd_sign': self.confd_sign,
+            # every guarantee
+            'confd_int_sign': self.confd_int_sign}
+
+        return measures[self.sec_measure]()
+
+    def confd(self):
+        return self.splitter_driver
+
+    def confd_int(self):
+        hash = os.environ.get("hash", self.config.get("main", "hash"))
+        driver = HashedSplitterDriver(self.splitter_driver, hash)
+        return driver
+
+    def _get_signer(self):
+        sign_cypher = os.environ.get("signature", self.config.get("main", "signature"))
+        hash = os.environ.get("hash", self.config.get("main", "hash"))
+        key_size = int(
+            os.environ.get("keysize", self.config.get("hash", "keysize")))
+        return AssymetricDriver(sign_cypher, key_size, hash)
+
+    def confd_sign(self):
+        signer = self._get_signer()
+        return SignedSplitterDriver(self.splitter_driver, signer)
+
+    def confd_int_sign(self):
+        signer = self._get_signer()
+        return SignedHashedSplitterDriver(self.confd_int(), signer)
 
     def xor(self):
         nblocks = self.config.getint("xor", "n_blocks")
         nblocks = int(os.environ.get("NBLOCKS", nblocks))
         logger.info("{} nblocks".format(nblocks))
         return XorDriver(nblocks)
-
-    def hash_xor_driver(self):
-        nblocks = self.config.getint("hashed_xor_driver", "n_blocks")
-        nblocks = int(os.environ.get("NBLOCKS", nblocks))
-        hash = self.config.get("hashed_xor_driver", "hash")
-        hash = os.environ.get('HASH', hash)
-        logger.info("{} nblocks and {} hash".format(nblocks, hash))
-        return HashedDriver(HashedXorDriver(nblocks, Hash[hash]))
-
-    def signed_hashed_xor_driver(self):
-        nblocks = self.config.getint("signed_hashed_xor_driver", "n_blocks")
-        nblocks = int(os.environ.get("NBLOCKS", nblocks))
-        hash = self.config.get("signed_hashed_xor_driver", "hash")
-        hash = os.environ.get('HASH', hash)
-        logger.info("{} nblocks and {} hash".format(nblocks, hash))
-        return HashedDriver(SignedHashedXorDriver(nblocks, Hash[hash]))
 
     def shamir(self):
         nblocks = self.config.getint("shamir", "n_blocks")
@@ -77,48 +100,58 @@ class DriverFactory():
 
         return ShamirDriver(nblocks, threshold)
 
-    def signed_xor_driver(self):
-        nblocks = self.config.getint("signed_xor_driver", "n_blocks")
-        nblocks = int(os.environ.get("NBLOCKS", nblocks))
-        logger.info("{} nblocks".format(nblocks))
-        return SignedXorDriver(nblocks)
-
     def erasure_driver(self):
         ec_k = int(os.environ.get("EC_K", self.config.get("ec", "k")))
         ec_m = int(os.environ.get("EC_M", self.config.get("ec", "m")))
         ec_type = os.environ.get("EC_TYPE", self.config.get("ec", "type"))
-        logger.info("{} ec_k, {} ec_m, {} ec_type".format(ec_k, ec_m, ec_type))
+        logger.info("ec_k {}, ec_m {}, ec_type {}".format(ec_k, ec_m, ec_type))
         return Eraser(ec_k, ec_m, ec_type)
 
     def aes_driver(self):
         return AESDriver()
 
     def get_driver(self):
-        return self.drivers[self.driver]
+        return self.setup_driver()
 
 
 
 
 
+class Eraser(object):
+
+    """A wrapper for pyeclib erasure coding driver (ECDriver)"""
+
+    def __init__(self, ec_k, ec_m, ec_type="liberasurecode_rs_vand"):
+        self.ec_type = ec_type
+        self.aes = AESDriver()
+        if ec_type == "pylonghair":
+            self.driver = PylonghairDriver(k=ec_k, m=ec_m, ec_type=ec_type)
+        elif ec_type == "striping" or ec_type == "bypass":
+            self.driver = ECStripingDriver(k=ec_k, m=0, hd=None)
+        else:
+            self.driver = ECDriver(k=ec_k, m=ec_m, ec_type='jerasure_rs_vand')
 
     def encode(self, data):
         """Encode a string of bytes in flattened string of byte strips"""
-        return self.driver.encode(data)
+        enc = self.aes.encode(data)
+
+        strips =self.driver.encode(enc[0])
+        return strips
 
     def decode(self, strips):
         """Decode byte strips in a string of bytes"""
-        return self.driver.decode(strips)
+        data = self.driver.decode(strips)
+        return self.aes.decode([data])
 
 
-def strips_to_bytes(strips):
-    """Flatens a list of byte strings in single byte string"""
-    flattened_bytes=""
-    for strip in strips:
-        if isinstance(strip, bytearray):
-            flattened_bytes += str(strip)
-        else:
-            flattened_bytes += strip
-    return flattened_bytes
+class HashedDriver():
+
+    """
+    Encapsulating driver for encryption schemes with hash.
+    Converts the [(block, digest)] in to a list of [block, digest]
+    when encoding.
+    When decoding it converts the other way around.
+    """
 
 
 class Eraser(object):
@@ -147,6 +180,7 @@ class Eraser(object):
 
 
 class CodingService(BetaEncoderDecoderServicer):
+
     """
     An Encoder/Decoder built on top of playcloud.proto that can be loaded by a
     GRPC server
@@ -169,7 +203,8 @@ class CodingService(BetaEncoderDecoderServicer):
             strips.append(strip)
 
         reply.strips.extend(strips)
-        reply.parameters["driver"] = os.environ.get("DRIVER", CONFIG.get("main", "driver"))
+        reply.parameters["driver"] = os.environ.get(
+            "DRIVER", CONFIG.get("main", "driver"))
         log_temp = "Request encoded, returning reply with {} strips"
         logger.info(log_temp.format(len(strips)))
         return reply
@@ -181,6 +216,7 @@ class CodingService(BetaEncoderDecoderServicer):
         reply = DecodeReply()
         strips = convert_strips_to_bytes_list(request.strips)
         reply.dec_block = self.driver.decode(strips)
-        reply.parameters["driver"] = os.environ.get("DRIVER", CONFIG.get("main", "driver"))
+        reply.parameters["driver"] = os.environ.get(
+            "DRIVER", CONFIG.get("main", "driver"))
         logger.info("Request decoded, returning reply")
         return reply
