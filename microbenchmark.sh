@@ -1,7 +1,7 @@
-FILES=dockerenv/*/*
+FILES=dockerenv/confd/*
 
-REPETITIONS=1
-REQUESTS=1
+REPETITIONS=10
+REQUESTS=100
 for f in $FILES
 do
     # repetitions
@@ -9,9 +9,9 @@ do
     ./pyeclib-encode-microbench.sh "$f" $REPETITIONS $REQUESTS
 done
 
-#for f in $FILES
-#do
+for f in $FILES
+do
     # repetitions
     # requests
-#    ./pyeclib-decode-microbench.sh "$f" $REPETITIONS $REQUESTS
-#done
+    ./pyeclib-decode-microbench.sh "$f" $REPETITIONS $REQUESTS
+done
