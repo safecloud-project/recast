@@ -37,6 +37,9 @@ WORKDIR /tmp/pylonghair
 RUN git clone https://github.com/sampot/pylonghair . --quiet
 RUN python setup.py install
 
+# Install libgfshare
+RUN apt-get update --quiet && apt-get install --assume-yes --quiet libgfshare-dev
+
 # Expose port to other containers
 EXPOSE 1234
 
