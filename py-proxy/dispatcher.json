@@ -1,7 +1,8 @@
 {
 	"providers": [
-		{
-			"type": "redis"
-		}
+		{"type": "redis"},
+		{"type": "redis", "host": "172.16.1.229", "port": 7000},
+		{"type": "redis", "host": "172.16.1.230", "port": 7000},
+		{"type": "redis", "host": "172.16.1.231", "port": 7000},
 	]
 }
