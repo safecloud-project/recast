@@ -404,10 +404,10 @@ public final class Playcloud {
     com.google.protobuf.ByteString getPayload();
 
     /**
-     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
     java.util.Map<java.lang.String, java.lang.String>
-    getEncodingParameters();
+    getParameters();
   }
   /**
    * Protobuf type {@code EncodeRequest}
@@ -455,14 +455,14 @@ public final class Playcloud {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                encodingParameters_ = com.google.protobuf.MapField.newMapField(
-                    EncodingParametersDefaultEntryHolder.defaultEntry);
+                parameters_ = com.google.protobuf.MapField.newMapField(
+                    ParametersDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000002;
               }
               com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-              encodingParameters = input.readMessage(
-                  EncodingParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              encodingParameters_.getMutableMap().put(encodingParameters.getKey(), encodingParameters.getValue());
+              parameters = input.readMessage(
+                  ParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              parameters_.getMutableMap().put(parameters.getKey(), parameters.getValue());
               break;
             }
           }
@@ -487,7 +487,7 @@ public final class Playcloud {
         int number) {
       switch (number) {
         case 2:
-          return internalGetEncodingParameters();
+          return internalGetParameters();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -510,34 +510,34 @@ public final class Playcloud {
       return payload_;
     }
 
-    public static final int ENCODING_PARAMETERS_FIELD_NUMBER = 2;
-    private static final class EncodingParametersDefaultEntryHolder {
+    public static final int PARAMETERS_FIELD_NUMBER = 2;
+    private static final class ParametersDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeRequest_EncodingParametersEntry_descriptor, 
+                  ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeRequest_ParametersEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "");
     }
     private com.google.protobuf.MapField<
-        java.lang.String, java.lang.String> encodingParameters_;
+        java.lang.String, java.lang.String> parameters_;
     private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-    internalGetEncodingParameters() {
-      if (encodingParameters_ == null) {
+    internalGetParameters() {
+      if (parameters_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
-            EncodingParametersDefaultEntryHolder.defaultEntry);
+            ParametersDefaultEntryHolder.defaultEntry);
      }
-      return encodingParameters_;
+      return parameters_;
     }
     /**
-     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
 
-    public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
-      return internalGetEncodingParameters().getMap();
+    public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+      return internalGetParameters().getMap();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -556,13 +556,13 @@ public final class Playcloud {
         output.writeBytes(1, payload_);
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetEncodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
-        output.writeMessage(2, encodingParameters);
+        output.writeMessage(2, parameters);
       }
     }
 
@@ -576,14 +576,14 @@ public final class Playcloud {
           .computeBytesSize(1, payload_);
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetEncodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(2, encodingParameters);
+            .computeMessageSize(2, parameters);
       }
       memoizedSize = size;
       return size;
@@ -678,7 +678,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetEncodingParameters();
+            return internalGetParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -689,7 +689,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetMutableEncodingParameters();
+            return internalGetMutableParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -720,7 +720,7 @@ public final class Playcloud {
         super.clear();
         payload_ = com.google.protobuf.ByteString.EMPTY;
 
-        internalGetMutableEncodingParameters().clear();
+        internalGetMutableParameters().clear();
         return this;
       }
 
@@ -746,8 +746,8 @@ public final class Playcloud {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         result.payload_ = payload_;
-        result.encodingParameters_ = internalGetEncodingParameters();
-        result.encodingParameters_.makeImmutable();
+        result.parameters_ = internalGetParameters();
+        result.parameters_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -767,8 +767,8 @@ public final class Playcloud {
         if (other.getPayload() != com.google.protobuf.ByteString.EMPTY) {
           setPayload(other.getPayload());
         }
-        internalGetMutableEncodingParameters().mergeFrom(
-            other.internalGetEncodingParameters());
+        internalGetMutableParameters().mergeFrom(
+            other.internalGetParameters());
         onChanged();
         return this;
       }
@@ -826,46 +826,46 @@ public final class Playcloud {
       }
 
       private com.google.protobuf.MapField<
-          java.lang.String, java.lang.String> encodingParameters_;
+          java.lang.String, java.lang.String> parameters_;
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetEncodingParameters() {
-        if (encodingParameters_ == null) {
+      internalGetParameters() {
+        if (parameters_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
-              EncodingParametersDefaultEntryHolder.defaultEntry);
+              ParametersDefaultEntryHolder.defaultEntry);
        }
-        return encodingParameters_;
+        return parameters_;
       }
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetMutableEncodingParameters() {
+      internalGetMutableParameters() {
         onChanged();;
-        if (encodingParameters_ == null) {
-          encodingParameters_ = com.google.protobuf.MapField.newMapField(
-              EncodingParametersDefaultEntryHolder.defaultEntry);
+        if (parameters_ == null) {
+          parameters_ = com.google.protobuf.MapField.newMapField(
+              ParametersDefaultEntryHolder.defaultEntry);
         }
-        if (!encodingParameters_.isMutable()) {
-          encodingParameters_ = encodingParameters_.copy();
+        if (!parameters_.isMutable()) {
+          parameters_ = parameters_.copy();
         }
-        return encodingParameters_;
+        return parameters_;
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
-        return internalGetEncodingParameters().getMap();
+      public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+        return internalGetParameters().getMap();
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
       public java.util.Map<java.lang.String, java.lang.String>
-      getMutableEncodingParameters() {
-        return internalGetMutableEncodingParameters().getMutableMap();
+      getMutableParameters() {
+        return internalGetMutableParameters().getMutableMap();
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public Builder putAllEncodingParameters(
+      public Builder putAllParameters(
           java.util.Map<java.lang.String, java.lang.String> values) {
-        getMutableEncodingParameters().putAll(values);
+        getMutableParameters().putAll(values);
         return this;
       }
       public final Builder setUnknownFields(
@@ -955,10 +955,10 @@ public final class Playcloud {
         int index);
 
     /**
-     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
     java.util.Map<java.lang.String, java.lang.String>
-    getEncodingParameters();
+    getParameters();
   }
   /**
    * Protobuf type {@code EncodeReply}
@@ -1009,14 +1009,14 @@ public final class Playcloud {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                encodingParameters_ = com.google.protobuf.MapField.newMapField(
-                    EncodingParametersDefaultEntryHolder.defaultEntry);
+                parameters_ = com.google.protobuf.MapField.newMapField(
+                    ParametersDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000002;
               }
               com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-              encodingParameters = input.readMessage(
-                  EncodingParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              encodingParameters_.getMutableMap().put(encodingParameters.getKey(), encodingParameters.getValue());
+              parameters = input.readMessage(
+                  ParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              parameters_.getMutableMap().put(parameters.getKey(), parameters.getValue());
               break;
             }
           }
@@ -1044,7 +1044,7 @@ public final class Playcloud {
         int number) {
       switch (number) {
         case 2:
-          return internalGetEncodingParameters();
+          return internalGetParameters();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -1092,34 +1092,34 @@ public final class Playcloud {
       return strips_.get(index);
     }
 
-    public static final int ENCODING_PARAMETERS_FIELD_NUMBER = 2;
-    private static final class EncodingParametersDefaultEntryHolder {
+    public static final int PARAMETERS_FIELD_NUMBER = 2;
+    private static final class ParametersDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeReply_EncodingParametersEntry_descriptor, 
+                  ch.unine.iiun.safecloud.Playcloud.internal_static_EncodeReply_ParametersEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "");
     }
     private com.google.protobuf.MapField<
-        java.lang.String, java.lang.String> encodingParameters_;
+        java.lang.String, java.lang.String> parameters_;
     private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-    internalGetEncodingParameters() {
-      if (encodingParameters_ == null) {
+    internalGetParameters() {
+      if (parameters_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
-            EncodingParametersDefaultEntryHolder.defaultEntry);
+            ParametersDefaultEntryHolder.defaultEntry);
      }
-      return encodingParameters_;
+      return parameters_;
     }
     /**
-     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
 
-    public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
-      return internalGetEncodingParameters().getMap();
+    public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+      return internalGetParameters().getMap();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1138,13 +1138,13 @@ public final class Playcloud {
         output.writeMessage(1, strips_.get(i));
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetEncodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
-        output.writeMessage(2, encodingParameters);
+        output.writeMessage(2, parameters);
       }
     }
 
@@ -1158,14 +1158,14 @@ public final class Playcloud {
           .computeMessageSize(1, strips_.get(i));
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetEncodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(2, encodingParameters);
+            .computeMessageSize(2, parameters);
       }
       memoizedSize = size;
       return size;
@@ -1260,7 +1260,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetEncodingParameters();
+            return internalGetParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -1271,7 +1271,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetMutableEncodingParameters();
+            return internalGetMutableParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -1307,7 +1307,7 @@ public final class Playcloud {
         } else {
           stripsBuilder_.clear();
         }
-        internalGetMutableEncodingParameters().clear();
+        internalGetMutableParameters().clear();
         return this;
       }
 
@@ -1340,8 +1340,8 @@ public final class Playcloud {
         } else {
           result.strips_ = stripsBuilder_.build();
         }
-        result.encodingParameters_ = internalGetEncodingParameters();
-        result.encodingParameters_.makeImmutable();
+        result.parameters_ = internalGetParameters();
+        result.parameters_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -1383,8 +1383,8 @@ public final class Playcloud {
             }
           }
         }
-        internalGetMutableEncodingParameters().mergeFrom(
-            other.internalGetEncodingParameters());
+        internalGetMutableParameters().mergeFrom(
+            other.internalGetParameters());
         onChanged();
         return this;
       }
@@ -1653,46 +1653,46 @@ public final class Playcloud {
       }
 
       private com.google.protobuf.MapField<
-          java.lang.String, java.lang.String> encodingParameters_;
+          java.lang.String, java.lang.String> parameters_;
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetEncodingParameters() {
-        if (encodingParameters_ == null) {
+      internalGetParameters() {
+        if (parameters_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
-              EncodingParametersDefaultEntryHolder.defaultEntry);
+              ParametersDefaultEntryHolder.defaultEntry);
        }
-        return encodingParameters_;
+        return parameters_;
       }
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetMutableEncodingParameters() {
+      internalGetMutableParameters() {
         onChanged();;
-        if (encodingParameters_ == null) {
-          encodingParameters_ = com.google.protobuf.MapField.newMapField(
-              EncodingParametersDefaultEntryHolder.defaultEntry);
+        if (parameters_ == null) {
+          parameters_ = com.google.protobuf.MapField.newMapField(
+              ParametersDefaultEntryHolder.defaultEntry);
         }
-        if (!encodingParameters_.isMutable()) {
-          encodingParameters_ = encodingParameters_.copy();
+        if (!parameters_.isMutable()) {
+          parameters_ = parameters_.copy();
         }
-        return encodingParameters_;
+        return parameters_;
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
-        return internalGetEncodingParameters().getMap();
+      public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+        return internalGetParameters().getMap();
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
       public java.util.Map<java.lang.String, java.lang.String>
-      getMutableEncodingParameters() {
-        return internalGetMutableEncodingParameters().getMutableMap();
+      getMutableParameters() {
+        return internalGetMutableParameters().getMutableMap();
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public Builder putAllEncodingParameters(
+      public Builder putAllParameters(
           java.util.Map<java.lang.String, java.lang.String> values) {
-        getMutableEncodingParameters().putAll(values);
+        getMutableParameters().putAll(values);
         return this;
       }
       public final Builder setUnknownFields(
@@ -1782,10 +1782,10 @@ public final class Playcloud {
         int index);
 
     /**
-     * <code>map&lt;string, string&gt; decoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
     java.util.Map<java.lang.String, java.lang.String>
-    getDecodingParameters();
+    getParameters();
   }
   /**
    * Protobuf type {@code DecodeRequest}
@@ -1836,14 +1836,14 @@ public final class Playcloud {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                decodingParameters_ = com.google.protobuf.MapField.newMapField(
-                    DecodingParametersDefaultEntryHolder.defaultEntry);
+                parameters_ = com.google.protobuf.MapField.newMapField(
+                    ParametersDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000002;
               }
               com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-              decodingParameters = input.readMessage(
-                  DecodingParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              decodingParameters_.getMutableMap().put(decodingParameters.getKey(), decodingParameters.getValue());
+              parameters = input.readMessage(
+                  ParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              parameters_.getMutableMap().put(parameters.getKey(), parameters.getValue());
               break;
             }
           }
@@ -1871,7 +1871,7 @@ public final class Playcloud {
         int number) {
       switch (number) {
         case 2:
-          return internalGetDecodingParameters();
+          return internalGetParameters();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -1919,34 +1919,34 @@ public final class Playcloud {
       return strips_.get(index);
     }
 
-    public static final int DECODING_PARAMETERS_FIELD_NUMBER = 2;
-    private static final class DecodingParametersDefaultEntryHolder {
+    public static final int PARAMETERS_FIELD_NUMBER = 2;
+    private static final class ParametersDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeRequest_DecodingParametersEntry_descriptor, 
+                  ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeRequest_ParametersEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "");
     }
     private com.google.protobuf.MapField<
-        java.lang.String, java.lang.String> decodingParameters_;
+        java.lang.String, java.lang.String> parameters_;
     private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-    internalGetDecodingParameters() {
-      if (decodingParameters_ == null) {
+    internalGetParameters() {
+      if (parameters_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
-            DecodingParametersDefaultEntryHolder.defaultEntry);
+            ParametersDefaultEntryHolder.defaultEntry);
      }
-      return decodingParameters_;
+      return parameters_;
     }
     /**
-     * <code>map&lt;string, string&gt; decoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
 
-    public java.util.Map<java.lang.String, java.lang.String> getDecodingParameters() {
-      return internalGetDecodingParameters().getMap();
+    public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+      return internalGetParameters().getMap();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1965,13 +1965,13 @@ public final class Playcloud {
         output.writeMessage(1, strips_.get(i));
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetDecodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        decodingParameters = DecodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
-        output.writeMessage(2, decodingParameters);
+        output.writeMessage(2, parameters);
       }
     }
 
@@ -1985,14 +1985,14 @@ public final class Playcloud {
           .computeMessageSize(1, strips_.get(i));
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetDecodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        decodingParameters = DecodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(2, decodingParameters);
+            .computeMessageSize(2, parameters);
       }
       memoizedSize = size;
       return size;
@@ -2087,7 +2087,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetDecodingParameters();
+            return internalGetParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -2098,7 +2098,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetMutableDecodingParameters();
+            return internalGetMutableParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -2134,7 +2134,7 @@ public final class Playcloud {
         } else {
           stripsBuilder_.clear();
         }
-        internalGetMutableDecodingParameters().clear();
+        internalGetMutableParameters().clear();
         return this;
       }
 
@@ -2167,8 +2167,8 @@ public final class Playcloud {
         } else {
           result.strips_ = stripsBuilder_.build();
         }
-        result.decodingParameters_ = internalGetDecodingParameters();
-        result.decodingParameters_.makeImmutable();
+        result.parameters_ = internalGetParameters();
+        result.parameters_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -2210,8 +2210,8 @@ public final class Playcloud {
             }
           }
         }
-        internalGetMutableDecodingParameters().mergeFrom(
-            other.internalGetDecodingParameters());
+        internalGetMutableParameters().mergeFrom(
+            other.internalGetParameters());
         onChanged();
         return this;
       }
@@ -2480,46 +2480,46 @@ public final class Playcloud {
       }
 
       private com.google.protobuf.MapField<
-          java.lang.String, java.lang.String> decodingParameters_;
+          java.lang.String, java.lang.String> parameters_;
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetDecodingParameters() {
-        if (decodingParameters_ == null) {
+      internalGetParameters() {
+        if (parameters_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
-              DecodingParametersDefaultEntryHolder.defaultEntry);
+              ParametersDefaultEntryHolder.defaultEntry);
        }
-        return decodingParameters_;
+        return parameters_;
       }
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetMutableDecodingParameters() {
+      internalGetMutableParameters() {
         onChanged();;
-        if (decodingParameters_ == null) {
-          decodingParameters_ = com.google.protobuf.MapField.newMapField(
-              DecodingParametersDefaultEntryHolder.defaultEntry);
+        if (parameters_ == null) {
+          parameters_ = com.google.protobuf.MapField.newMapField(
+              ParametersDefaultEntryHolder.defaultEntry);
         }
-        if (!decodingParameters_.isMutable()) {
-          decodingParameters_ = decodingParameters_.copy();
+        if (!parameters_.isMutable()) {
+          parameters_ = parameters_.copy();
         }
-        return decodingParameters_;
+        return parameters_;
       }
       /**
-       * <code>map&lt;string, string&gt; decoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public java.util.Map<java.lang.String, java.lang.String> getDecodingParameters() {
-        return internalGetDecodingParameters().getMap();
+      public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+        return internalGetParameters().getMap();
       }
       /**
-       * <code>map&lt;string, string&gt; decoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
       public java.util.Map<java.lang.String, java.lang.String>
-      getMutableDecodingParameters() {
-        return internalGetMutableDecodingParameters().getMutableMap();
+      getMutableParameters() {
+        return internalGetMutableParameters().getMutableMap();
       }
       /**
-       * <code>map&lt;string, string&gt; decoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public Builder putAllDecodingParameters(
+      public Builder putAllParameters(
           java.util.Map<java.lang.String, java.lang.String> values) {
-        getMutableDecodingParameters().putAll(values);
+        getMutableParameters().putAll(values);
         return this;
       }
       public final Builder setUnknownFields(
@@ -2590,10 +2590,10 @@ public final class Playcloud {
     com.google.protobuf.ByteString getDecBlock();
 
     /**
-     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
     java.util.Map<java.lang.String, java.lang.String>
-    getEncodingParameters();
+    getParameters();
   }
   /**
    * Protobuf type {@code DecodeReply}
@@ -2641,14 +2641,14 @@ public final class Playcloud {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                encodingParameters_ = com.google.protobuf.MapField.newMapField(
-                    EncodingParametersDefaultEntryHolder.defaultEntry);
+                parameters_ = com.google.protobuf.MapField.newMapField(
+                    ParametersDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000002;
               }
               com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-              encodingParameters = input.readMessage(
-                  EncodingParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              encodingParameters_.getMutableMap().put(encodingParameters.getKey(), encodingParameters.getValue());
+              parameters = input.readMessage(
+                  ParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              parameters_.getMutableMap().put(parameters.getKey(), parameters.getValue());
               break;
             }
           }
@@ -2673,7 +2673,7 @@ public final class Playcloud {
         int number) {
       switch (number) {
         case 2:
-          return internalGetEncodingParameters();
+          return internalGetParameters();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -2696,34 +2696,34 @@ public final class Playcloud {
       return decBlock_;
     }
 
-    public static final int ENCODING_PARAMETERS_FIELD_NUMBER = 2;
-    private static final class EncodingParametersDefaultEntryHolder {
+    public static final int PARAMETERS_FIELD_NUMBER = 2;
+    private static final class ParametersDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeReply_EncodingParametersEntry_descriptor, 
+                  ch.unine.iiun.safecloud.Playcloud.internal_static_DecodeReply_ParametersEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "");
     }
     private com.google.protobuf.MapField<
-        java.lang.String, java.lang.String> encodingParameters_;
+        java.lang.String, java.lang.String> parameters_;
     private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-    internalGetEncodingParameters() {
-      if (encodingParameters_ == null) {
+    internalGetParameters() {
+      if (parameters_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
-            EncodingParametersDefaultEntryHolder.defaultEntry);
+            ParametersDefaultEntryHolder.defaultEntry);
      }
-      return encodingParameters_;
+      return parameters_;
     }
     /**
-     * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+     * <code>map&lt;string, string&gt; parameters = 2;</code>
      */
 
-    public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
-      return internalGetEncodingParameters().getMap();
+    public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+      return internalGetParameters().getMap();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2742,13 +2742,13 @@ public final class Playcloud {
         output.writeBytes(1, decBlock_);
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetEncodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
-        output.writeMessage(2, encodingParameters);
+        output.writeMessage(2, parameters);
       }
     }
 
@@ -2762,14 +2762,14 @@ public final class Playcloud {
           .computeBytesSize(1, decBlock_);
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-           : internalGetEncodingParameters().getMap().entrySet()) {
+           : internalGetParameters().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-        encodingParameters = EncodingParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
+        parameters = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(2, encodingParameters);
+            .computeMessageSize(2, parameters);
       }
       memoizedSize = size;
       return size;
@@ -2864,7 +2864,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetEncodingParameters();
+            return internalGetParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -2875,7 +2875,7 @@ public final class Playcloud {
           int number) {
         switch (number) {
           case 2:
-            return internalGetMutableEncodingParameters();
+            return internalGetMutableParameters();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -2906,7 +2906,7 @@ public final class Playcloud {
         super.clear();
         decBlock_ = com.google.protobuf.ByteString.EMPTY;
 
-        internalGetMutableEncodingParameters().clear();
+        internalGetMutableParameters().clear();
         return this;
       }
 
@@ -2932,8 +2932,8 @@ public final class Playcloud {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         result.decBlock_ = decBlock_;
-        result.encodingParameters_ = internalGetEncodingParameters();
-        result.encodingParameters_.makeImmutable();
+        result.parameters_ = internalGetParameters();
+        result.parameters_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2953,8 +2953,8 @@ public final class Playcloud {
         if (other.getDecBlock() != com.google.protobuf.ByteString.EMPTY) {
           setDecBlock(other.getDecBlock());
         }
-        internalGetMutableEncodingParameters().mergeFrom(
-            other.internalGetEncodingParameters());
+        internalGetMutableParameters().mergeFrom(
+            other.internalGetParameters());
         onChanged();
         return this;
       }
@@ -3012,46 +3012,46 @@ public final class Playcloud {
       }
 
       private com.google.protobuf.MapField<
-          java.lang.String, java.lang.String> encodingParameters_;
+          java.lang.String, java.lang.String> parameters_;
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetEncodingParameters() {
-        if (encodingParameters_ == null) {
+      internalGetParameters() {
+        if (parameters_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
-              EncodingParametersDefaultEntryHolder.defaultEntry);
+              ParametersDefaultEntryHolder.defaultEntry);
        }
-        return encodingParameters_;
+        return parameters_;
       }
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-      internalGetMutableEncodingParameters() {
+      internalGetMutableParameters() {
         onChanged();;
-        if (encodingParameters_ == null) {
-          encodingParameters_ = com.google.protobuf.MapField.newMapField(
-              EncodingParametersDefaultEntryHolder.defaultEntry);
+        if (parameters_ == null) {
+          parameters_ = com.google.protobuf.MapField.newMapField(
+              ParametersDefaultEntryHolder.defaultEntry);
         }
-        if (!encodingParameters_.isMutable()) {
-          encodingParameters_ = encodingParameters_.copy();
+        if (!parameters_.isMutable()) {
+          parameters_ = parameters_.copy();
         }
-        return encodingParameters_;
+        return parameters_;
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public java.util.Map<java.lang.String, java.lang.String> getEncodingParameters() {
-        return internalGetEncodingParameters().getMap();
+      public java.util.Map<java.lang.String, java.lang.String> getParameters() {
+        return internalGetParameters().getMap();
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
       public java.util.Map<java.lang.String, java.lang.String>
-      getMutableEncodingParameters() {
-        return internalGetMutableEncodingParameters().getMutableMap();
+      getMutableParameters() {
+        return internalGetMutableParameters().getMutableMap();
       }
       /**
-       * <code>map&lt;string, string&gt; encoding_parameters = 2;</code>
+       * <code>map&lt;string, string&gt; parameters = 2;</code>
        */
-      public Builder putAllEncodingParameters(
+      public Builder putAllParameters(
           java.util.Map<java.lang.String, java.lang.String> values) {
-        getMutableEncodingParameters().putAll(values);
+        getMutableParameters().putAll(values);
         return this;
       }
       public final Builder setUnknownFields(
@@ -3123,40 +3123,40 @@ public final class Playcloud {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_EncodeRequest_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_EncodeRequest_EncodingParametersEntry_descriptor;
+    internal_static_EncodeRequest_ParametersEntry_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_EncodeRequest_EncodingParametersEntry_fieldAccessorTable;
+      internal_static_EncodeRequest_ParametersEntry_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_EncodeReply_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_EncodeReply_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_EncodeReply_EncodingParametersEntry_descriptor;
+    internal_static_EncodeReply_ParametersEntry_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_EncodeReply_EncodingParametersEntry_fieldAccessorTable;
+      internal_static_EncodeReply_ParametersEntry_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_DecodeRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_DecodeRequest_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_DecodeRequest_DecodingParametersEntry_descriptor;
+    internal_static_DecodeRequest_ParametersEntry_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_DecodeRequest_DecodingParametersEntry_fieldAccessorTable;
+      internal_static_DecodeRequest_ParametersEntry_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_DecodeReply_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_DecodeReply_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_DecodeReply_EncodingParametersEntry_descriptor;
+    internal_static_DecodeReply_ParametersEntry_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_DecodeReply_EncodingParametersEntry_fieldAccessorTable;
+      internal_static_DecodeReply_ParametersEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3167,26 +3167,24 @@ public final class Playcloud {
   static {
     java.lang.String[] descriptorData = {
       "\n\017playcloud.proto\"\025\n\005Strip\022\014\n\004data\030\001 \001(\014" +
-      "\"\240\001\n\rEncodeRequest\022\017\n\007payload\030\001 \001(\014\022C\n\023e" +
-      "ncoding_parameters\030\002 \003(\0132&.EncodeRequest" +
-      ".EncodingParametersEntry\0329\n\027EncodingPara" +
-      "metersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:" +
-      "\0028\001\"\243\001\n\013EncodeReply\022\026\n\006strips\030\001 \003(\0132\006.St" +
-      "rip\022A\n\023encoding_parameters\030\002 \003(\0132$.Encod" +
-      "eReply.EncodingParametersEntry\0329\n\027Encodi" +
-      "ngParametersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030" +
-      "\002 \001(\t:\0028\001\"\247\001\n\rDecodeRequest\022\026\n\006strips\030\001 ",
-      "\003(\0132\006.Strip\022C\n\023decoding_parameters\030\002 \003(\013" +
-      "2&.DecodeRequest.DecodingParametersEntry" +
-      "\0329\n\027DecodingParametersEntry\022\013\n\003key\030\001 \001(\t" +
-      "\022\r\n\005value\030\002 \001(\t:\0028\001\"\236\001\n\013DecodeReply\022\021\n\td" +
-      "ec_block\030\001 \001(\014\022A\n\023encoding_parameters\030\002 " +
-      "\003(\0132$.DecodeReply.EncodingParametersEntr" +
-      "y\0329\n\027EncodingParametersEntry\022\013\n\003key\030\001 \001(" +
-      "\t\022\r\n\005value\030\002 \001(\t:\0028\0012d\n\016EncoderDecoder\022(" +
-      "\n\006Encode\022\016.EncodeRequest\032\014.EncodeReply\"\000" +
-      "\022(\n\006Decode\022\016.DecodeRequest\032\014.DecodeReply",
-      "\"\000B\031\n\027ch.unine.iiun.safecloudb\006proto3"
+      "\"\207\001\n\rEncodeRequest\022\017\n\007payload\030\001 \001(\014\0222\n\np" +
+      "arameters\030\002 \003(\0132\036.EncodeRequest.Paramete" +
+      "rsEntry\0321\n\017ParametersEntry\022\013\n\003key\030\001 \001(\t\022" +
+      "\r\n\005value\030\002 \001(\t:\0028\001\"\212\001\n\013EncodeReply\022\026\n\006st" +
+      "rips\030\001 \003(\0132\006.Strip\0220\n\nparameters\030\002 \003(\0132\034" +
+      ".EncodeReply.ParametersEntry\0321\n\017Paramete" +
+      "rsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"" +
+      "\216\001\n\rDecodeRequest\022\026\n\006strips\030\001 \003(\0132\006.Stri" +
+      "p\0222\n\nparameters\030\002 \003(\0132\036.DecodeRequest.Pa",
+      "rametersEntry\0321\n\017ParametersEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\205\001\n\013DecodeReply" +
+      "\022\021\n\tdec_block\030\001 \001(\014\0220\n\nparameters\030\002 \003(\0132" +
+      "\034.DecodeReply.ParametersEntry\0321\n\017Paramet" +
+      "ersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001" +
+      "2d\n\016EncoderDecoder\022(\n\006Encode\022\016.EncodeReq" +
+      "uest\032\014.EncodeReply\"\000\022(\n\006Decode\022\016.DecodeR" +
+      "equest\032\014.DecodeReply\"\000B\031\n\027ch.unine.iiun." +
+      "safecloudb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3211,48 +3209,48 @@ public final class Playcloud {
     internal_static_EncodeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_EncodeRequest_descriptor,
-        new java.lang.String[] { "Payload", "EncodingParameters", });
-    internal_static_EncodeRequest_EncodingParametersEntry_descriptor =
+        new java.lang.String[] { "Payload", "Parameters", });
+    internal_static_EncodeRequest_ParametersEntry_descriptor =
       internal_static_EncodeRequest_descriptor.getNestedTypes().get(0);
-    internal_static_EncodeRequest_EncodingParametersEntry_fieldAccessorTable = new
+    internal_static_EncodeRequest_ParametersEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_EncodeRequest_EncodingParametersEntry_descriptor,
+        internal_static_EncodeRequest_ParametersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_EncodeReply_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_EncodeReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_EncodeReply_descriptor,
-        new java.lang.String[] { "Strips", "EncodingParameters", });
-    internal_static_EncodeReply_EncodingParametersEntry_descriptor =
+        new java.lang.String[] { "Strips", "Parameters", });
+    internal_static_EncodeReply_ParametersEntry_descriptor =
       internal_static_EncodeReply_descriptor.getNestedTypes().get(0);
-    internal_static_EncodeReply_EncodingParametersEntry_fieldAccessorTable = new
+    internal_static_EncodeReply_ParametersEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_EncodeReply_EncodingParametersEntry_descriptor,
+        internal_static_EncodeReply_ParametersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_DecodeRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_DecodeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_DecodeRequest_descriptor,
-        new java.lang.String[] { "Strips", "DecodingParameters", });
-    internal_static_DecodeRequest_DecodingParametersEntry_descriptor =
+        new java.lang.String[] { "Strips", "Parameters", });
+    internal_static_DecodeRequest_ParametersEntry_descriptor =
       internal_static_DecodeRequest_descriptor.getNestedTypes().get(0);
-    internal_static_DecodeRequest_DecodingParametersEntry_fieldAccessorTable = new
+    internal_static_DecodeRequest_ParametersEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_DecodeRequest_DecodingParametersEntry_descriptor,
+        internal_static_DecodeRequest_ParametersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_DecodeReply_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_DecodeReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_DecodeReply_descriptor,
-        new java.lang.String[] { "DecBlock", "EncodingParameters", });
-    internal_static_DecodeReply_EncodingParametersEntry_descriptor =
+        new java.lang.String[] { "DecBlock", "Parameters", });
+    internal_static_DecodeReply_ParametersEntry_descriptor =
       internal_static_DecodeReply_descriptor.getNestedTypes().get(0);
-    internal_static_DecodeReply_EncodingParametersEntry_fieldAccessorTable = new
+    internal_static_DecodeReply_ParametersEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_DecodeReply_EncodingParametersEntry_descriptor,
+        internal_static_DecodeReply_ParametersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
   }
 

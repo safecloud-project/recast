@@ -17,7 +17,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='playcloud.proto',
   package='',
   syntax='proto3',
-  serialized_pb=b'\n\x0fplaycloud.proto\"\x15\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\xa0\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x43\n\x13\x65ncoding_parameters\x18\x02 \x03(\x0b\x32&.EncodeRequest.EncodingParametersEntry\x1a\x39\n\x17\x45ncodingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xa3\x01\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x41\n\x13\x65ncoding_parameters\x18\x02 \x03(\x0b\x32$.EncodeReply.EncodingParametersEntry\x1a\x39\n\x17\x45ncodingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xa7\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x43\n\x13\x64\x65\x63oding_parameters\x18\x02 \x03(\x0b\x32&.DecodeRequest.DecodingParametersEntry\x1a\x39\n\x17\x44\x65\x63odingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x9e\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x41\n\x13\x65ncoding_parameters\x18\x02 \x03(\x0b\x32$.DecodeReply.EncodingParametersEntry\x1a\x39\n\x17\x45ncodingParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\x64\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3'
+  serialized_pb=b'\n\x0fplaycloud.proto\"\x15\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\x87\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.EncodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.EncodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8e\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.DecodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x85\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.DecodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\x64\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3'
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -55,22 +55,22 @@ _STRIP = _descriptor.Descriptor(
 )
 
 
-_ENCODEREQUEST_ENCODINGPARAMETERSENTRY = _descriptor.Descriptor(
-  name='EncodingParametersEntry',
-  full_name='EncodeRequest.EncodingParametersEntry',
+_ENCODEREQUEST_PARAMETERSENTRY = _descriptor.Descriptor(
+  name='ParametersEntry',
+  full_name='EncodeRequest.ParametersEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='EncodeRequest.EncodingParametersEntry.key', index=0,
+      name='key', full_name='EncodeRequest.ParametersEntry.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='value', full_name='EncodeRequest.EncodingParametersEntry.value', index=1,
+      name='value', full_name='EncodeRequest.ParametersEntry.value', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -88,8 +88,8 @@ _ENCODEREQUEST_ENCODINGPARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=146,
-  serialized_end=203,
+  serialized_start=129,
+  serialized_end=178,
 )
 
 _ENCODEREQUEST = _descriptor.Descriptor(
@@ -107,7 +107,7 @@ _ENCODEREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='encoding_parameters', full_name='EncodeRequest.encoding_parameters', index=1,
+      name='parameters', full_name='EncodeRequest.parameters', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -116,7 +116,7 @@ _ENCODEREQUEST = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_ENCODEREQUEST_ENCODINGPARAMETERSENTRY, ],
+  nested_types=[_ENCODEREQUEST_PARAMETERSENTRY, ],
   enum_types=[
   ],
   options=None,
@@ -126,26 +126,26 @@ _ENCODEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=43,
-  serialized_end=203,
+  serialized_end=178,
 )
 
 
-_ENCODEREPLY_ENCODINGPARAMETERSENTRY = _descriptor.Descriptor(
-  name='EncodingParametersEntry',
-  full_name='EncodeReply.EncodingParametersEntry',
+_ENCODEREPLY_PARAMETERSENTRY = _descriptor.Descriptor(
+  name='ParametersEntry',
+  full_name='EncodeReply.ParametersEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='EncodeReply.EncodingParametersEntry.key', index=0,
+      name='key', full_name='EncodeReply.ParametersEntry.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='value', full_name='EncodeReply.EncodingParametersEntry.value', index=1,
+      name='value', full_name='EncodeReply.ParametersEntry.value', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -163,8 +163,8 @@ _ENCODEREPLY_ENCODINGPARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=146,
-  serialized_end=203,
+  serialized_start=129,
+  serialized_end=178,
 )
 
 _ENCODEREPLY = _descriptor.Descriptor(
@@ -182,7 +182,7 @@ _ENCODEREPLY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='encoding_parameters', full_name='EncodeReply.encoding_parameters', index=1,
+      name='parameters', full_name='EncodeReply.parameters', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -191,7 +191,7 @@ _ENCODEREPLY = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_ENCODEREPLY_ENCODINGPARAMETERSENTRY, ],
+  nested_types=[_ENCODEREPLY_PARAMETERSENTRY, ],
   enum_types=[
   ],
   options=None,
@@ -200,27 +200,27 @@ _ENCODEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=206,
-  serialized_end=369,
+  serialized_start=181,
+  serialized_end=319,
 )
 
 
-_DECODEREQUEST_DECODINGPARAMETERSENTRY = _descriptor.Descriptor(
-  name='DecodingParametersEntry',
-  full_name='DecodeRequest.DecodingParametersEntry',
+_DECODEREQUEST_PARAMETERSENTRY = _descriptor.Descriptor(
+  name='ParametersEntry',
+  full_name='DecodeRequest.ParametersEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='DecodeRequest.DecodingParametersEntry.key', index=0,
+      name='key', full_name='DecodeRequest.ParametersEntry.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='value', full_name='DecodeRequest.DecodingParametersEntry.value', index=1,
+      name='value', full_name='DecodeRequest.ParametersEntry.value', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -238,8 +238,8 @@ _DECODEREQUEST_DECODINGPARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=482,
-  serialized_end=539,
+  serialized_start=129,
+  serialized_end=178,
 )
 
 _DECODEREQUEST = _descriptor.Descriptor(
@@ -257,7 +257,7 @@ _DECODEREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='decoding_parameters', full_name='DecodeRequest.decoding_parameters', index=1,
+      name='parameters', full_name='DecodeRequest.parameters', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -266,7 +266,7 @@ _DECODEREQUEST = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_DECODEREQUEST_DECODINGPARAMETERSENTRY, ],
+  nested_types=[_DECODEREQUEST_PARAMETERSENTRY, ],
   enum_types=[
   ],
   options=None,
@@ -275,27 +275,27 @@ _DECODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=372,
-  serialized_end=539,
+  serialized_start=322,
+  serialized_end=464,
 )
 
 
-_DECODEREPLY_ENCODINGPARAMETERSENTRY = _descriptor.Descriptor(
-  name='EncodingParametersEntry',
-  full_name='DecodeReply.EncodingParametersEntry',
+_DECODEREPLY_PARAMETERSENTRY = _descriptor.Descriptor(
+  name='ParametersEntry',
+  full_name='DecodeReply.ParametersEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='DecodeReply.EncodingParametersEntry.key', index=0,
+      name='key', full_name='DecodeReply.ParametersEntry.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='value', full_name='DecodeReply.EncodingParametersEntry.value', index=1,
+      name='value', full_name='DecodeReply.ParametersEntry.value', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -313,8 +313,8 @@ _DECODEREPLY_ENCODINGPARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=146,
-  serialized_end=203,
+  serialized_start=129,
+  serialized_end=178,
 )
 
 _DECODEREPLY = _descriptor.Descriptor(
@@ -332,7 +332,7 @@ _DECODEREPLY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='encoding_parameters', full_name='DecodeReply.encoding_parameters', index=1,
+      name='parameters', full_name='DecodeReply.parameters', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -341,7 +341,7 @@ _DECODEREPLY = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_DECODEREPLY_ENCODINGPARAMETERSENTRY, ],
+  nested_types=[_DECODEREPLY_PARAMETERSENTRY, ],
   enum_types=[
   ],
   options=None,
@@ -350,20 +350,20 @@ _DECODEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=542,
-  serialized_end=700,
+  serialized_start=467,
+  serialized_end=600,
 )
 
-_ENCODEREQUEST_ENCODINGPARAMETERSENTRY.containing_type = _ENCODEREQUEST
-_ENCODEREQUEST.fields_by_name['encoding_parameters'].message_type = _ENCODEREQUEST_ENCODINGPARAMETERSENTRY
-_ENCODEREPLY_ENCODINGPARAMETERSENTRY.containing_type = _ENCODEREPLY
+_ENCODEREQUEST_PARAMETERSENTRY.containing_type = _ENCODEREQUEST
+_ENCODEREQUEST.fields_by_name['parameters'].message_type = _ENCODEREQUEST_PARAMETERSENTRY
+_ENCODEREPLY_PARAMETERSENTRY.containing_type = _ENCODEREPLY
 _ENCODEREPLY.fields_by_name['strips'].message_type = _STRIP
-_ENCODEREPLY.fields_by_name['encoding_parameters'].message_type = _ENCODEREPLY_ENCODINGPARAMETERSENTRY
-_DECODEREQUEST_DECODINGPARAMETERSENTRY.containing_type = _DECODEREQUEST
+_ENCODEREPLY.fields_by_name['parameters'].message_type = _ENCODEREPLY_PARAMETERSENTRY
+_DECODEREQUEST_PARAMETERSENTRY.containing_type = _DECODEREQUEST
 _DECODEREQUEST.fields_by_name['strips'].message_type = _STRIP
-_DECODEREQUEST.fields_by_name['decoding_parameters'].message_type = _DECODEREQUEST_DECODINGPARAMETERSENTRY
-_DECODEREPLY_ENCODINGPARAMETERSENTRY.containing_type = _DECODEREPLY
-_DECODEREPLY.fields_by_name['encoding_parameters'].message_type = _DECODEREPLY_ENCODINGPARAMETERSENTRY
+_DECODEREQUEST.fields_by_name['parameters'].message_type = _DECODEREQUEST_PARAMETERSENTRY
+_DECODEREPLY_PARAMETERSENTRY.containing_type = _DECODEREPLY
+_DECODEREPLY.fields_by_name['parameters'].message_type = _DECODEREPLY_PARAMETERSENTRY
 DESCRIPTOR.message_types_by_name['Strip'] = _STRIP
 DESCRIPTOR.message_types_by_name['EncodeRequest'] = _ENCODEREQUEST
 DESCRIPTOR.message_types_by_name['EncodeReply'] = _ENCODEREPLY
@@ -379,10 +379,10 @@ _sym_db.RegisterMessage(Strip)
 
 EncodeRequest = _reflection.GeneratedProtocolMessageType('EncodeRequest', (_message.Message,), dict(
 
-  EncodingParametersEntry = _reflection.GeneratedProtocolMessageType('EncodingParametersEntry', (_message.Message,), dict(
-    DESCRIPTOR = _ENCODEREQUEST_ENCODINGPARAMETERSENTRY,
+  ParametersEntry = _reflection.GeneratedProtocolMessageType('ParametersEntry', (_message.Message,), dict(
+    DESCRIPTOR = _ENCODEREQUEST_PARAMETERSENTRY,
     __module__ = 'playcloud_pb2'
-    # @@protoc_insertion_point(class_scope:EncodeRequest.EncodingParametersEntry)
+    # @@protoc_insertion_point(class_scope:EncodeRequest.ParametersEntry)
     ))
   ,
   DESCRIPTOR = _ENCODEREQUEST,
@@ -390,14 +390,14 @@ EncodeRequest = _reflection.GeneratedProtocolMessageType('EncodeRequest', (_mess
   # @@protoc_insertion_point(class_scope:EncodeRequest)
   ))
 _sym_db.RegisterMessage(EncodeRequest)
-_sym_db.RegisterMessage(EncodeRequest.EncodingParametersEntry)
+_sym_db.RegisterMessage(EncodeRequest.ParametersEntry)
 
 EncodeReply = _reflection.GeneratedProtocolMessageType('EncodeReply', (_message.Message,), dict(
 
-  EncodingParametersEntry = _reflection.GeneratedProtocolMessageType('EncodingParametersEntry', (_message.Message,), dict(
-    DESCRIPTOR = _ENCODEREPLY_ENCODINGPARAMETERSENTRY,
+  ParametersEntry = _reflection.GeneratedProtocolMessageType('ParametersEntry', (_message.Message,), dict(
+    DESCRIPTOR = _ENCODEREPLY_PARAMETERSENTRY,
     __module__ = 'playcloud_pb2'
-    # @@protoc_insertion_point(class_scope:EncodeReply.EncodingParametersEntry)
+    # @@protoc_insertion_point(class_scope:EncodeReply.ParametersEntry)
     ))
   ,
   DESCRIPTOR = _ENCODEREPLY,
@@ -405,14 +405,14 @@ EncodeReply = _reflection.GeneratedProtocolMessageType('EncodeReply', (_message.
   # @@protoc_insertion_point(class_scope:EncodeReply)
   ))
 _sym_db.RegisterMessage(EncodeReply)
-_sym_db.RegisterMessage(EncodeReply.EncodingParametersEntry)
+_sym_db.RegisterMessage(EncodeReply.ParametersEntry)
 
 DecodeRequest = _reflection.GeneratedProtocolMessageType('DecodeRequest', (_message.Message,), dict(
 
-  DecodingParametersEntry = _reflection.GeneratedProtocolMessageType('DecodingParametersEntry', (_message.Message,), dict(
-    DESCRIPTOR = _DECODEREQUEST_DECODINGPARAMETERSENTRY,
+  ParametersEntry = _reflection.GeneratedProtocolMessageType('ParametersEntry', (_message.Message,), dict(
+    DESCRIPTOR = _DECODEREQUEST_PARAMETERSENTRY,
     __module__ = 'playcloud_pb2'
-    # @@protoc_insertion_point(class_scope:DecodeRequest.DecodingParametersEntry)
+    # @@protoc_insertion_point(class_scope:DecodeRequest.ParametersEntry)
     ))
   ,
   DESCRIPTOR = _DECODEREQUEST,
@@ -420,14 +420,14 @@ DecodeRequest = _reflection.GeneratedProtocolMessageType('DecodeRequest', (_mess
   # @@protoc_insertion_point(class_scope:DecodeRequest)
   ))
 _sym_db.RegisterMessage(DecodeRequest)
-_sym_db.RegisterMessage(DecodeRequest.DecodingParametersEntry)
+_sym_db.RegisterMessage(DecodeRequest.ParametersEntry)
 
 DecodeReply = _reflection.GeneratedProtocolMessageType('DecodeReply', (_message.Message,), dict(
 
-  EncodingParametersEntry = _reflection.GeneratedProtocolMessageType('EncodingParametersEntry', (_message.Message,), dict(
-    DESCRIPTOR = _DECODEREPLY_ENCODINGPARAMETERSENTRY,
+  ParametersEntry = _reflection.GeneratedProtocolMessageType('ParametersEntry', (_message.Message,), dict(
+    DESCRIPTOR = _DECODEREPLY_PARAMETERSENTRY,
     __module__ = 'playcloud_pb2'
-    # @@protoc_insertion_point(class_scope:DecodeReply.EncodingParametersEntry)
+    # @@protoc_insertion_point(class_scope:DecodeReply.ParametersEntry)
     ))
   ,
   DESCRIPTOR = _DECODEREPLY,
@@ -435,19 +435,19 @@ DecodeReply = _reflection.GeneratedProtocolMessageType('DecodeReply', (_message.
   # @@protoc_insertion_point(class_scope:DecodeReply)
   ))
 _sym_db.RegisterMessage(DecodeReply)
-_sym_db.RegisterMessage(DecodeReply.EncodingParametersEntry)
+_sym_db.RegisterMessage(DecodeReply.ParametersEntry)
 
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), b'\n\027ch.unine.iiun.safecloud')
-_ENCODEREQUEST_ENCODINGPARAMETERSENTRY.has_options = True
-_ENCODEREQUEST_ENCODINGPARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
-_ENCODEREPLY_ENCODINGPARAMETERSENTRY.has_options = True
-_ENCODEREPLY_ENCODINGPARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
-_DECODEREQUEST_DECODINGPARAMETERSENTRY.has_options = True
-_DECODEREQUEST_DECODINGPARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
-_DECODEREPLY_ENCODINGPARAMETERSENTRY.has_options = True
-_DECODEREPLY_ENCODINGPARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
+_ENCODEREQUEST_PARAMETERSENTRY.has_options = True
+_ENCODEREQUEST_PARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
+_ENCODEREPLY_PARAMETERSENTRY.has_options = True
+_ENCODEREPLY_PARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
+_DECODEREQUEST_PARAMETERSENTRY.has_options = True
+_DECODEREQUEST_PARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
+_DECODEREPLY_PARAMETERSENTRY.has_options = True
+_DECODEREPLY_PARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), b'8\001')
 import abc
 from grpc.beta import implementations as beta_implementations
 from grpc.early_adopter import implementations as early_adopter_implementations
