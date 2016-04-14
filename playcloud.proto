@@ -15,20 +15,20 @@ message Strip {
 }
 message EncodeRequest {
 	bytes payload = 1;
-	map<string,string> encoding_parameters = 2;
+	map<string,string> parameters = 2;
 }
 
 message EncodeReply {
 	repeated Strip strips = 1;
-	map<string,string> encoding_parameters = 2;
+	map<string,string> parameters = 2;
 }
 
 message DecodeRequest {
 	repeated Strip strips = 1;
-	map<string, string> decoding_parameters = 2;
+	map<string, string> parameters = 2;
 }
 
 message DecodeReply {
 	bytes dec_block = 1;
-	map<string,string> encoding_parameters = 2;
+	map<string,string> parameters = 2;
 }
