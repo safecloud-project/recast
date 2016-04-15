@@ -83,7 +83,7 @@ readonly REDIS_HOST="${1}"
 shift
 readonly ARCHIVE="${1}"
 shift
-readonly ENV_FILE="${1}"
+readonly CONF_FILE="${1}"
 shift
 
 # Set the number of concurrent requests sent by ab_playcloud to # of cores * 2
@@ -93,17 +93,18 @@ cd clients
 docker build -t client .
 cd -
 mkdir -p xpdata/
+readonly ENV_FILE=$(transform_to_bash_env_file "${CONF_FILE}")
 source "${ENV_FILE}"
 for BLOCK_SIZE in "$@"; do
   setup_proxy "${PROXY_HOST}" "${ARCHIVE}" "${ENV_FILE}"
   setup_coder "${CODER_HOST}" "${ARCHIVE}" "${ENV_FILE}"
   setup_redis "${REDIS_HOST}" "${ARCHIVE}" "${ENV_FILE}"
   source exports.source
-  mkdir -p "${PWD}/xpdata/macrobench/${EC_TYPE}"
+  mkdir -p "${PWD}/xpdata/macrobench/${sec_measure}/${splitter}"
   # Wait for connection to proxy server to be available
   wait_for_proxy
   wait_for_redis
-  docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${EC_TYPE} && /ab_playcloud.sh 500 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt 2>&1"
+  docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${sec_measure}/${splitter} && /ab_playcloud.sh 500 ${CONCURRENT_REQUESTS} ${BLOCK_SIZE} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout.txt 2>&1"
   # Take memory footprint
-  redis-cli -h "${REDIS_PORT_6379_TCP_ADDR}" -p "${REDIS_PORT_6379_TCP_PORT}" INFO all > "${PWD}/xpdata/macrobench/${EC_TYPE}/info_all.txt"
+  redis-cli -h "${REDIS_PORT_6379_TCP_ADDR}" -p "${REDIS_PORT_6379_TCP_PORT}" INFO all > "${PWD}/xpdata/macrobench/${sec_measure}/${splitter}/info_all.txt"
 done
