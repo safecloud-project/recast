@@ -23,7 +23,7 @@ con_log = "Going to connect to {} in {}:{}"
 from safestore.providers.dispatcher import Dispatcher
 
 # GRPC setup
-DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 540
+DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
 CODER_HOST = os.getenv("CODER_PORT_1234_TCP_ADDR", "127.0.0.1")
 CODER_PORT = int(os.getenv("CODER_PORT_1234_TCP_PORT", 1234))
 
