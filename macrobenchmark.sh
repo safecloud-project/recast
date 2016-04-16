@@ -79,13 +79,14 @@ function macrobench_config {
     setup_coder "${CODER_HOST}" "${ARCHIVE}" "${env_file}"
     setup_redis "${REDIS_HOST}" "${ARCHIVE}" "${env_file}"
     source exports.source
-    mkdir -p "${PWD}/xpdata/macrobench/${sec_measure}/${splitter}"
+    directory_name="$(dirname ${conf_file} | sed 's/dockerenv\///')/$(basename ${conf_file} | sed 's/.cfg//')"
+    mkdir -p "${PWD}/xpdata/macrobench/${directory_name}"
     # Wait for connection to proxy server to be available
     wait_for_proxy
     wait_for_redis
-    docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${sec_measure}/${splitter} && /ab_playcloud.sh 500 ${CONCURRENT_REQUESTS} ${block_size} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout-${block_size}.txt 2>&1"
+    docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${directory_name} && /ab_playcloud.sh 500 ${CONCURRENT_REQUESTS} ${block_size} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout-${block_size}.txt 2>&1"
     # Take memory footprint
-    redis-cli -h "${REDIS_PORT_6379_TCP_ADDR}" -p "${REDIS_PORT_6379_TCP_PORT}" INFO all > "${PWD}/xpdata/macrobench/${sec_measure}/${splitter}/info_all_${block_size}.txt"
+    redis-cli -h "${REDIS_PORT_6379_TCP_ADDR}" -p "${REDIS_PORT_6379_TCP_PORT}" INFO all > "${PWD}/xpdata/macrobench/${directory_name}/info_all_${block_size}.txt"
   done
 }
 
@@ -111,6 +112,6 @@ docker build -t client .
 cd -
 mkdir -p xpdata/
 readonly BLOCK_SIZES=$@
-for conf_file in $(find dockerenv/confd -maxdepth 1 -type f); do
+for conf_file in $(find dockerenv/ -maxdepth 2 -type f); do
   macrobench_config "${conf_file}" "${BLOCK_SIZES}"
 done
