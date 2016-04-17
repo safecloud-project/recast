@@ -77,7 +77,9 @@ function macrobench_config {
   for block_size in ${block_sizes} ; do
     setup_proxy "${PROXY_HOST}" "${ARCHIVE}" "${env_file}"
     setup_coder "${CODER_HOST}" "${ARCHIVE}" "${env_file}"
-    clients/flush_redis_instances.py
+    for redis_hostname in $(clients/list_redis_hostnames.py); do
+      setup_redis "${redis_hostname}" "${ARCHIVE}" "${env_file}"
+    done
     source exports.source
     directory_name="$(dirname ${conf_file} | sed 's/dockerenv\///')/$(basename ${conf_file} | sed 's/.cfg//')"
     mkdir -p "${PWD}/xpdata/macrobench/${directory_name}"
