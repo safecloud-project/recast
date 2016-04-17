@@ -1,4 +1,4 @@
-FILES=dockerenv/confd/*
+FILES=dockerenv/*/*
 
 REPETITIONS=10
 REQUESTS=100

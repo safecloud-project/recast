@@ -19,7 +19,7 @@ class SignedHashedSplitterDriver:
         Returns a list of blocks
         """
         signature = self.signer.sign(data)
-        signed_data = signature + "<>" + data
+        signed_data = signature + "<-->" + data
         return self.splitter.encode(signed_data)
 
     def decode(self, data):
@@ -28,7 +28,7 @@ class SignedHashedSplitterDriver:
         and the integrity of the blocks holds.
         """
         message = self.splitter.decode(data)
-        splited_message = message.split('<>')
+        splited_message = message.split('<-->')
         signature = splited_message[0]
         message_data = splited_message[1]
         """

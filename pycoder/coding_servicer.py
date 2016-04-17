@@ -34,11 +34,11 @@ class DriverFactory():
 
     def __init__(self, config):
 
+        #ignoring config for now
         self.config = config
-        self.splitter = os.environ.get(
-            "splitter", self.config.get("main", "splitter"))
-        self.sec_measure = os.environ.get(
-            "sec_measure", self.config.get("main", "sec_measure"))
+
+        self.splitter = os.environ.get("splitter")
+        self.sec_measure = os.environ.get("sec_measure")
 
     def setup_driver(self):
 
@@ -65,15 +65,14 @@ class DriverFactory():
         return self.splitter_driver
 
     def confd_int(self):
-        hash = os.environ.get("hash", self.config.get("main", "hash"))
+        hash = os.environ.get("hash")
         driver = HashedSplitterDriver(self.splitter_driver, hash)
         return driver
 
     def _get_signer(self):
-        sign_cypher = os.environ.get("signature", self.config.get("main", "signature"))
-        hash = os.environ.get("hash", self.config.get("main", "hash"))
-        key_size = int(
-            os.environ.get("keysize", self.config.get("hash", "keysize")))
+        sign_cypher = os.environ.get("signature")
+        hash = os.environ.get("hash")
+        key_size = int(os.environ.get("keysize"))
         return AssymetricDriver(sign_cypher, key_size, hash)
 
     def confd_sign(self):
@@ -85,25 +84,22 @@ class DriverFactory():
         return SignedHashedSplitterDriver(self.confd_int(), signer)
 
     def xor(self):
-        nblocks = self.config.getint("xor", "n_blocks")
-        nblocks = int(os.environ.get("NBLOCKS", nblocks))
+        nblocks = int(os.environ.get("n_blocks"))
         logger.info("{} nblocks".format(nblocks))
         return XorDriver(nblocks)
 
     def shamir(self):
-        nblocks = self.config.getint("shamir", "n_blocks")
-        threshold = self.config.getint("shamir", "threshold")
-        nblocks = int(os.environ.get("NBLOCKS", nblocks))
-        threshold = int(os.environ.get("THRESHOLD", nblocks))
+        nblocks = int(os.environ.get("n_blocks"))
+        threshold = int(os.environ.get("threshold"))
 
         logger.info("{} nblocks and {} threshold".format(nblocks, threshold))
 
         return ShamirDriver(nblocks, threshold)
 
     def erasure_driver(self):
-        ec_k = int(os.environ.get("EC_K", self.config.get("ec", "k")))
-        ec_m = int(os.environ.get("EC_M", self.config.get("ec", "m")))
-        ec_type = os.environ.get("EC_TYPE", self.config.get("ec", "type"))
+        ec_k = int(os.environ.get("k"))
+        ec_m = int(os.environ.get("m"))
+        ec_type = os.environ.get("type")
         logger.info("ec_k {}, ec_m {}, ec_type {}".format(ec_k, ec_m, ec_type))
         return Eraser(ec_k, ec_m, ec_type)
 
