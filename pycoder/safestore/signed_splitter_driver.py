@@ -20,7 +20,7 @@ class SignedSplitterDriver():
             Returns a list of xor blocks
         """
         signature = self.signer.sign(data)
-        signed_data = signature + '<>'+data
+        signed_data = signature + '<-->'+data
         return self.splitter.encode(signed_data)
 
     def decode(self, data):
@@ -30,7 +30,7 @@ class SignedSplitterDriver():
         message = self.splitter.decode(data)
 
         sign_size = self.signer.size()
-        splited_message = message.split('<>')
+        splited_message = message.split('<-->')
         signature = splited_message[0]
         message_data = splited_message[1]
         """

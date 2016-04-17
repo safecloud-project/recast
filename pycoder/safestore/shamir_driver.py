@@ -8,10 +8,9 @@ class ShamirDriver:
 
     def encode(self, data):
         shares = gfshare.split( self.n_blocks, self.threshold, data)
-        encoded = map(lambda (x, y): str(x)+"<>"+y, shares)
-
+        encoded = map(lambda (x, y): str(x)+"<-->"+y, shares)
         return encoded
 
     def decode(self, data):
-        rec_data = map(lambda x: (int(x.split('<>')[0]),x.split('<>')[1]), data)
+        rec_data = map(lambda x: (int(x.split('<-->')[0]),x.split('<-->')[1]), data)
         return gfshare.combine(rec_data)

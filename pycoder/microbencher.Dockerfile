@@ -53,4 +53,4 @@ COPY logging.conf /usr/local/src/app/
 
 WORKDIR /usr/local/src/app
 
-ENTRYPOINT /usr/bin/python /usr/local/src/app/tests.py
+#ENTRYPOINT /usr/bin/python /usr/local/src/app/tests.py

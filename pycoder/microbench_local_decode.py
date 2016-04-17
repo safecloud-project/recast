@@ -36,6 +36,8 @@ if __name__ == "__main__":
         DATA = randomword(SIZE)
     else:
         DATA = os.urandom(SIZE)
+
+    print (os.environ.get("DRIVER",""))
     factory = DriverFactory(CONFIG)
     DRIVER = factory.get_driver()
 
