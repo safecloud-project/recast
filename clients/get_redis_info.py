@@ -27,6 +27,18 @@ def load_redis_nodes_config():
         providers = json.load(raw_config).get('providers')
         return [provider for provider in providers if is_provider_redis(provider)]
 
+def get_redis_connection(configuration):
+    """
+    Initialize a connection to a redis instance based on a configuration
+    Args:
+        configuration: A dictionary with the settings to connect to the database
+    Returns:
+        An instance of redis.client.StrictRedis
+    """
+    host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "127.0.0.1"))
+    port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
+    return redis.StrictRedis(host=host, port=port, db=0)
+
 def get_redis_info_all(configuration):
     """
     Connect to a redis database and execute an 'INFO ALL' command:
@@ -36,9 +48,7 @@ def get_redis_info_all(configuration):
         A dictionary with the values obtained from the 'INFO ALL' comman on a
         redis instance.
     """
-    host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "127.0.0.1"))
-    port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
-    redis_cxn = redis.StrictRedis(host=host, port=port, db=0)
+    redis_cxn = get_redis_connection(configuration)
     data = redis_cxn.info()
     return data
 
