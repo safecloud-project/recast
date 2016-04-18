@@ -4,7 +4,6 @@ A component that distributes blocks for storage keeps track of their location
 import datetime
 import logging
 import logging.config
-import os
 import random
 import uuid
 
@@ -138,7 +137,7 @@ class Dispatcher(object):
             logger.debug(loop_temp.format(i, key, provider_key))
             metablock = MetaBlock(key, provider_key)
             provider.put(block_data, key)
-            stored_blocks = metadata.blocks.append(metablock)
+            metadata.blocks.append(metablock)
             provider_index = (provider_index + 1) % number_of_providers
         self.files[path] = metadata
         return metadata
@@ -171,7 +170,6 @@ class Dispatcher(object):
         """
         if len(original_blocks) == 0:
             return ([], [], [])
-        block_length = len(original_blocks[0])
         metablocks = []
         metablock, random_block = self.get_random_block()
         if metablock is None:
