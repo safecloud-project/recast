@@ -5,6 +5,7 @@ import datetime
 import logging
 import logging.config
 import os
+import random
 import uuid
 
 import numpy
@@ -122,15 +123,17 @@ class Dispatcher(object):
         index_format_length = len(str(len(blocks)))
         blocks, entangling_blocks, entangled_blocks = self.entangle(blocks)
         metadata.entangling_blocks = entangling_blocks
+        provider_index = random.randint(0, number_of_providers - 1)
         for i, block_data in enumerate(entangled_blocks):
             key = path + "-" + str(i).zfill(index_format_length)
-            provider_key = provider_keys[i % number_of_providers]
+            provider_key = provider_keys[provider_index]
             provider = self.providers[provider_key]
 
             logger.debug(loop_temp.format(i, key, provider_key))
             metablock = MetaBlock(key, provider_key)
             provider.put(block_data, key)
             stored_blocks = metadata.blocks.append(metablock)
+            provider_index = (provider_index + 1) % number_of_providers
         self.files[path] = metadata
         return metadata
 
