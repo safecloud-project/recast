@@ -57,7 +57,9 @@ class ProviderFactory(object):
         initializer = self.initializers.get(provider_type)
         if initializer is None:
             raise Exception("configuration type is not supported by the factory")
-        return initializer(configuration)
+        if provider_type is Providers.redis.name:
+            return initializer(configuration)
+        return initializer()
 
 class MetaBlock(object):
     """
