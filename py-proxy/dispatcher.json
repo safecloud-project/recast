@@ -1,4 +1,5 @@
 {
+	"entanglement": false,
 	"providers": [
 		{"type": "redis", "host": "172.16.1.195", "port": 7000},
 		{"type": "redis", "host": "172.16.2.0", "port": 7000},

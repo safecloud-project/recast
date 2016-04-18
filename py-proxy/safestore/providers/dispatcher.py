@@ -99,13 +99,16 @@ class Dispatcher(object):
     retrieve them
     """
 
-    def __init__(self, providers_configuration=[]):
+    def __init__(self, configuration={}):
+        self.entanglement = configuration.get("entanglement", False)
         self.providers = {}
+        providers_configuration = configuration.get('providers', [])
         factory = ProviderFactory()
         for configuration in providers_configuration:
             provider = factory.get_provider(configuration)
             self.providers[str(uuid.uuid4())] = provider
         self.files = {}
+        logger.info("entanglement: "  + str(self.entanglement))
 
     def put(self, path, blocks):
         """
@@ -119,16 +122,19 @@ class Dispatcher(object):
         metadata = Metadata(path)
         provider_keys = self.providers.keys()
         number_of_providers = len(provider_keys)
-        loop_temp = "Going to put block {} with key {} in provider {}"
         index_format_length = len(str(len(blocks)))
-        blocks, entangling_blocks, entangled_blocks = self.entangle(blocks)
-        metadata.entangling_blocks = entangling_blocks
+        blocks_to_store = []
+        if self.entanglement:
+            blocks, entangling_blocks, blocks_to_store = self.entangle(blocks)
+            metadata.entangling_blocks = entangling_blocks
+        else:
+            blocks_to_store = blocks
+        loop_temp = "Going to put block {} with key {} in provider {}"
         provider_index = random.randint(0, number_of_providers - 1)
-        for i, block_data in enumerate(entangled_blocks):
+        for i, block_data in enumerate(blocks_to_store):
             key = path + "-" + str(i).zfill(index_format_length)
             provider_key = provider_keys[provider_index]
             provider = self.providers[provider_key]
-
             logger.debug(loop_temp.format(i, key, provider_key))
             metablock = MetaBlock(key, provider_key)
             provider.put(block_data, key)
