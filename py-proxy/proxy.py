@@ -109,4 +109,4 @@ def put_keyless():
     return store(key=None, data=request.body.getvalue())
 
 if __name__ == "__main__":
-    run(app=APP, host="0.0.0.0", port=8000)
+    run(server="paste", app=APP, host="0.0.0.0", port=8000)

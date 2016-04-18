@@ -1,6 +1,7 @@
 dropbox
 futures
 google-api-python-client
+paste==2.0.3
 pycrypto
 python-onedrive
 watchdog

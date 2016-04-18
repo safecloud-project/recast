@@ -1,5 +1,6 @@
 bottle==0.12.9
 grpcio==0.11.0b1
+paste==2.0.3
 pip
 protobuf==3.0.0a3
 redis==2.10.5
