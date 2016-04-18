@@ -12,6 +12,7 @@ import numpy
 from enum import Enum
 from dbox import DBox
 from gdrive import GDrive
+from one import ODrive
 from redis_provider import RedisProvider
 
 logger = logging.getLogger("dispatcher")
@@ -24,6 +25,7 @@ class Providers(Enum):
     redis = 0
     gdrive = 1
     dropbox = 2
+    onedrive = 3
 
 class ProviderFactory(object):
     """
@@ -33,7 +35,8 @@ class ProviderFactory(object):
         self.initializers = {
             Providers.dropbox.name: DBox,
             Providers.gdrive.name: GDrive,
-            Providers.redis.name: RedisProvider
+            Providers.redis.name: RedisProvider,
+            Providers.onedrive.name: ODrive
         }
 
     def get_provider(self, configuration={}):
