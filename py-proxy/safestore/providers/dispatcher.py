@@ -57,7 +57,7 @@ class ProviderFactory(object):
         initializer = self.initializers.get(provider_type)
         if initializer is None:
             raise Exception("configuration type is not supported by the factory")
-        if provider_type is Providers.redis.name:
+        if provider_type == Providers.redis.name:
             return initializer(configuration)
         return initializer()
 
