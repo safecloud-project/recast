@@ -35,7 +35,7 @@ CLIENT_STUB = beta_create_EncoderDecoder_stub(GRPC_CHANNEL)
 # Dispatcher configuration
 with open(os.path.join(os.path.dirname(__file__), "dispatcher.json")) as dispatcher_configuration_file:
     dispatcher_configuration = json.load(dispatcher_configuration_file)
-    DISPACHER = Dispatcher(dispatcher_configuration["providers"])
+    DISPACHER = Dispatcher(dispatcher_configuration)
 
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
