@@ -1,0 +1,32 @@
+#! /usr/bin/env python
+"""
+Flushes a storage provider from the data it holds
+"""
+
+import json
+import os
+
+from safestore.providers.dispatcher import ProviderFactory
+
+
+CONFIGURATION_PATH = os.path.join(os.path.dirname(__file__), "./dispatcher.json")
+
+def flush_storage_provider():
+    """
+    Clear the data in the storage providers listed in dispatcher.json
+    """
+    with open(CONFIGURATION_PATH, "r") as configuration_file:
+        configuration = json.load(configuration_file)
+    if not configuration.has_key('providers'):
+        raise Exception("the configuration should have a 'providers' key")
+    if not configuration.has_key('providers'):
+        raise Exception("the providers value should be an array")
+    provider_configurations = configuration.get('providers')
+    factory = ProviderFactory()
+    for provider_configuration in provider_configurations:
+        provider = factory.get_provider(provider_configuration)
+        provider.clear()
+
+
+if __name__ == "__main__":
+    flush_storage_provider()
