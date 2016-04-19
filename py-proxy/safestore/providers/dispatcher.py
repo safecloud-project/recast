@@ -97,6 +97,25 @@ def xor(block_a, block_b):
     r = c.tostring()
     return r
 
+def arrange_elements(elements, bins):
+    """
+    Propose elements arrangement among a number of bins
+    Args:
+        elements -- Number of elements to arrange (int)
+        bins -- Number of bins to store the elements (int)
+    Retunrs:
+        A list of index lists describing how the elements can be spread among
+        the bins
+    """
+    start = random.randint(0, bins - 1)
+    dispatching = []
+    for i in range(bins):
+        dispatching.append([])
+    for i in range(elements):
+        index = (start + i) % bins
+        dispatching[index].append(i)
+    return dispatching
+
 class Dispatcher(object):
     """
     A class that decices where to store data blocks and keeps track of how to
@@ -134,16 +153,17 @@ class Dispatcher(object):
         else:
             blocks_to_store = blocks
         loop_temp = "Going to put block {} with key {} in provider {}"
-        provider_index = random.randint(0, number_of_providers - 1)
-        for i, block_data in enumerate(blocks_to_store):
-            key = path + "-" + str(i).zfill(index_format_length)
-            provider_key = provider_keys[provider_index]
+        arrangement = arrange_elements(len(blocks_to_store), number_of_providers)
+        for i, provider_key in enumerate(provider_keys):
             provider = self.providers[provider_key]
-            logger.debug(loop_temp.format(i, key, provider_key))
-            metablock = MetaBlock(key, provider_key)
-            provider.put(block_data, key)
-            metadata.blocks.append(metablock)
-            provider_index = (provider_index + 1) % number_of_providers
+            blocks_to_store_at_provider = arrangement[i]
+            for index in blocks_to_store_at_provider:
+                block_key = path + "-" + str(index).zfill(index_format_length)
+                block_data = blocks_to_store_at_provider[index]
+                logger.debug(loop_temp.format(i, block_key, provider_key))
+                metablock = MetaBlock(block_key, provider_key)
+                provider.put(block_data, block_key)
+                metadata.blocks.append(metablock)
         self.files[path] = metadata
         return metadata
 
