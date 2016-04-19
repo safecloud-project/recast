@@ -4,7 +4,9 @@ A component that distributes blocks for storage keeps track of their location
 import datetime
 import logging
 import logging.config
+import Queue
 import random
+import threading
 import uuid
 
 import numpy
@@ -81,6 +83,46 @@ class Metadata(object):
         self.blocks = []
         self.entangling_blocks = []
 
+class BlockPusher(threading.Thread):
+    """
+    Threaded code to push blocks using a given provider
+    """
+
+    def __init__(self, provider, provider_key, path, blocks, indices, queue):
+        """
+        Initialize the BlockPusher by providing blocks to store in a provider
+        the queue to push the metablocks produced by the insertion
+        Args:
+            provider -- The provider that will store the data (Provider)
+            provider_key -- Key under which the provider is stored in the Dispatcher (str)
+            path -- Path under which the file should be stored (str)
+            blocks -- The list of blocks that constitutes the file (list)
+            indices -- A list of the indinces that should be stored by the provider (list)
+            queue --  Queue where the metablocks should be stored once the block are stored (queue.Queue)
+        """
+        super(BlockPusher, self).__init__()
+        self.provider = provider
+        self.provider_key = provider_key
+        self.path = path
+        self.blocks = blocks
+        self.indices = indices
+        self.queue = queue
+
+    def run(self):
+        """
+        Loop through self.blocks, selecting those stored at indices
+        listed in self.indices and feeding them to self.provider for storage
+        """
+        index_format_length = len(str(len(self.blocks)))
+        loop_temp = "Going to put block {} with key {} in provider {}"
+        for index in self.indices:
+            block_key = self.path + "-" + str(index).zfill(index_format_length)
+            block_data = self.blocks[index]
+            logger.debug(loop_temp.format(index, block_key, str(type(self.provider))))
+            metablock = MetaBlock(block_key, self.provider_key)
+            self.provider.put(block_data, block_key)
+            self.queue.put(metablock)
+
 def xor(block_a, block_b):
     """
     'Private' function used to xor two blocks.
@@ -145,25 +187,24 @@ class Dispatcher(object):
         metadata = Metadata(path)
         provider_keys = self.providers.keys()
         number_of_providers = len(provider_keys)
-        index_format_length = len(str(len(blocks)))
         blocks_to_store = []
         if self.entanglement:
             blocks, entangling_blocks, blocks_to_store = self.entangle(blocks)
             metadata.entangling_blocks = entangling_blocks
         else:
             blocks_to_store = blocks
-        loop_temp = "Going to put block {} with key {} in provider {}"
         arrangement = arrange_elements(len(blocks_to_store), number_of_providers)
+        metablock_queue = Queue.Queue(blocks_to_store)
+        block_pushers = []
         for i, provider_key in enumerate(provider_keys):
             provider = self.providers[provider_key]
-            blocks_to_store_at_provider = arrangement[i]
-            for index in blocks_to_store_at_provider:
-                block_key = path + "-" + str(index).zfill(index_format_length)
-                block_data = blocks_to_store_at_provider[index]
-                logger.debug(loop_temp.format(i, block_key, provider_key))
-                metablock = MetaBlock(block_key, provider_key)
-                provider.put(block_data, block_key)
-                metadata.blocks.append(metablock)
+            block_pusher = BlockPusher(provider, provider_key, path, blocks, arrangement[i], metablock_queue)
+            block_pusher.start()
+            block_pushers.append(block_pusher)
+        for pusher in block_pushers:
+            pusher.join()
+        while not metablock_queue.empty():
+            metadata.blocks.append(metablock_queue.get())
         self.files[path] = metadata
         return metadata
 
