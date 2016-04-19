@@ -63,7 +63,7 @@ for size in "${PAYLOAD_SIZES[@]}"; do
 
 		docker build -t pycoder-microbencher -f Dockerfile .
 		cd ..
-		dstat -t -c -d -m -n > ${DATA_DIRECTORY}/microbench-decode-${size}MB-${rep}.csv > /dev/null &
+		dstat -t -c -d -m -n --output ${DATA_DIRECTORY}/microbench-encode-${size}MB-${rep}.csv  > /dev/null &
 		docker run --rm --volume "${PWD}/${DATA_DIRECTORY}":/$DATA_DIRECTORY pycoder-microbencher
 		kill -9 $!
 	done
