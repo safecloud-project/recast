@@ -92,6 +92,7 @@ function macrobench_config {
     # Take storage provider memory usage at the end
     py-proxy/get_quota.py > "${PWD}/xpdata/macrobench/${directory_name}/quota_end_${block_size}.json"
     # Clear storage provider of data
+    clients/flush_providers/flush_redis_instances.py
     py-proxy/flush_providers
   done
 }
