@@ -86,7 +86,7 @@ function macrobench_config {
     wait_for_proxy
     # Take storage provider memory usage at the start
     py-proxy/get_quota.py > "${PWD}/xpdata/macrobench/${directory_name}/quota_start_${block_size}.json"
-    docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${directory_name} && /ab_playcloud.sh 50 ${CONCURRENT_REQUESTS} ${block_size} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout-${block_size}.txt 2>&1"
+    docker run -it --rm -v "${PWD}/xpdata":/opt/xpdata client /bin/bash -c "cd /opt/xpdata/macrobench/${directory_name} && /ab_playcloud.sh 250 ${CONCURRENT_REQUESTS} ${block_size} ${PROXY_PORT_3000_TCP_ADDR}:${PROXY_PORT_3000_TCP_PORT} > stdout-${block_size}.txt 2>&1"
     # Take redis memory footprint
     clients/get_redis_info.py > "${PWD}/xpdata/macrobench/${directory_name}/info_all_${block_size}.json"
     # Take storage provider memory usage at the end
