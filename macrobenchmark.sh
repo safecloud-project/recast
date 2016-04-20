@@ -8,14 +8,13 @@
 source ./utils.sh
 
 function print_usage {
-  echo -e "Usage: ${0} <proxy-ip> <coder-ip> <redis-ip> <archive> payload-size [payload-size [payload-size [...]]]"
+  echo -e "Usage: ${0} <proxy-ip> <coder-ip> <archive> payload-size [payload-size [payload-size [...]]]"
   echo -e ""
   echo -e "Benchmark an encoder/decoder."
   echo -e ""
   echo -e "Arguments:"
-	echo -e "\tproxy-ip     IP address of the machine that will host the proxy instance"
-	echo -e "\tcoder-ip     IP address of the machine that will host the encoder/decoder instance"
-	echo -e "\tredis-ip     IP address of the machine that will host the redis instance"
+  echo -e "\tproxy-ip     IP address of the machine that will host the proxy instance"
+  echo -e "\tcoder-ip     IP address of the machine that will host the encoder/decoder instance"
   echo -e "\tarchive      The archive containing the repo's code"
   echo -e ""
 }
@@ -97,7 +96,7 @@ function macrobench_config {
   done
 }
 
-if [[ "${#}" -lt 5 ]]; then
+if [[ "${#}" -lt 4 ]]; then
   print_usage
   exit 0
 fi
@@ -105,8 +104,6 @@ fi
 readonly PROXY_HOST="${1}"
 shift
 readonly CODER_HOST="${1}"
-shift
-readonly REDIS_HOST="${1}"
 shift
 readonly ARCHIVE="${1}"
 shift
