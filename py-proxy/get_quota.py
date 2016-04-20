@@ -31,4 +31,4 @@ def get_quota_from_providers():
     return data
 
 if __name__ == "__main__":
-    print get_quota_from_providers()
+    print json.dumps(get_quota_from_providers(), sort_keys=True, indent=4)
