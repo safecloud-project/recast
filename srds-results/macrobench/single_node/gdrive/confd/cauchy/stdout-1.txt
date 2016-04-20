@@ -1,0 +1,197 @@
+File //random1.dat could not be found
+Creating data file...done
+This is ApacheBench, Version 2.3 <$Revision: 1706008 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 172.16.2.14 (be patient)...INFO: PUT header == 
+---
+PUT / HTTP/1.0
+Content-length: 1048576
+Content-type: text/plain
+Host: 172.16.2.14:3000
+User-Agent: ApacheBench/2.3
+Accept: */*
+
+
+---
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:14:10 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+75e16f86-90ee-40aa-b432-b834a063143d
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:14:26 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+455cc416-14d3-4b86-8090-a9b9ca07a639
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:14:40 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+9f88e265-2065-4567-a13e-c6d61931b9f9
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:14:57 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+52062a80-137e-46b4-9761-1d3c16366759
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:15:12 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:15:12 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+01a512bd-edf6-4537-8654-0e53fe6215b3
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:15:27 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+80887709-5303-4fe0-962b-fe3a7203735d
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:15:41 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+fea9e874-4164-4a30-ab4e-49f2b206e12e
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:15:56 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+e6768406-c3c2-40f9-8b0b-03a5625eb72f
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:16:11 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+109194f7-b947-4b8c-a15a-8c7ed57006f4
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:16:27 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+0aa751e2-3c00-4483-905d-51970669a0d9
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:16:42 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+fab7032a-e28c-406f-8804-c45d10b6ac93
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:16:58 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+06bf92cb-c793-455c-9830-fac061939694
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:17:13 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+75afef05-8fdb-4933-a772-619e131c31f4
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:17:28 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+f877a784-dd7b-4981-b66e-ad2fa4c47734
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:17:44 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+7aa907db-4c67-4d3e-89d4-798bfdce53d6
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:17:55 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+42b97bf4-ff37-41ab-9772-678d1ba6daf1
+LOG: Response code = apr_pollset_poll: The timeout specified has expired (70007)
+200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:17:55 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+b2ab9659-045b-40d8-a4fc-6731995f2f45
+LOG: Response code = 200
+LOG: header received:
+HTTP/1.0 200 OK
+Server: PasteWSGIServer/0.5 Python/2.7.10
+Date: Wed, 20 Apr 2016 01:17:56 GMT
+Content-Length: 36
+Content-Type: text/html; charset=UTF-8
+
+aa00e240-fd74-4467-8d3b-268cf45ef3ff
+LOG: Response code = 200
+Total of 18 requests completed
