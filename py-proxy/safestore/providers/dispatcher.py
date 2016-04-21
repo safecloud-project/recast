@@ -123,6 +123,32 @@ class BlockPusher(threading.Thread):
             self.provider.put(block_data, block_key)
             self.queue.put(metablock)
 
+class BlockFetcher(threading.Thread):
+    """
+    Threaded code to fetch blocks from a storage provider
+    """
+
+    def __init__(self, provider, block_keys, queue):
+        """
+        Initializes the block fetcher
+        Args:
+            provider -- The provider that will store the data (Provider)
+            block_keys -- The list of block keys that constitutes the file (list)
+            queue --  Queue where the recoveded data will be pushed  (queue.Queue)
+        """
+        super(BlockFetcher, self).__init__()
+        self.provider = provider
+        self.block_keys = block_keys
+        self.queue = queue
+
+    def run(self):
+        """
+        Fetches a series of blocks and pushes them the queue
+        """
+        for key in self.block_keys:
+            data = self.provider.get(key)
+            self.queue.put((key, data))
+
 def xor(block_a, block_b):
     """
     'Private' function used to xor two blocks.
@@ -220,10 +246,27 @@ class Dispatcher(object):
         if metadata is None:
             return None
         data = {}
+        blocks_per_provider = {}
         for metablock in metadata.blocks:
-            provider = self.providers[metablock.provider]
-            data[metablock.key] = provider.get(metablock.key)
-        return self.disentangle([data[key] for key in sorted(data.keys())], metadata.entangling_blocks)
+            blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
+            blocks_to_fetch.append(metablock.key)
+            blocks_per_provider[metablock.provider] = blocks_to_fetch
+        fetchers = []
+        block_queue = Queue.Queue()
+        for provider_key in blocks_per_provider:
+            provider = self.providers[provider_key]
+            blocks_to_fetch = blocks_per_provider[provider_key]
+            fetcher = BlockFetcher(provider, blocks_to_fetch, block_queue)
+            fetcher.start()
+            fetchers.append(fetcher)
+        for fetcher in fetchers:
+            fetcher.join()
+        data_blocks = []
+        while not block_queue.empty():
+            elt = block_queue.get()
+            data_blocks.append(elt)
+        data_blocks.sort(key=lambda tup: tup[0])
+        return self.disentangle([x[1] for x in data_blocks], metadata.entangling_blocks)
 
     def entangle(self, original_blocks):
         """
