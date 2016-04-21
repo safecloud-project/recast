@@ -9,8 +9,6 @@ import random
 import threading
 import uuid
 
-import numpy
-
 from enum import Enum
 from dbox import DBox
 from gdrive import GDrive
@@ -155,15 +153,13 @@ def xor(block_a, block_b):
     """
     # If a is longer than b, pad b
     if len(block_a) > len(block_b):
-        for i in range(0, (len(block_a) - len(block_b))):
+        i = len(block_b)
+        while i < len(block_a):
             block_b = block_b + '\x00'
+            i += 1
     elif len(block_a) < len(block_b):
         block_b = block_b[:len(block_a)]
-    a = numpy.frombuffer(block_a, dtype='b')
-    b = numpy.frombuffer(block_b, dtype='b')
-    c = numpy.bitwise_xor(a, b)
-    r = c.tostring()
-    return r
+    return ''.join(chr(ord(a) ^ ord(b)) for a, b in zip(block_a, block_a))
 
 def arrange_elements(elements, bins):
     """
@@ -248,7 +244,6 @@ class Dispatcher(object):
         metadata = self.files.get(path)
         if metadata is None:
             return None
-        data = {}
         blocks_per_provider = {}
         for metablock in metadata.blocks:
             blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
