@@ -319,9 +319,11 @@ class Dispatcher(object):
         stored_filenames = self.files.keys()
         if len(stored_filenames) == 0:
             return (None, None)
-        filename = stored_filenames[0]
+        random_file_index = random.randint(0, len(stored_filenames) - 1)
+        filename = stored_filenames[random_file_index]
         metafile = self.files[filename]
-        metablock = metafile.blocks[0]
+        random_block_index = random.randint(0, len(metafile.blocks) - 1)
+        metablock = metafile.blocks[random_block_index]
         provider_key = metablock.provider
         block_key = metablock.key
         block = self.providers[provider_key].get(block_key)
