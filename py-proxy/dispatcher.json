@@ -1,5 +1,7 @@
 {
-	"entanglement": false,
+	"entanglement": {
+		"enabled": true
+	},
 	"providers": [
         {"type": "dropbox"},
         {"type": "gdrive"},

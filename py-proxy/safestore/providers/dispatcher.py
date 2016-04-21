@@ -156,7 +156,7 @@ def xor(block_a, block_b):
     # If a is longer than b, pad b
     if len(block_a) > len(block_b):
         for i in range(0, (len(block_a) - len(block_b))):
-            block_b = block_b + '0'
+            block_b = block_b + '\x00'
     elif len(block_a) < len(block_b):
         block_b = block_b[:len(block_a)]
     a = numpy.frombuffer(block_a, dtype='b')
@@ -191,7 +191,9 @@ class Dispatcher(object):
     """
 
     def __init__(self, configuration={}):
-        self.entanglement = configuration.get("entanglement", False)
+        self.entanglement = False
+        if configuration.has_key("entanglement") and configuration.get("entanglement").has_key("enabled") and configuration.get("entanglement").get("enabled"):
+            self.entanglement = True
         self.providers = {}
         providers_configuration = configuration.get('providers', [])
         factory = ProviderFactory()
@@ -200,6 +202,7 @@ class Dispatcher(object):
             self.providers[str(uuid.uuid4())] = provider
         self.files = {}
         logger.info("entanglement: "  + str(self.entanglement))
+        self.last_entangled = "\xCA\xFE"
 
     def put(self, path, blocks):
         """
@@ -220,7 +223,7 @@ class Dispatcher(object):
         else:
             blocks_to_store = blocks
         arrangement = arrange_elements(len(blocks_to_store), number_of_providers)
-        metablock_queue = Queue.Queue(blocks_to_store)
+        metablock_queue = Queue.Queue(len(blocks_to_store))
         block_pushers = []
         for i, provider_key in enumerate(provider_keys):
             provider = self.providers[provider_key]
@@ -261,12 +264,12 @@ class Dispatcher(object):
             fetchers.append(fetcher)
         for fetcher in fetchers:
             fetcher.join()
-        data_blocks = []
+        recovered_blocks = []
         while not block_queue.empty():
-            elt = block_queue.get()
-            data_blocks.append(elt)
-        data_blocks.sort(key=lambda tup: tup[0])
-        return self.disentangle([x[1] for x in data_blocks], metadata.entangling_blocks)
+            recovered_blocks.append(block_queue.get())
+        recovered_blocks.sort(key=lambda tup: tup[0])
+        data_blocks = [x[1] for x in recovered_blocks]
+        return self.disentangle(data_blocks, metadata.entangling_blocks)
 
     def entangle(self, original_blocks):
         """
@@ -285,8 +288,10 @@ class Dispatcher(object):
             return (original_blocks, metablocks, original_blocks)
         entangled_blocks = []
         for block in original_blocks:
-            entangled_blocks.append(xor(block, random_block))
+            entangled_block = xor(block, random_block)
+            entangled_blocks.append(entangled_block)
         metablocks.append(metablock)
+        self.last_entangled = entangled_blocks
         return (original_blocks, metablocks, entangled_blocks)
 
     def disentangle(self, entangled_blocks, entangling_metablocks):
@@ -304,10 +309,10 @@ class Dispatcher(object):
             provider = self.providers[metablock.provider]
             entangling_blocks.append(provider.get(metablock.key))
         disentangled_blocks = []
-        for block in entangled_blocks:
+        for entangled_block in entangled_blocks:
             for entangling_block in entangling_blocks:
-                block = xor(block, entangling_block)
-            disentangled_blocks.append(block)
+                entangled_block = xor(entangled_block, entangling_block)
+            disentangled_blocks.append(entangled_block)
         return disentangled_blocks
 
     def get_random_block(self):
