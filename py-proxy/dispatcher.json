@@ -1,6 +1,7 @@
 {
 	"entanglement": {
-		"enabled": true
+		"enabled": true,
+		"p": 5
 	},
 	"providers": [
         {"type": "dropbox"},

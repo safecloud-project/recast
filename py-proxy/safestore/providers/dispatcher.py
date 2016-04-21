@@ -180,6 +180,8 @@ def arrange_elements(elements, bins):
         dispatching[index].append(i)
     return dispatching
 
+DEFAULT_ENTANGNLEMENT_P = 5
+
 class Dispatcher(object):
     """
     A class that decices where to store data blocks and keeps track of how to
@@ -190,6 +192,8 @@ class Dispatcher(object):
         self.entanglement = False
         if configuration.has_key("entanglement") and configuration.get("entanglement").has_key("enabled") and configuration.get("entanglement").get("enabled"):
             self.entanglement = True
+            self.entanglement_p = int(configuration.get("entanglement").get("p", DEFAULT_ENTANGNLEMENT_P))
+            logger.info("entanglement enabled with "  + str(self.entanglement_p) + " blocks")
         self.providers = {}
         providers_configuration = configuration.get('providers', [])
         factory = ProviderFactory()
@@ -197,7 +201,6 @@ class Dispatcher(object):
             provider = factory.get_provider(configuration)
             self.providers[str(uuid.uuid4())] = provider
         self.files = {}
-        logger.info("entanglement: "  + str(self.entanglement))
         self.last_entangled = "\xCA\xFE"
 
     def put(self, path, blocks):
@@ -276,7 +279,7 @@ class Dispatcher(object):
         """
         if len(original_blocks) == 0:
             return ([], [], [])
-        random_blocks = self.get_random_blocks(5)
+        random_blocks = self.get_random_blocks(self.entanglement_p)
         if len(random_blocks) == 0:
             return (original_blocks, [], original_blocks)
         metablocks = [tup[0] for tup in random_blocks]
