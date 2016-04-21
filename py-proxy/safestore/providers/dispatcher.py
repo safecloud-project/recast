@@ -211,14 +211,13 @@ class Dispatcher(object):
         """
         metadata = Metadata(path)
         provider_keys = self.providers.keys()
-        number_of_providers = len(provider_keys)
         blocks_to_store = []
         if self.entanglement:
             blocks, entangling_blocks, blocks_to_store = self.entangle(blocks)
             metadata.entangling_blocks = entangling_blocks
         else:
             blocks_to_store = blocks
-        arrangement = arrange_elements(len(blocks_to_store), number_of_providers)
+        arrangement = arrange_elements(len(blocks_to_store), len(provider_keys))
         metablock_queue = Queue.Queue(len(blocks_to_store))
         block_pushers = []
         for i, provider_key in enumerate(provider_keys):
@@ -277,15 +276,16 @@ class Dispatcher(object):
         """
         if len(original_blocks) == 0:
             return ([], [], [])
-        metablocks = []
-        metablock, random_block = self.get_random_block()
-        if metablock is None:
-            return (original_blocks, metablocks, original_blocks)
+        random_blocks = self.get_random_blocks(5)
+        if len(random_blocks) == 0:
+            return (original_blocks, [], original_blocks)
+        metablocks = [tup[0] for tup in random_blocks]
+        datablocks = [tup[1] for tup in random_blocks]
         entangled_blocks = []
         for block in original_blocks:
-            entangled_block = xor(block, random_block)
+            for random_block in datablocks:
+                entangled_block = xor(block, random_block)
             entangled_blocks.append(entangled_block)
-        metablocks.append(metablock)
         self.last_entangled = entangled_blocks
         return (original_blocks, metablocks, entangled_blocks)
 
@@ -328,3 +328,24 @@ class Dispatcher(object):
         block_key = metablock.key
         block = self.providers[provider_key].get(block_key)
         return (metablock, block)
+
+    def get_random_blocks(self, blocks_desired):
+        """
+        Tries to randomly select a number blocks from the storage providers.
+        It may return between 0 and "blocks_desired" numbers depending on the
+        number of blocks already present in the system.
+        Args:
+            blocks_desired -- The number of random blocks to select (int)
+        Returns:
+            A list of tuples where the first element is a metablock and the
+            second one is the block data itself
+        """
+        #TODO: Make sure there is no duplicate block
+        #IDEA: Take all blocks in a single list, shuffle them and return number_of_blocks_to_fetch blocks from that list
+        random_blocks = []
+        number_of_blocks_to_fetch = min(len(self.files), blocks_desired)
+        i = 0
+        while i < number_of_blocks_to_fetch:
+            random_blocks.append(self.get_random_block())
+            i += 1
+        return random_blocks
