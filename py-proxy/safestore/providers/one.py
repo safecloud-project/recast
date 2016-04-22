@@ -4,6 +4,7 @@
 import logging
 import os
 import sys
+import uuid
 import safestore.handler.defines as defines
 import safestore.db.db_provider as dbprovider
 from onedrive import api_v5
@@ -27,18 +28,12 @@ AUTHORIZE_URI = config.get('ONEDRIVE','AUTHORIZE_URI')
 TOKEN_URI = config.get('ONEDRIVE','TOKEN_URI')
 CODE_URI = config.get('ONEDRIVE','CODE_URI')
 
-
 class ODrive():
     def __init__(self):
         self.logger = logging.getLogger('onedrive')
         db = dbprovider.DB()
         self.api_client = None
-        self.api = api_v5.OneDriveAPI()
-        self.api.client_id=CLIENT_ID
-        self.api.client_secret=CLIENT_SECRET
-        self.api.auth_url_user=AUTHORIZE_URI
-        self.api.auth_redirect_uri=REDIRECT_URI
-        self.api.auth_scope=(self.api.auth_scope[0],self.api.auth_scope[1],self.api.auth_scope[2],'wl.emails')
+        self.api = self.setup_api()
         access_token  = db.get_provider_token('onedrive')
         refresh_token  = db.get_provider_refresh_token('onedrive')
         if access_token is None:
@@ -55,6 +50,21 @@ class ODrive():
             self.api.auth_refresh_token=refresh_token
         self.logger.info("Access token: "+ str(access_token))
         db.shutdown_database()
+
+    @staticmethod
+    def setup_api():
+        """
+        Initiates the onedrive API client.
+        Returns:
+            A configured api client
+        """
+        api = api_v5.OneDriveAPI()
+        api.client_id=CLIENT_ID
+        api.client_secret=CLIENT_SECRET
+        api.auth_url_user=AUTHORIZE_URI
+        api.auth_redirect_uri=REDIRECT_URI
+        api.auth_scope=(api.auth_scope[0], api.auth_scope[1], api.auth_scope[2], 'wl.emails')
+        return api
 
     def createDir(self,path):
         paths=path.split("/")
@@ -75,21 +85,24 @@ class ODrive():
 
     def put(self, data, path):
         self.logger.debug("Put path:"+path)
-        tmpfile_path=defines.TEMP_PATH+'tmpfile-one'
-        myfile = defines.temp_file_open(tmpfile_path)
-        myfile.seek(0)
-        myfile.write(data)
-        myfile.seek(0)
+        tmpfile_path=defines.TEMP_PATH + 'tmpfile-one' + str(uuid.uuid4())
         cut=path.rfind('/')
-        parent_id=self.api.resolve_path(path[:cut+1])
         path=path[cut+1:]
+        api = self.setup_api()
         try:
-            self.api.put((path,myfile),folder_id=parent_id)
-        except (ProtocolError,SSLError,BadStatusLine,ResponseNotReady):
+            myfile = defines.temp_file_open(tmpfile_path)
+            myfile.seek(0)
+            myfile.write(data)
+            myfile.seek(0)
+            parent_id=api.resolve_path(path[:cut+1])
+            api.put((path,myfile),folder_id=parent_id)
+        except (ProtocolError,SSLError,BadStatusLine,ResponseNotReady) as e:
             #Try again
+            print e
             self.put(data,path)
-        defines.temp_file_close(myfile)
-        defines.temp_file_delete(tmpfile_path)
+        finally:
+            defines.temp_file_close(myfile)
+            defines.temp_file_delete(tmpfile_path)
 
     def get(self,path):
         self.logger.debug("Get path:"+path)
@@ -122,7 +135,7 @@ class ODrive():
 
     def clear(self):
         self.clean("/")
-    
+
     def delete(self,path):
         self.logger.debug("Delete path:"+path)
         try:
