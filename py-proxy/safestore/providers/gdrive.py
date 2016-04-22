@@ -2,9 +2,13 @@
 # coding=utf8
 
 import httplib2
+import random
 import os
+import threading
+import uuid
 import safestore.db.db_provider as dbprovider
 import safestore.handler.defines as defines
+
 
 from apiclient.errors import HttpError
 from apiclient.discovery import build
@@ -36,6 +40,7 @@ if TEST:
     SERVICE_ACCOUNT = os.path.join(os.path.dirname(
         __file__), config.get('GDRIVE', 'SERVICE_ACCOUNT'))
 
+SERVICE_MUTEX = threading.Lock()
 
 class GDrive():
 
@@ -143,15 +148,12 @@ class GDrive():
     def put(self, data, path):
         self.logger.debug("Put path:" + path)
         (path, parent_id) = self._correct_dest_path(path)
-
+        tmpfile_path = defines.TEMP_PATH + 'tmpfile-gdrive' + str(uuid.uuid4())
         try:
-            files = self.drive_service.files().list(q="'" + parent_id +
-                                                    "' in parents and title = '" + path + "' and trashed = false").execute()
-
+            with SERVICE_MUTEX:
+                files = self.drive_service.files().list(q="'" + parent_id + "' in parents and title = '" + path + "' and trashed = false").execute()
             if (len(files['items']) > 0):
                 file_id = files['items'][0]['id']
-
-                tmpfile_path = defines.TEMP_PATH + 'tmpfile-gdrive'
                 myfile = defines.temp_file_open(tmpfile_path)
                 myfile.seek(0)
                 myfile.write(data)
@@ -163,13 +165,10 @@ class GDrive():
                     'mimeType': 'text/plain',
                     'parents': [{'id': parent_id}]
                 }
-                self.drive_service.files().update(fileId=file_id, body=body,
-                                                  newRevision=False, media_body=media_body).execute()
-                defines.temp_file_close(myfile)
-                defines.temp_file_delete(tmpfile_path)
+                with SERVICE_MUTEX:
+                    self.drive_service.files().update(fileId=file_id, body=body, newRevision=False, media_body=media_body).execute()
 
             else:
-                tmpfile_path = defines.TEMP_PATH + 'tmpfile-gdrive'
                 myfile = defines.temp_file_open(tmpfile_path)
                 myfile.seek(0)
                 myfile.write(data)
@@ -181,14 +180,16 @@ class GDrive():
                     'mimeType': 'text/plain',
                     'parents': [{'id': parent_id}]
                 }
-
-                self.drive_service.files().insert(body=body, media_body=media_body).execute()
+                with SERVICE_MUTEX:
+                    self.drive_service.files().insert(body=body, media_body=media_body).execute()
                 self.logger.debug("Exit put path:" + path)
-                defines.temp_file_close(myfile)
-                defines.temp_file_delete(tmpfile_path)
-        except (HttpError, SSLError, BadStatusLine, ResponseNotReady):
+        except (HttpError, SSLError, BadStatusLine, ResponseNotReady) as e:
+            print e
             # Try again
             self.put(data, path)
+        finally:
+            defines.temp_file_close(myfile)
+            defines.temp_file_delete(tmpfile_path)
 
     def get(self, path):
         try:
@@ -245,7 +246,7 @@ class GDrive():
 
     def clear(self):
         self.clean("root")
-    
+
     def listChildren(self, path):
         '''
         TODO
