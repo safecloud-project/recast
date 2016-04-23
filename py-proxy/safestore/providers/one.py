@@ -31,39 +31,37 @@ CODE_URI = config.get('ONEDRIVE','CODE_URI')
 class ODrive():
     def __init__(self):
         self.logger = logging.getLogger('onedrive')
-        db = dbprovider.DB()
+        self.db = dbprovider.DB()
         self.api_client = None
         self.api = self.setup_api()
-        access_token  = db.get_provider_token('onedrive')
-        refresh_token  = db.get_provider_refresh_token('onedrive')
-        if access_token is None:
-            authorize_url = self.api.auth_user_get_url()
-            sys.stdout.write("1. Go to: " + authorize_url + "\n")
-            sys.stdout.write("2. Click \"Allow\" (you might have to log in first).\n")
-            sys.stdout.write("3. Copy the redirect url.\n")
-            url = raw_input("Enter the authorization url here: ").strip()
-            print self.api.auth_user_process_url(url)
-            print self.api.auth_get_token()
-            db.set_provider_token('onedrive',self.api.auth_access_token,self.api.auth_refresh_token)
-        else:
-            self.api.auth_access_token=access_token
-            self.api.auth_refresh_token=refresh_token
-        self.logger.info("Access token: "+ str(access_token))
-        db.shutdown_database()
+        self.logger.info("Access token: "+ str(self.access_token))
 
-    @staticmethod
-    def setup_api():
+    def setup_api(self):
         """
         Initiates the onedrive API client.
         Returns:
             A configured api client
         """
         api = api_v5.OneDriveAPI()
-        api.client_id=CLIENT_ID
-        api.client_secret=CLIENT_SECRET
-        api.auth_url_user=AUTHORIZE_URI
-        api.auth_redirect_uri=REDIRECT_URI
-        api.auth_scope=(api.auth_scope[0], api.auth_scope[1], api.auth_scope[2], 'wl.emails')
+        api.client_id = CLIENT_ID
+        api.client_secret = CLIENT_SECRET
+        api.auth_url_user = AUTHORIZE_URI
+        api.auth_redirect_uri = REDIRECT_URI
+        api.auth_scope = (api.auth_scope[0], api.auth_scope[1], api.auth_scope[2], 'wl.emails')
+        self.access_token  = self.db.get_provider_token('onedrive')
+        self.refresh_token  = self.db.get_provider_refresh_token('onedrive')
+        if self.access_token is None:
+            authorize_url = api.auth_user_get_url()
+            sys.stdout.write("1. Go to: " + authorize_url + "\n")
+            sys.stdout.write("2. Click \"Allow\" (you might have to log in first).\n")
+            sys.stdout.write("3. Copy the redirect url.\n")
+            url = raw_input("Enter the authorization url here: ").strip()
+            print api.auth_user_process_url(url)
+            print api.auth_get_token()
+            self.db.set_provider_token('onedrive', api.auth_access_token, api.auth_refresh_token)
+        else:
+            api.auth_access_token = self.access_token
+            api.auth_refresh_token = self.refresh_token
         return api
 
     def createDir(self,path):
