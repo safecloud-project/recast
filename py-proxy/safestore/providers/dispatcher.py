@@ -313,25 +313,6 @@ class Dispatcher(object):
             disentangled_blocks.append(entangled_block)
         return disentangled_blocks
 
-    def get_random_block(self):
-        """
-        Returns a tuple with the information and a data block
-        Returns:
-            A tuple with metadata about a block (MetaBlock) and the block itself
-        """
-        stored_filenames = self.files.keys()
-        if len(stored_filenames) == 0:
-            return (None, None)
-        random_file_index = random.randint(0, len(stored_filenames) - 1)
-        filename = stored_filenames[random_file_index]
-        metafile = self.files[filename]
-        random_block_index = random.randint(0, len(metafile.blocks) - 1)
-        metablock = metafile.blocks[random_block_index]
-        provider_key = metablock.provider
-        block_key = metablock.key
-        block = self.providers[provider_key].get(block_key)
-        return (metablock, block)
-
     def get_random_blocks(self, blocks_desired):
         """
         Tries to randomly select a number blocks from the storage providers.
@@ -343,12 +324,21 @@ class Dispatcher(object):
             A list of tuples where the first element is a metablock and the
             second one is the block data itself
         """
-        #TODO: Make sure there is no duplicate block
-        #IDEA: Take all blocks in a single list, shuffle them and return number_of_blocks_to_fetch blocks from that list
+        all_metablocks = [block for filename in self.files.keys() for block in self.files.get(filename).blocks]
+        number_of_blocks_to_fetch = min(len(all_metablocks), blocks_desired)
+        random.shuffle(all_metablocks)
+        random_metablocks = all_metablocks[:number_of_blocks_to_fetch]
+        fetchers = []
+        block_queue = Queue.Queue(number_of_blocks_to_fetch)
+        for metablock in random_metablocks:
+            provider = self.providers[metablock.provider]
+            block_key = metablock.key
+            fetcher = BlockFetcher(provider, [block_key], block_queue)
+            fetcher.start()
+            fetchers.append(fetcher)
+        for fetcher in fetchers:
+            fetcher.join()
         random_blocks = []
-        number_of_blocks_to_fetch = min(len(self.files), blocks_desired)
-        i = 0
-        while i < number_of_blocks_to_fetch:
-            random_blocks.append(self.get_random_block())
-            i += 1
+        while not block_queue.empty():
+            random_blocks.append(block_queue.get())
         return random_blocks
