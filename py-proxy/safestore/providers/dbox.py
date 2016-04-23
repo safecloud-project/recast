@@ -90,9 +90,19 @@ class DBox():
         return res
 
     def clean(self, path):
-        self.logger.debug("Clean")
-        for mfile in self.api_client.metadata(path, file_limit=25000)["contents"]:
-            self.api_client.file_delete(mfile["path"])
+        self.logger.info("Clean " + path)
+        files = self.api_client.metadata(path, file_limit=25000)["contents"]
+        self.logger.debug("Will try to delete" + str(len(files)) + "files from dropbox")
+        deleted_files = 0
+        try:
+            for mfile in files:
+                self.logger.debug("deleting: " + mfile["path"])
+                self.api_client.file_delete(mfile["path"])
+                deleted_files += 1
+        except ErrorResponse as e:
+            self.logger.error(e)
+            self.logger.error("failed after " + str(deleted_files) + " deletion")
+        return deleted_files
         #self.api_client.file_delete(path)
         # 406 (Not Acceptable) status
 
