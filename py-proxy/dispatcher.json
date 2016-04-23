@@ -4,8 +4,8 @@
 		"p": 5
 	},
 	"providers": [
-        {"type": "dropbox"},
-        {"type": "gdrive"},
-        {"type": "onedrive"}
+		{"type": "dropbox"},
+		{"type": "gdrive"},
+		{"type": "onedrive"}
 	]
 }
