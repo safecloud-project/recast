@@ -1,6 +1,7 @@
 {
 	"entanglement": false,
 	"providers": [
+        {"type": "dropbox"},
         {"type": "onedrive"}
 	]
 }
