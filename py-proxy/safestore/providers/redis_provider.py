@@ -3,6 +3,8 @@ A storage provider inspired by the safestore providers to store and get data
 from a Redis database
 """
 import os
+import sys
+
 import redis
 
 class RedisProvider(object):
@@ -53,3 +55,12 @@ class RedisProvider(object):
         Deletes all entries in the redis database
         """
         return self.redis.flushall()
+
+    @staticmethod
+    def quota():
+        """
+        A compatibility method that returns sys.maxint.
+        Returns:
+            The value of sys.maxint
+        """
+        return sys.maxint
