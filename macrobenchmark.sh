@@ -93,7 +93,7 @@ function macrobench_config {
     py-proxy/get_quota.py > "${PWD}/xpdata/macrobench/${directory_name}/quota_end_${block_size}.json"
     # Clear storage provider of data
     clients/flush_redis_instances.py
-    py-proxy/flush_providers
+    # py-proxy/flush_providers
   done
 }
 
