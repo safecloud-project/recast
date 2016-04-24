@@ -335,9 +335,11 @@ class Dispatcher(object):
         random_metablocks = all_metablocks[:number_of_blocks_to_fetch]
         fetchers = []
         block_queue = Queue.Queue(number_of_blocks_to_fetch)
+        metablocks = {}
         for metablock in random_metablocks:
             provider = self.providers[metablock.provider]
             block_key = metablock.key
+            metablocks[block_key] = metablock
             fetcher = BlockFetcher(provider, [block_key], block_queue)
             fetcher.start()
             fetchers.append(fetcher)
@@ -345,5 +347,7 @@ class Dispatcher(object):
             fetcher.join()
         random_blocks = []
         while not block_queue.empty():
-            random_blocks.append(block_queue.get())
+            block_key, block_data = block_queue.get()
+            metablock = metablocks[block_key]
+            random_blocks.append((metablock, block_data))
         return random_blocks
