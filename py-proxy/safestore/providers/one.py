@@ -102,15 +102,16 @@ class ODrive():
             defines.temp_file_close(myfile)
             defines.temp_file_delete(tmpfile_path)
 
-    def get(self,path):
-        self.logger.debug("Get path:"+path)
+    def get(self, path):
+        self.logger.debug("Get path:" + path)
         try:
-            url=self.api.resolve_path(path)
-            contents = self.api.get(url)
+            api = self.setup_api()
+            url = api.resolve_path(path)
+            contents = api.get(url)
             return contents
         except DoesNotExists:
             return None
-        except (ProtocolError,SSLError,BadStatusLine,ResponseNotReady):
+        except (ProtocolError, SSLError, BadStatusLine, ResponseNotReady):
             #Try again
             return self.get(path)
 

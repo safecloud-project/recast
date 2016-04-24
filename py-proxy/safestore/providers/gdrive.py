@@ -191,11 +191,14 @@ class GDrive():
             self.logger.debug("Get path:" + path)
             (path, parent_id) = self._correct_dest_path(path)
 
-            files = self.drive_service.files().list(q="'" + parent_id +
+            http = self.credentials.authorize(httplib2.Http())
+            drive_service = build('drive', 'v2', http=http)
+
+            files = drive_service.files().list(q="'" + parent_id +
                                                     "' in parents and title = '" + path + "' and trashed = false").execute()
             if (len(files['items']) > 0):
                 file_id = files['items'][0]['id']
-                f = self.drive_service.files().get(fileId=file_id).execute()
+                f = drive_service.files().get(fileId=file_id).execute()
                 downloadUrl = f.get('downloadUrl')
                 # If a download URL is provided in the file metadata, use it to make an
                 # authorized request to fetch the file ontent. Set this content in the
