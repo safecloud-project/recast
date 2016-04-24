@@ -312,7 +312,7 @@ class Dispatcher(object):
             provider = self.providers[metablock.provider]
             entangling_blocks.append(provider.get(metablock.key))
         disentangled_blocks = []
-        for entangled_block in entangled_blocks:
+        for entangled_block in self.last_entangled:
             for entangling_block in entangling_blocks:
                 entangled_block = xor(entangled_block, entangling_block)
             disentangled_blocks.append(entangled_block)
@@ -336,11 +336,16 @@ class Dispatcher(object):
         fetchers = []
         block_queue = Queue.Queue(number_of_blocks_to_fetch)
         metablocks = {}
-        for metablock in random_metablocks:
-            provider = self.providers[metablock.provider]
-            block_key = metablock.key
-            metablocks[block_key] = metablock
-            fetcher = BlockFetcher(provider, [block_key], block_queue)
+        providers_to_use = [metablock.provider for metablock in random_metablocks]
+        blocks_per_provider = {}
+        for provider_key in providers_to_use:
+            blocks_stored_at_provider = [metablock for metablock in random_metablocks if metablock.provider == provider_key]
+            provider = self.providers[provider_key]
+            block_keys = []
+            for metablock in blocks_stored_at_provider:
+                block_key = metablock.key
+                metablocks[block_key] = metablock
+            fetcher = BlockFetcher(provider, block_keys, block_queue)
             fetcher.start()
             fetchers.append(fetcher)
         for fetcher in fetchers:
