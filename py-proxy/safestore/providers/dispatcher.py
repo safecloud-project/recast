@@ -205,7 +205,6 @@ class Dispatcher(object):
             provider = factory.get_provider(configuration)
             self.providers[str(uuid.uuid4())] = provider
         self.files = {}
-        self.last_entangled = "\xCA\xFE"
 
     def put(self, path, blocks):
         """
@@ -271,7 +270,9 @@ class Dispatcher(object):
             recovered_blocks.append(block_queue.get())
         recovered_blocks.sort(key=lambda tup: tup[0])
         data_blocks = [x[1] for x in recovered_blocks]
-        return self.disentangle(data_blocks, metadata.entangling_blocks)
+        if self.entanglement:
+            return self.disentangle(data_blocks, metadata.entangling_blocks)
+        return data_blocks
 
     def entangle(self, original_blocks):
         """
@@ -294,7 +295,6 @@ class Dispatcher(object):
             for random_block in datablocks:
                 entangled_block = xor(block, random_block)
             entangled_blocks.append(entangled_block)
-        self.last_entangled = entangled_blocks
         return (original_blocks, metablocks, entangled_blocks)
 
     def disentangle(self, entangled_blocks, entangling_metablocks):
@@ -312,7 +312,7 @@ class Dispatcher(object):
             provider = self.providers[metablock.provider]
             entangling_blocks.append(provider.get(metablock.key))
         disentangled_blocks = []
-        for entangled_block in self.last_entangled:
+        for entangled_block in entangled_blocks:
             for entangling_block in entangling_blocks:
                 entangled_block = xor(entangled_block, entangling_block)
             disentangled_blocks.append(entangled_block)
