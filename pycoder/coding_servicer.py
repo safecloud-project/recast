@@ -5,6 +5,11 @@ import logging
 import logging.config
 
 from pyeclib.ec_iface import ECDriver
+from pyeclib.ec_iface import ECBackendInstanceNotAvailable
+from pyeclib.ec_iface import ECBackendNotSupported
+from pyeclib.ec_iface import ECInvalidParameter
+from pyeclib.ec_iface import ECOutOfMemory
+from pyeclib.ec_iface import ECDriverError
 
 from custom_drivers import ECStripingDriver
 from custom_drivers import PylonghairDriver
@@ -14,7 +19,7 @@ from playcloud_pb2 import EncodeReply
 from playcloud_pb2 import Strip
 
 from safestore.xor_driver import XorDriver
-from safestore.hashed_splitter_driver import HashedSplitterDriver, IntegrityException
+from safestore.hashed_splitter_driver import HashedSplitterDriver
 from safestore.signed_splitter_driver import SignedSplitterDriver
 from safestore.signed_hashed_splitter_driver import SignedHashedSplitterDriver
 from safestore.aes_driver import AESDriver
@@ -24,6 +29,7 @@ from safestore.assymetric_driver import AssymetricDriver
 CONFIG = ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
 
+#TODO: No absolute path
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/app/logging.conf")
 logging.config.fileConfig(log_config)
 
@@ -46,7 +52,7 @@ class DriverFactory():
                      'shamir': self.shamir,
                      'ec': self.erasure_driver,
                      'aes': self.aes_driver
-                     }
+                    }
 
         self.splitter_driver = splitters[self.splitter]()
 
@@ -183,33 +189,41 @@ class CodingService(BetaEncoderDecoderServicer):
 
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
-        reply = EncodeReply()
-        logger.info("Received encode request")
+        try:
+            reply = EncodeReply()
+            logger.info("Received encode request")
 
-        raw_strips = self.driver.encode(request.payload)
+            raw_strips = self.driver.encode(request.payload)
 
-        log_temp = "Encoded and returned {} raw_strips"
-        logger.debug(log_temp.format(len(raw_strips)))
+            log_temp = "Encoded and returned {} raw_strips"
+            logger.debug(log_temp.format(len(raw_strips)))
 
-        strips = []
-        for raw_strip in raw_strips:
-            strip = Strip()
-            strip.data = raw_strip
-            strips.append(strip)
+            strips = []
+            for raw_strip in raw_strips:
+                strip = Strip()
+                strip.data = raw_strip
+                strips.append(strip)
 
-        reply.strips.extend(strips)
-        reply.parameters["splitter"] = os.environ.get("splitter", CONFIG.get("main", "splitter"))
-        log_temp = "Request encoded, returning reply with {} strips"
-        logger.info(log_temp.format(len(strips)))
-        return reply
+            reply.strips.extend(strips)
+            reply.parameters["splitter"] = os.environ.get("splitter", CONFIG.get("main", "splitter"))
+            log_temp = "Request encoded, returning reply with {} strips"
+            logger.info(log_temp.format(len(strips)))
+            return reply
+        except (ECBackendInstanceNotAvailable, ECBackendNotSupported, ECInvalidParameter, ECOutOfMemory, ECDriverError) as error:
+            logger.exception("An exception was while caught encoding blocks")
+            raise error
 
     def Decode(self, request, context):
         """Decode data sent in an DecodeRequest into a DecodeReply"""
-        logger.info("Received decode request")
+        try:
+            logger.info("Received decode request")
 
-        reply = DecodeReply()
-        strips = convert_strips_to_bytes_list(request.strips)
-        reply.dec_block = self.driver.decode(strips)
-        reply.parameters["splitter"] = os.environ.get("splitter", CONFIG.get("main", "splitter"))
-        logger.info("Request decoded, returning reply")
-        return reply
+            reply = DecodeReply()
+            strips = convert_strips_to_bytes_list(request.strips)
+            reply.dec_block = self.driver.decode(strips)
+            reply.parameters["splitter"] = os.environ.get("splitter", CONFIG.get("main", "splitter"))
+            logger.info("Request decoded, returning reply")
+            return reply
+        except (ECBackendInstanceNotAvailable, ECBackendNotSupported, ECInvalidParameter, ECOutOfMemory, ECDriverError) as error:
+            logger.exception("An exception was while caught decoding blocks")
+            raise error
