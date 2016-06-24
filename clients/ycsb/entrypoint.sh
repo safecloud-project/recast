@@ -30,12 +30,40 @@ function ycsb_check_variables {
 	fi
 }
 
+#############################################################################
+# wait_for_proxy
+#
+# Wait for the proxy to be able to receive connections by probing its expected
+# open port every second for DEFAULT_TIMEOUT_IN_SECONDS seconds.
+#############################################################################
+function wait_for_proxy {
+  local TIMER="${DEFAULT_TIMEOUT_IN_SECONDS}"
+  while [[ "${TIMER}" -gt 0 ]]; do
+    nc -q 1 "${PROXY_PORT_8080_TCP_ADDR}" "${PROXY_PORT_8080_TCP_PORT}" </dev/null
+    if [[ "${?}" -eq 0 ]]; then
+      break
+    fi
+    echo "waiting for proxy ...";
+    TIMER=$(( TIMER - 1 ))
+    sleep 1
+  done
+
+  if [[ "${TIMER}" -eq 0 ]]; then
+    echo "Failed to connect to the proxy(${PROXY_PORT_8080_TCP_ADDR}:${PROXY_PORT_8080_TCP_PORT}) after ${DEFAULT_TIMEOUT_IN_SECONDS} seconds"
+    exit 1
+  fi
+}
+
 function ycsb_main {
 	ycsb_check_variables
+	# Create directory to collect the results
+	mkdir -p /opt/ycsb
 	# Need to move to the YCSB directory to access the contextual files such as the properties file
 	cd "${YCSB_HOME}"
-	bin/ycsb load playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}"
-	bin/ycsb run playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}"
+	wait_for_proxy
+	bin/ycsb load playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}" > /opt/ycsb/load.txt 2>&1
+	bin/ycsb run playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}" > /opt/ycsb/run.txt 2>&1
+	chmod -R 0777 /opt/ycsb/
 }
 
 
