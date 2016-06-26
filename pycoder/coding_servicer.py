@@ -11,8 +11,8 @@ from pyeclib.ec_iface import ECInvalidParameter
 from pyeclib.ec_iface import ECOutOfMemory
 from pyeclib.ec_iface import ECDriverError
 
-from custom_drivers import ECStripingDriver
-from custom_drivers import PylonghairDriver
+from drivers.custom_drivers import ECStripingDriver
+from drivers.custom_drivers import PylonghairDriver
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
