@@ -12,7 +12,7 @@ from pyeclib.ec_iface import ECOutOfMemory
 from pyeclib.ec_iface import ECDriverError
 
 from drivers.pylonghair_driver import PylonghairDriver
-from drivers.striping_driver import ECStripingDriver
+from drivers.striping_driver import StripingDriver
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
@@ -129,7 +129,7 @@ class Eraser(object):
         if ec_type == "pylonghair":
             self.driver = PylonghairDriver(k=ec_k, m=ec_m, ec_type=ec_type)
         elif ec_type == "striping" or ec_type == "bypass":
-            self.driver = ECStripingDriver(k=ec_k, m=0, hd=None)
+            self.driver = StripingDriver(k=ec_k, m=0, hd=None)
         else:
             self.driver = ECDriver(k=ec_k, m=ec_m, ec_type='jerasure_rs_vand')
 

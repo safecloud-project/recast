@@ -4,7 +4,7 @@ Custom drivers for the playcloud project
 import math
 
 
-class ECStripingDriver(object):
+class StripingDriver(object):
     """
     A driver that splits data into strips and reassemble strips to the original data
     """
