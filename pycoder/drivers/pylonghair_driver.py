@@ -42,7 +42,7 @@ class PylonghairDriver(object):
     """
     An erasure coding driver for pylonghair
     """
-    def __init__(self, k, m, ec_type="longhair"):
+    def __init__(self, k, m, ec_type="longhair", hd=None):
         self.k = k
         self.m = m
         self.ec_type = ec_type
