@@ -44,7 +44,8 @@ COPY safestore /usr/local/src/app/safestore
 COPY test_files  /usr/local/src/app/test_files
 COPY safestore/keys /usr/local/src/app/safestore/keys
 COPY logging.conf /usr/local/src/app/
+COPY drivers /usr/local/src/app/drivers
 COPY requirements.txt /usr/local/src/app
 WORKDIR /usr/local/src/app/
 RUN pip install --quiet --requirement requirements.txt
-# ENTRYPOINT /usr/bin/python /usr/local/src/app/server.py
+ENTRYPOINT /usr/bin/python /usr/local/src/app/server.py
