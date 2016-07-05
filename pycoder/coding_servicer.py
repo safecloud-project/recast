@@ -3,6 +3,7 @@ from ConfigParser import ConfigParser
 import os
 import logging
 import logging.config
+import sys
 
 from pyeclib.ec_iface import ECDriver
 from pyeclib.ec_iface import ECBackendInstanceNotAvailable
@@ -11,8 +12,6 @@ from pyeclib.ec_iface import ECInvalidParameter
 from pyeclib.ec_iface import ECOutOfMemory
 from pyeclib.ec_iface import ECDriverError
 
-from drivers.pylonghair_driver import PylonghairDriver
-from drivers.striping_driver import StripingDriver
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
@@ -126,12 +125,20 @@ class Eraser(object):
     def __init__(self, ec_k, ec_m, ec_type="liberasurecode_rs_vand"):
         self.ec_type = ec_type
         self.aes = AESDriver()
-        if ec_type == "pylonghair":
-            self.driver = PylonghairDriver(k=ec_k, m=ec_m, ec_type=ec_type)
-        elif ec_type == "striping" or ec_type == "bypass":
-            self.driver = StripingDriver(k=ec_k, m=0, hd=None)
-        else:
-            self.driver = ECDriver(k=ec_k, m=ec_m, ec_type='jerasure_rs_vand')
+        expected_module_name = "drivers." + ec_type.lower() + "_driver"
+        expected_class_name = ec_type[0].upper() + ec_type[1:].lower() + "Driver"
+        try:
+            mod = __import__(expected_module_name, fromlist=[expected_class_name])
+            driver_class = None
+            driver_class = getattr(mod, expected_class_name)
+            self.driver = driver_class(k=ec_k, m=ec_m, ec_type=ec_type, hd=None)
+        except ImportError, AttributeError:
+            logger.exception("Driver " + ec_type + " could not be loaded as a custom driver")
+            try:
+                self.driver = ECDriver(k=ec_k, m=ec_m, ec_type=ec_type)
+            except Exception as error:
+                logger.exception("Driver " + ec_type + " could not be loaded by pyeclib")
+                raise error
 
     def encode(self, data):
         """Encode a string of bytes in flattened string of byte strips"""
