@@ -9,7 +9,7 @@ class StripingDriver(object):
     A driver that splits data into strips and reassemble strips to the original data
     """
 
-    def __init__(self, k, m, hd, ec_type=None, chksum_type=None,
+    def __init__(self, k, m=0, hd=None, ec_type=None, chksum_type=None,
                  validate=False):
         """Stripe an arbitrary-sized string into k fragments
         :param k: the number of data fragments to stripe
@@ -17,12 +17,12 @@ class StripingDriver(object):
         :raises: ECDriverError if there is an error during encoding
         """
         self.k = k
-
-        if m != 0:
+        self.m = 0
+        self.hd = None
+        
+        if self.m != 0:
             raise ECDriverError("This driver only supports m=0")
 
-        self.m = m
-        self.hd = hd
 
     def encode(self, data_bytes):
         """Stripe an arbitrary-sized string into k fragments
