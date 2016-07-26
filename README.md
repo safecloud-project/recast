@@ -54,7 +54,7 @@ The encoder/decoder's configuration can be overloaded by environment variables. 
 ## Re-generate GRPC stubs
 Should you need to modify the service definition in protocols/playcloud.proto, the stubs would need to be re-generated.
 To build a usable environment to compile the files, you can use the prepared docker image and use the generate-stubs script to re-generate the stubs.
-The image is based on the dockerfile at the top of the project (grpc-compiler-0.11.Dockerfile).
+The image is based on the dockerfile int the protocols directory (protocols/Dockerfile).
 ```bash
 # Pull image
 docker pull dburihabwa/grpc-compiler-0.11-flat
