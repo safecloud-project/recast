@@ -32,3 +32,8 @@ message DecodeReply {
 	bytes dec_block = 1;
 	map<string,string> parameters = 2;
 }
+
+service Proxy {
+	// Returns at most n random blocks where n is a parameter of the function
+	rpc GetRandomBlocks (uint32) returns (Strip) {}
+}
