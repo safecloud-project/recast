@@ -3,13 +3,13 @@
 # Generate GRPC stubs for the playcloud project.
 ################################################################################
 
-readonly DATA_DIRECTORY="$(dirname ${BASH_SOURCE[0]})"
-readonly DEFAULT_PROTO_FILE="${DATA_DIRECTORY}/playcloud.proto"
+readonly FILE_PATH="$(dirname ${BASH_SOURCE[0]})"
+readonly DATA_DIRECTORY="$(realpath ${FILE_PATH})"
+readonly REPO_DIRECTORY="$(dirname ${DATA_DIRECTORY})"
 
 function print_usage {
-  echo -e "usage: $0 [<file>]\n"
-  echo -e "Generates GRPC stubs for java-proxy, dummy-proxy and pycoder from a GRPC service deifnition file.\n"
-  echo -e "If no file is passed, the script defaults to ${DEFAULT_PROTO_FILE}\n"
+  echo -e "usage: $0\n"
+  echo -e "Generates GRPC stubs for java-proxy, py-proxy and pycoder from GRPC service deifnition files.\n"
   echo -e "Options:"
   echo -e "\t-h      Print this help message"
 }
@@ -28,25 +28,15 @@ while getopts ":h" opt; do
   esac
 done
 
-
-if [[ "${#}" -gt 1 ]]; then
+if [[ "${#}" -ne 0 ]]; then
 	print_usage
 	exit 0
 fi
 
 PROTO="${DEFAULT_PROTO_FILE}"
 
-if [[ "${#}" -eq 1 ]]; then
-  PROTO="${1}"
-  if [[ ! -f "${PROTO}" ]]; then
-	echo "File ${PROTO} could not be found" >&2
-	print_usage
-	exit 1
-  fi
-fi
+protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pycoder/" --grpc_out="${REPO_DIRECTORY}/pycoder/" --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/playcloud.proto"
+protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/py-proxy/" --grpc_out="${REPO_DIRECTORY}/py-proxy/" --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/playcloud.proto"
 
-echo "PROTO=${PROTO}"
-
-protoc -I . --python_out=../pycoder/ --grpc_out=pycoder/ --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${PROTO}"
-protoc -I . --python_out=../py-proxy/ --grpc_out=py-proxy/ --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${PROTO}"
-protoc -I . --java_out=../java-proxy/src/main/java --grpc-java_out=../java-proxy/src/main/java --plugin=protoc-gen-grpc-java="${GRPC_JAVA_ROOT}"/compiler/build/binaries/java_pluginExecutable/protoc-gen-grpc-java "${PROTO}"
+protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pycoder/" --grpc_out="${REPO_DIRECTORY}/pycoder/"  --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/proxy.proto"
+protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pycoder/" --grpc_out="${REPO_DIRECTORY}/pycoder/"  --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/proxy.proto"
