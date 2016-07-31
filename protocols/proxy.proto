@@ -1,0 +1,20 @@
+syntax = "proto3";
+option java_package = "ch.unine.iiun.safecloud";
+
+//Data types
+message Strip {
+	bytes data = 1;
+}
+
+message BlockRequest {
+  uint32 blocks = 1;
+}
+
+message BlockReply {
+  repeated Strip strips = 1;
+}
+
+service Proxy {
+	// Returns at most n random blocks where n is a parameter of the function
+	rpc GetRandomBlocks (BlockRequest) returns (BlockReply) {};
+}
