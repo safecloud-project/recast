@@ -39,4 +39,4 @@ protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pycoder/" --grpc_o
 protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/py-proxy/" --grpc_out="${REPO_DIRECTORY}/py-proxy/" --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/playcloud.proto"
 
 protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pycoder/" --grpc_out="${REPO_DIRECTORY}/pycoder/"  --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/proxy.proto"
-protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pycoder/" --grpc_out="${REPO_DIRECTORY}/pycoder/"  --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/proxy.proto"
+protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/py-proxy/" --grpc_out="${REPO_DIRECTORY}/py-proxy/"  --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/proxy.proto"
