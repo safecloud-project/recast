@@ -32,7 +32,7 @@ GRPC_CHANNEL = implementations.insecure_channel(CODER_HOST, CODER_PORT)
 CLIENT_STUB = beta_create_EncoderDecoder_stub(GRPC_CHANNEL)
 
 # Loading dispatcher
-DISPACHER = get_dispatcher_instance()
+DISPATCHER = get_dispatcher_instance()
 
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
@@ -47,7 +47,7 @@ def get(key):
     key -- Key under which the data should have been stored
     """
     logger.debug("Received get request for key {}".format(key))
-    blocks = DISPACHER.get(key)
+    blocks = DISPATCHER.get(key)
     if blocks is None:
         response.status = 404
         return ""
@@ -84,7 +84,7 @@ def store(key=None, data=None):
     blocks = [strip.data for strip in strips]
     logger.info("Received {} encoded blocks".format(len(blocks)))
     logger.info("Going to store blocks with key {}".format(key))
-    DISPACHER.put(key, blocks)
+    DISPATCHER.put(key, blocks)
     return key
 
 
