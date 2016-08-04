@@ -145,4 +145,98 @@ _sym_db.RegisterMessage(BlockReply)
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), b'\n\027ch.unine.iiun.safecloud')
+import abc
+from grpc.beta import implementations as beta_implementations
+from grpc.early_adopter import implementations as early_adopter_implementations
+from grpc.framework.alpha import utilities as alpha_utilities
+from grpc.framework.common import cardinality
+from grpc.framework.interfaces.face import utilities as face_utilities
+class EarlyAdopterProxyServicer(object):
+  """<fill me in later!>"""
+  __metaclass__ = abc.ABCMeta
+  @abc.abstractmethod
+  def GetRandomBlocks(self, request, context):
+    raise NotImplementedError()
+class EarlyAdopterProxyServer(object):
+  """<fill me in later!>"""
+  __metaclass__ = abc.ABCMeta
+  @abc.abstractmethod
+  def start(self):
+    raise NotImplementedError()
+  @abc.abstractmethod
+  def stop(self):
+    raise NotImplementedError()
+class EarlyAdopterProxyStub(object):
+  """<fill me in later!>"""
+  __metaclass__ = abc.ABCMeta
+  @abc.abstractmethod
+  def GetRandomBlocks(self, request):
+    raise NotImplementedError()
+  GetRandomBlocks.async = None
+def early_adopter_create_Proxy_server(servicer, port, private_key=None, certificate_chain=None):
+  import proxy_pb2
+  import proxy_pb2
+  method_service_descriptions = {
+    "GetRandomBlocks": alpha_utilities.unary_unary_service_description(
+      servicer.GetRandomBlocks,
+      proxy_pb2.BlockRequest.FromString,
+      proxy_pb2.BlockReply.SerializeToString,
+    ),
+  }
+  return early_adopter_implementations.server("Proxy", method_service_descriptions, port, private_key=private_key, certificate_chain=certificate_chain)
+def early_adopter_create_Proxy_stub(host, port, metadata_transformer=None, secure=False, root_certificates=None, private_key=None, certificate_chain=None, server_host_override=None):
+  import proxy_pb2
+  import proxy_pb2
+  method_invocation_descriptions = {
+    "GetRandomBlocks": alpha_utilities.unary_unary_invocation_description(
+      proxy_pb2.BlockRequest.SerializeToString,
+      proxy_pb2.BlockReply.FromString,
+    ),
+  }
+  return early_adopter_implementations.stub("Proxy", method_invocation_descriptions, host, port, metadata_transformer=metadata_transformer, secure=secure, root_certificates=root_certificates, private_key=private_key, certificate_chain=certificate_chain, server_host_override=server_host_override)
+
+class BetaProxyServicer(object):
+  """<fill me in later!>"""
+  __metaclass__ = abc.ABCMeta
+  @abc.abstractmethod
+  def GetRandomBlocks(self, request, context):
+    raise NotImplementedError()
+
+class BetaProxyStub(object):
+  """The interface to which stubs will conform."""
+  __metaclass__ = abc.ABCMeta
+  @abc.abstractmethod
+  def GetRandomBlocks(self, request, timeout):
+    raise NotImplementedError()
+  GetRandomBlocks.future = None
+
+def beta_create_Proxy_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
+  import proxy_pb2
+  import proxy_pb2
+  request_deserializers = {
+    ('Proxy', 'GetRandomBlocks'): proxy_pb2.BlockRequest.FromString,
+  }
+  response_serializers = {
+    ('Proxy', 'GetRandomBlocks'): proxy_pb2.BlockReply.SerializeToString,
+  }
+  method_implementations = {
+    ('Proxy', 'GetRandomBlocks'): face_utilities.unary_unary_inline(servicer.GetRandomBlocks),
+  }
+  server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
+  return beta_implementations.server(method_implementations, options=server_options)
+
+def beta_create_Proxy_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
+  import proxy_pb2
+  import proxy_pb2
+  request_serializers = {
+    ('Proxy', 'GetRandomBlocks'): proxy_pb2.BlockRequest.SerializeToString,
+  }
+  response_deserializers = {
+    ('Proxy', 'GetRandomBlocks'): proxy_pb2.BlockReply.FromString,
+  }
+  cardinalities = {
+    'GetRandomBlocks': cardinality.Cardinality.UNARY_UNARY,
+  }
+  stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
+  return beta_implementations.dynamic_stub(channel, 'Proxy', cardinalities, options=stub_options)
 # @@protoc_insertion_point(module_scope)
