@@ -1,7 +1,6 @@
 """
 A python implementation of playcloud's proxy server
 """
-import json
 import logging
 import logging.config
 import os
@@ -12,6 +11,7 @@ import bottle
 from grpc.beta import implementations
 
 
+from globals import get_dispatcher_instance
 from playcloud_pb2 import beta_create_EncoderDecoder_stub, DecodeRequest, EncodeRequest, Strip
 
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/py-proxy/logging.conf")
@@ -20,7 +20,6 @@ logging.config.fileConfig(log_config)
 logger = logging.getLogger("proxy")
 
 con_log = "Going to connect to {} in {}:{}"
-from safestore.providers.dispatcher import Dispatcher
 
 # GRPC setup
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
@@ -32,10 +31,8 @@ GRPC_CHANNEL = implementations.insecure_channel(CODER_HOST, CODER_PORT)
 
 CLIENT_STUB = beta_create_EncoderDecoder_stub(GRPC_CHANNEL)
 
-# Dispatcher configuration
-with open(os.path.join(os.path.dirname(__file__), "dispatcher.json")) as dispatcher_configuration_file:
-    dispatcher_configuration = json.load(dispatcher_configuration_file)
-    DISPACHER = Dispatcher(dispatcher_configuration)
+# Loading dispatcher
+DISPACHER = get_dispatcher_instance()
 
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
