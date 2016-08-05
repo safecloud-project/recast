@@ -1,22 +1,24 @@
-proxy:
-  build: ./py-proxy
-  ports:
-  - "3000:8000"
-  links:
-  - redis
-  - coder
-  env_file:
-    - ./erasure.env
+version: "2"
+services:
+  proxy:
+    build: ./py-proxy
+    ports:
+    - "3000:8000"
+    links:
+    - redis
+    env_file:
+      - ./erasure.env
 
-redis:
-  image: redis
+  redis:
+    image: redis
 
-coder:
-  build: ./pycoder
-  environment:
-    - sec_measure=confd
-    - splitter=ec
-    - k=10
-    - m=4
-  env_file:
-    - ./erasure.env
+  coder:
+    build: ./pycoder
+    environment:
+      - sec_measure=confd
+      - splitter=ec
+      - k=10
+      - m=4
+      - type=jerasure_rs_cauchy
+    env_file:
+      - ./erasure.env
