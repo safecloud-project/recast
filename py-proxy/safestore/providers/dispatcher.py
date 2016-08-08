@@ -343,6 +343,7 @@ class Dispatcher(object):
             block_keys = []
             for metablock in blocks_stored_at_provider:
                 block_key = metablock.key
+                block_keys.append(block_key)
                 metablocks[block_key] = metablock
             fetcher = BlockFetcher(provider, block_keys, block_queue)
             fetcher.start()
