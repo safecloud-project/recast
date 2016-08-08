@@ -13,6 +13,8 @@ from grpc.beta import implementations
 
 from globals import get_dispatcher_instance
 from playcloud_pb2 import beta_create_EncoderDecoder_stub, DecodeRequest, EncodeRequest, Strip
+from proxy_pb2 import beta_create_Proxy_server
+from proxy_service import ProxyService
 
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/py-proxy/logging.conf")
 logging.config.fileConfig(log_config)
@@ -23,7 +25,7 @@ con_log = "Going to connect to {} in {}:{}"
 
 # GRPC setup
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
-CODER_HOST = os.getenv("CODER_PORT_1234_TCP_ADDR", "127.0.0.1")
+CODER_HOST = os.getenv("CODER_PORT_1234_TCP_ADDR", "coder")
 CODER_PORT = int(os.getenv("CODER_PORT_1234_TCP_PORT", 1234))
 
 logger.info(con_log.format("pycoder", CODER_HOST, CODER_PORT))
@@ -106,4 +108,7 @@ def put_keyless():
     return store(key=None, data=request.body.getvalue())
 
 if __name__ == "__main__":
+    grpc_server = beta_create_Proxy_server(ProxyService())
+    grpc_server.add_insecure_port("0.0.0.0:1234")
+    grpc_server.start()
     run(server="paste", app=APP, host="0.0.0.0", port=8000)
