@@ -336,8 +336,7 @@ class Dispatcher(object):
         fetchers = []
         block_queue = Queue.Queue(number_of_blocks_to_fetch)
         metablocks = {}
-        providers_to_use = [metablock.provider for metablock in random_metablocks]
-        blocks_per_provider = {}
+        providers_to_use = set([metablock.provider for metablock in random_metablocks])
         for provider_key in providers_to_use:
             blocks_stored_at_provider = [metablock for metablock in random_metablocks if metablock.provider == provider_key]
             provider = self.providers[provider_key]
