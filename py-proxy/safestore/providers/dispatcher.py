@@ -137,6 +137,7 @@ class BlockFetcher(threading.Thread):
             queue --  Queue where the recoveded data will be pushed  (queue.Queue)
         """
         super(BlockFetcher, self).__init__()
+        self.logger = logging.getLogger("BlockFetcher")
         self.provider = provider
         self.block_keys = block_keys
         self.queue = queue
@@ -146,7 +147,9 @@ class BlockFetcher(threading.Thread):
         Fetches a series of blocks and pushes them the queue
         """
         for key in self.block_keys:
+            self.logger.debug("About to fetch block " + key + " from the datastore")
             data = self.provider.get(key)
+            self.logger.debug("Storing block " + key + " in synchronization queue")
             self.queue.put((key, data))
 
 def xor(block_a, block_b):
