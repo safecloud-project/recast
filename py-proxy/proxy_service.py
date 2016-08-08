@@ -1,6 +1,8 @@
 """
 A GRPC service that provides clients with blocks from the active data stores
 """
+import logging
+
 from globals import get_dispatcher_instance
 from proxy_pb2 import BetaProxyServicer
 from proxy_pb2 import BlockReply
@@ -10,6 +12,8 @@ class ProxyService(BetaProxyServicer):
     """
     A GRPC enabled server that serves blocks.
     """
+    def __init__(self):
+        self.logger = logging.getLogger("ProxyService")
 
     def GetRandomBlocks(self, request, context):
         """
@@ -19,10 +23,14 @@ class ProxyService(BetaProxyServicer):
         Returns:
             BlockReply: A reply with the number of random blocks requested
         """
+        self.logger.info("Received GetRandomBlocks request")
         blocks = request.blocks
+        self.logger.info("Start request to get " + str(blocks) + " random blocks")
         strips = get_random_blocks(blocks)
+        self.logger.info("End request to get " + str(blocks) + " random blocks")
         reply = BlockReply()
         reply.strips.extend(strips)
+        self.logger.info("Replying to GetRandomBlocks request")
         return reply
 
 def get_random_blocks(blocks):
