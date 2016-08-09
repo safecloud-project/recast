@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-Gets the amount of free space in at the providers in use by the py-proxy
+Gets the amount of free space in at the providers in use by the pyproxy
 """
 
 import json

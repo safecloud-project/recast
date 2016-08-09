@@ -3,11 +3,13 @@ services:
   proxy:
     container_name: proxy
     hostname: proxy
-    build: ./py-proxy
+    build: ./pyproxy
     ports:
     - "3000:8000"
     env_file:
       - ./erasure.env
+    # volumes:
+    #  - ./pyproxy:/usr/local/src/pyproxy
 
   redis:
     container_name: redis
@@ -25,3 +27,5 @@ services:
       - type=jerasure_rs_cauchy
     env_file:
       - ./erasure.env
+    # volumes:
+    #  - ./pycoder:/usr/local/src/app

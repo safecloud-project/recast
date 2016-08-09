@@ -17,12 +17,12 @@ def is_provider_redis(provider):
 
 def load_redis_nodes_config():
     """
-    Load py-proxy's dispatcher configuration and filters it to get the redis
+    Load pyproxy's dispatcher configuration and filters it to get the redis
     providers configuration.
     Returns:
         A list of dictionaries with the configuration for each redis nodes
     """
-    config_path = os.path.join(os.path.dirname(__file__), "../py-proxy/dispatcher.json")
+    config_path = os.path.join(os.path.dirname(__file__), "../pyproxy/dispatcher.json")
     with open(config_path, "r") as raw_config:
         providers = json.load(raw_config).get('providers')
         return [provider for provider in providers if is_provider_redis(provider)]
