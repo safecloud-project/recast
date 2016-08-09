@@ -16,7 +16,7 @@ from playcloud_pb2 import beta_create_EncoderDecoder_stub, DecodeRequest, Encode
 from proxy_pb2 import beta_create_Proxy_server
 from proxy_service import ProxyService
 
-log_config = os.getenv("LOG_CONFIG", "/usr/local/src/py-proxy/logging.conf")
+log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
 logging.config.fileConfig(log_config)
 
 logger = logging.getLogger("proxy")
@@ -108,7 +108,7 @@ def put_keyless():
     return store(key=None, data=request.body.getvalue())
 
 if __name__ == "__main__":
-    grpc_server = beta_create_Proxy_server(ProxyService())
-    grpc_server.add_insecure_port("0.0.0.0:1234")
-    grpc_server.start()
+    GRPC_SERVER = beta_create_Proxy_server(ProxyService())
+    GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
+    GRPC_SERVER.start()
     run(server="paste", app=APP, host="0.0.0.0", port=8000)

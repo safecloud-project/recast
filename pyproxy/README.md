@@ -1,16 +1,16 @@
-# py-proxy
+# pyproxy
 
 A python implementation of the playcloud proxy.
 
 ## Build
-To build a docker image of the py-proxy, move to the root of the playcloud project and type in the following command:
+To build a docker image of the pyproxy, move to the root of the playcloud project and type in the following command:
 ```bash
-docker build -f py-proxy/Dockerfile -t py-proxy .
+docker build -f pyproxy/Dockerfile -t pyproxy .
 ```
 ## Run
 Run with:
 ```bash
-docker run --rm -ti -p 8080:8000 py-proxy
+docker run --rm -ti -p 8080:8000 pyproxy
 ```
 
 You can test the proxy using an HTTP client such as [cURL](https://curl.haxx.se) using the following commands.
