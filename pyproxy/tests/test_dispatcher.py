@@ -1,7 +1,7 @@
 import os
 
-from safestore.providers.dispatcher import Dispatcher, Metadata, ProviderFactory
-from safestore.providers.redis_provider import RedisProvider
+from ..safestore.providers.dispatcher import Dispatcher, Metadata, ProviderFactory
+from ..safestore.providers.redis_provider import RedisProvider
 
 DEFAULT_PATH = "hello"
 LENGTH = 128

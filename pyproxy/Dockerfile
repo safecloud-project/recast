@@ -15,4 +15,5 @@ RUN pip install --upgrade --requirement requirements.txt && \
     pip install --upgrade --requirement safestore/requirements.txt
 COPY . /usr/local/src/pyproxy
 EXPOSE 8000
+ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src/pyproxy"
 ENTRYPOINT ["python", "/usr/local/src/pyproxy/proxy.py"]
