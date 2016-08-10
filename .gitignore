@@ -16,7 +16,7 @@
 # Python files
 *.pyc
 *.DS_Store
-*.cache/*
+.cache/
 
 
 #latex
