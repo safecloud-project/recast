@@ -3,7 +3,7 @@ A GRPC service that provides clients with blocks from the active data stores
 """
 import logging
 
-from globals import get_dispatcher_instance
+from pyproxy_globals import get_dispatcher_instance
 from proxy_pb2 import BetaProxyServicer
 from proxy_pb2 import BlockReply
 from proxy_pb2 import Strip

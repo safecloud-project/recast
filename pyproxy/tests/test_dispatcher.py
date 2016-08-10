@@ -11,8 +11,12 @@ STEP = LENGTH / 8
 for i in range(0, LENGTH, STEP):
     BLOCKS.append(DATA[i:i + STEP])
 
-
-VALID_DISPATCHER_CONF = [{"type": "redis", "host": "127.0.0.1", "port": 6379}]
+VALID_DISPATCHER_CONF = {
+    "entanglement": {
+        "enabled": False
+    },
+    "providers": [{"type": "redis", "host": "127.0.0.1", "port": 6379}]
+}
 
 def test_dispatcher_store_returns_a_Metadata_object():
     dispatcher = Dispatcher(VALID_DISPATCHER_CONF)
