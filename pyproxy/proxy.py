@@ -11,7 +11,7 @@ import bottle
 from grpc.beta import implementations
 
 
-from globals import get_dispatcher_instance
+from pyproxy_globals import get_dispatcher_instance
 from playcloud_pb2 import beta_create_EncoderDecoder_stub, DecodeRequest, EncodeRequest, Strip
 from proxy_pb2 import beta_create_Proxy_server
 from proxy_service import ProxyService
