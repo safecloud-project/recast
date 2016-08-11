@@ -69,7 +69,7 @@ def write_dispatcher_file(dispatcher_configuration):
     Writes the new dispatcher file
     """
     # Check if dispatcher file already exists
-    PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "pyproxy", "dispatcher.json")
+    PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "..", "pyproxy", "dispatcher.json")
     if os.path.exists(PATH_TO_DISPATCHER_FILE):
         rename_existing_file(PATH_TO_DISPATCHER_FILE)
     # Write new dispatcher file
@@ -99,7 +99,7 @@ def write_docker_compose_file(compose_configuration):
     Writes the new docker-compose file
     """
     # Check if docker-compose file already exists
-    PATH_TO_DOCKER_COMPOSE_FILE = os.path.join(os.path.dirname(__file__), "docker-compose.yml")
+    PATH_TO_DOCKER_COMPOSE_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose.yml")
     if os.path.exists(PATH_TO_DOCKER_COMPOSE_FILE):
         rename_existing_file(PATH_TO_DOCKER_COMPOSE_FILE)
     # Write new docker-compose file
@@ -110,7 +110,7 @@ def write_docker_compose_file(compose_configuration):
         compose_dump_file.write(yaml_for_compose)
 
 if __name__ == "__main__":
-    PATH_TO_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "configuration.json")
+    PATH_TO_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "..", "configuration.json")
     global_configuration = read_configuration_file(PATH_TO_CONFIGURATION_FILE)
     dispatcher_configuration = create_dispatcher_configuration(global_configuration)
     write_dispatcher_file(dispatcher_configuration)
