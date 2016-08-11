@@ -1,11 +1,9 @@
 {
 	"entanglement": {
-		"enabled": true,
+		"enabled": false,
 		"p": 5
 	},
 	"providers": [
-		{"type": "dropbox"},
-		{"type": "gdrive"},
-		{"type": "onedrive"}
+		{"type": "redis", "host": "redis"}
 	]
 }
