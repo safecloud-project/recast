@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-A script that reads configuration.json and produces a matching configuration files for docker-compose and the py-proxy.
+A script that reads configuration.json and produces a matching configuration files for docker-compose and the pyproxy.
 """
 import copy
 import json
@@ -9,16 +9,22 @@ import os
 import pyaml
 
 BASIC_COMPOSE_CONFIGURATION = {
-    "coder": {
-        "build": "./pycoder",
-        "environment": ["sec_measure=confd", "splitter=ec", "k=10", "m=4", "type=jerasure_rs_cauchy"],
-        "env_file": ["./erasure.env"]
-    },
-    "proxy": {
-        "build": "./py-proxy",
-        "ports": ["3000:8000"],
-        "links": ["coder"],
-        "env_file": ["./erasure.env"]
+    "version": "\"2\"",
+    "services": {
+        "coder": {
+            "container_name": "coder",
+            "hostname": "coder",
+            "build": "./pycoder",
+            "environment": ["sec_measure=confd", "splitter=ec", "k=10", "m=4", "type=jerasure_rs_cauchy"],
+            "env_file": ["./erasure.env"]
+        },
+        "proxy": {
+            "container_name": "proxy",
+            "hostname": "proxy",
+            "build": "./pyproxy",
+            "ports": ["3000:8000"],
+            "env_file": ["./erasure.env"]
+        }
     }
 }
 
@@ -44,7 +50,7 @@ def read_configuration_file(path):
 
 def create_dispatcher_configuration(configuration):
     """
-    Read the configuration file and create a coherent py-proxy's dispatcher.json file
+    Read the configuration file and create a coherent pyproxy's dispatcher.json file
     """
     nodes = int(configuration["storage"]["nodes"])
     dispatcher_configuration = {"providers":[]}
@@ -62,11 +68,11 @@ def write_dispatcher_file(dispatcher_configuration):
     Writes the new dispatcher file
     """
     # Check if dispatcher file already exists
-    PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "py-proxy", "dispatcher.json")
+    PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "pyproxy", "dispatcher.json")
     if os.path.exists(PATH_TO_DISPATCHER_FILE):
         rename_existing_file(PATH_TO_DISPATCHER_FILE)
     # Write new dispatcher file
-    json_dispatcher = json.dumps(dispatcher_configuration, indent=4, sort_keys=True, separators=(',', ': ')).strip()
+    json_dispatcher = json.dumps(dispatcher_configuration, indent=4, separators=(',', ': ')).strip()
     with open(PATH_TO_DISPATCHER_FILE, "w") as dispatcher_dump_file:
         dispatcher_dump_file.write(json_dispatcher)
 
@@ -80,8 +86,10 @@ def create_docker_compose_configuration(configuration):
     compose_configuration = copy.deepcopy(BASIC_COMPOSE_CONFIGURATION)
     for i in range(1, nodes + 1):
         container_name = "redis" + str(i)
-        compose_configuration[container_name] = {"image": "redis"}
-        compose_configuration["proxy"]["links"].append(container_name)
+        compose_configuration["services"][container_name] = {
+            "container_name": container_name,
+            "image": "redis"
+        }
     return compose_configuration
 
 def write_docker_compose_file(compose_configuration):
