@@ -50,4 +50,9 @@ COPY test_files  /usr/local/src/app/test_files
 COPY safestore/keys /usr/local/src/app/safestore/keys
 COPY logging.conf /usr/local/src/app/
 COPY drivers /usr/local/src/app/drivers
+
+# Add coder's directory to python path
+ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src:/usr/local/src/app"
+
+# Entrypoint
 ENTRYPOINT /usr/bin/python /usr/local/src/app/server.py
