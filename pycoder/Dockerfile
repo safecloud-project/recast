@@ -36,6 +36,11 @@ RUN apt-get update --quiet && apt-get install --assume-yes --quiet libgfshare-de
 # Expose port to other containers
 EXPOSE 1234
 
+# Install pip dependencies
+WORKDIR /usr/local/src/app/
+COPY requirements.txt /usr/local/src/app
+RUN pip install --quiet --requirement requirements.txt
+
 # Copy server source
 COPY *py /usr/local/src/app/
 COPY pycoder.cfg /usr/local/src/app/
@@ -45,7 +50,4 @@ COPY test_files  /usr/local/src/app/test_files
 COPY safestore/keys /usr/local/src/app/safestore/keys
 COPY logging.conf /usr/local/src/app/
 COPY drivers /usr/local/src/app/drivers
-COPY requirements.txt /usr/local/src/app
-WORKDIR /usr/local/src/app/
-RUN pip install --quiet --requirement requirements.txt
 ENTRYPOINT /usr/bin/python /usr/local/src/app/server.py
