@@ -6,3 +6,6 @@ pycrypto==2.6.1
 pyeclib==1.2.0
 pytest==2.9.2
 secretsharing==0.2.6
+# Test dependencies
+mock==2.0.0
+pytest==2.9.2
