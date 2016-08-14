@@ -3,7 +3,7 @@ A GRPC client for the proxy service that recovers block from the data stores
 """
 from grpc.beta import implementations
 
-from proxy_pb2 import beta_create_Proxy_stub, BlockRequest
+from playcloud_pb2 import beta_create_Proxy_stub, BlockRequest
 
 # TODO Read the default grpc timeout in configuration file before assigning this value
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60

@@ -6,7 +6,7 @@ import mock
 import pytest
 
 from proxy_client import ProxyClient
-from proxy_pb2 import BlockReply, Strip
+from playcloud_pb2 import BlockReply, Strip
 
 class FakeProxyStub():
     def __init__(self, channel=None):
