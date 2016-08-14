@@ -3,10 +3,12 @@ A module to declare, initialize and expose variables to all modules in the syste
 """
 import json
 import os
+import threading
 
 from safestore.providers.dispatcher import Dispatcher
 
 __DISPATCHER = None
+__lock = threading.Lock()
 
 def get_dispatcher_instance():
     """
@@ -15,10 +17,11 @@ def get_dispatcher_instance():
         (Dispatcher) A singleton instance of Dispatcher
     """
     global __DISPATCHER
-    if __DISPATCHER is None:
-        # Dispatcher configuration
-        configuration_file_path = os.path.join(os.path.dirname(__file__), "dispatcher.json")
-        with open(os.path.join(configuration_file_path)) as dispatcher_configuration_file:
-            dispatcher_configuration = json.load(dispatcher_configuration_file)
-            __DISPATCHER = Dispatcher(dispatcher_configuration)
+    with __lock:
+        if __DISPATCHER is None:
+            # Dispatcher configuration
+            configuration_file_path = os.path.join(os.path.dirname(__file__), "dispatcher.json")
+            with open(os.path.join(configuration_file_path)) as dispatcher_configuration_file:
+                dispatcher_configuration = json.load(dispatcher_configuration_file)
+                __DISPATCHER = Dispatcher(dispatcher_configuration)
     return __DISPATCHER
