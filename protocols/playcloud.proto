@@ -9,6 +9,12 @@ service EncoderDecoder {
 	rpc Decode (DecodeRequest) returns (DecodeReply) {}
 }
 
+//the proxy service
+service Proxy {
+	// Returns at most n random blocks where n is a parameter of the function
+	rpc GetRandomBlocks (BlockRequest) returns (BlockReply) {};
+}
+
 //Data types
 message Strip {
 	bytes data = 1;
@@ -31,4 +37,12 @@ message DecodeRequest {
 message DecodeReply {
 	bytes dec_block = 1;
 	map<string,string> parameters = 2;
+}
+
+message BlockRequest {
+  uint32 blocks = 1;
+}
+
+message BlockReply {
+  repeated Strip strips = 1;
 }

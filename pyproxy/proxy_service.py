@@ -4,9 +4,9 @@ A GRPC service that provides clients with blocks from the active data stores
 import logging
 
 from pyproxy_globals import get_dispatcher_instance
-from proxy_pb2 import BetaProxyServicer
-from proxy_pb2 import BlockReply
-from proxy_pb2 import Strip
+from playcloud_pb2 import BetaProxyServicer
+from playcloud_pb2 import BlockReply
+from playcloud_pb2 import Strip
 
 class ProxyService(BetaProxyServicer):
     """
