@@ -1,7 +1,6 @@
 FROM dburihabwa/grpc-compiler-0.11-flat
 
 RUN apt-get update && \
-    apt-get upgrade      --assume-yes --quiet && \
     apt-get dist-upgrade --assume-yes --quiet && \
     apt-get autoremove   --assume-yes --quiet && \
     apt-get autoclean    --assume-yes --quiet && \
