@@ -2,7 +2,7 @@ FROM dburihabwa/grpc-compiler-0.11-flat
 
 #Install dependencies
 RUN apt-get update --quiet && apt-get dist-upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet autoconf automake build-essential gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
+    apt-get install --assume-yes --quiet autoconf automake build-essential cython gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
     ldconfig
 
 
@@ -22,8 +22,8 @@ RUN git clone https://bitbucket.org/tsg-/liberasurecode.git --quiet
 WORKDIR /tmp/liberasurecode
 RUN git checkout v1.1.1 --quiet && ./autogen.sh && ./configure && make && make test && make install && ldconfig
 
-# Install python runtime requirements
-RUN pip install --upgrade --quiet pip && pip install --quiet cython==0.23.4
+# Upgrade pip
+RUN pip install --upgrade --quiet pip
 
 # Install pylonghair
 WORKDIR /tmp/pylonghair
