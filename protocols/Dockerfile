@@ -13,7 +13,7 @@ RUN apt-get update --quiet && \
       libssl-dev \
       libtool \
       make \
-      openjdk-8-jdk \
+      openjdk-8-jdk-headless \
       python-all-dev \
       unzip \
       wget \
@@ -41,7 +41,19 @@ WORKDIR /grpc-java/compiler
 RUN git checkout v0.9.1 --quiet && ../gradlew java_pluginExecutable && ../gradlew test
 
 # Cleanup
-RUN apt-get --assume-yes --quiet autoremove && apt-get --assume-yes --quiet autoclean
+RUN apt-get --assume-yes --quiet --purge autoremove \
+      autoconf \
+      curl \
+      gcc \
+      g++ \
+      libtool \
+      libssl-dev \
+      openjdk-8-jdk-headless \
+      python-all-dev \
+      unzip \
+      wget && \
+    apt-get install --assume-yes --quiet  openjdk-8-jre-headless && \
+    apt-get --quiet --assume-yes --quiet clean
 
 # Setup necessary env variables
 ENV GRPC_ROOT "/grpc/"
