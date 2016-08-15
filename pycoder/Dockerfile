@@ -1,7 +1,7 @@
 FROM dburihabwa/grpc-compiler-0.11-flat
 
 #Install dependencies
-RUN apt-get update --quiet && apt-get upgrade --assume-yes --quiet && \
+RUN apt-get update --quiet && apt-get dist-upgrade --assume-yes --quiet && \
     apt-get install --assume-yes --quiet autoconf automake build-essential gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
     ldconfig
 
