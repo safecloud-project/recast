@@ -4,8 +4,7 @@ RUN apt-get update && \
     apt-get dist-upgrade --assume-yes --quiet && \
     apt-get autoremove   --assume-yes --quiet && \
     apt-get autoclean    --assume-yes --quiet && \
-    apt-get install      --assume-yes --quiet python-numpy && \
-    apt-get install      --assume-yes --quiet python-pip
+    apt-get install      --assume-yes --quiet python-numpy python-pip
 COPY requirements.txt  /usr/local/src/pyproxy/requirements.txt
 COPY safestore/requirements.txt  /usr/local/src/pyproxy/safestore/requirements.txt
 COPY safestore/data.db /root/data.db
