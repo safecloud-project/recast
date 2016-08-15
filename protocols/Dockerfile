@@ -2,11 +2,22 @@ FROM ubuntu:15.10
 
 MAINTAINER "Dorian BURIHABWA <dorian DOT burihabwa AT unine DOT ch >"
 
-RUN apt-get update --quiet && apt-get upgrade --assume-yes --quiet \
-    && apt-get install --assume-yes --quiet gcc g++ make wget \
-    autoconf curl libtool unzip \
-    git libgrpc-dev libssl-dev python-all-dev zlib1g-dev \
-    openjdk-8-jdk
+RUN apt-get update --quiet && \
+    apt-get install --assume-yes --quiet \
+      autoconf \
+      curl \
+      gcc \
+      g++ \
+      git \
+      libgrpc-dev \
+      libssl-dev \
+      libtool \
+      make \
+      openjdk-8-jdk \
+      python-all-dev \
+      unzip \
+      wget \
+      zlib1g-dev
 
 # Install protobuf 3
 WORKDIR /
@@ -33,7 +44,7 @@ RUN git checkout v0.9.1 --quiet && ../gradlew java_pluginExecutable && ../gradle
 RUN apt-get --assume-yes --quiet autoremove && apt-get --assume-yes --quiet autoclean
 
 # Setup necessary env variables
-RUN echo "export GRPC_ROOT=\"/grpc/\"" >> /etc/bash.bashrc \
-    && echo "export GRPC_JAVA_ROOT=\"/grpc-java/\"" >> /etc/bash.bashrc
+ENV GRPC_ROOT "/grpc/"
+ENV GRPC_JAVA_ROOT "/grpc-java/"
 
 WORKDIR /
