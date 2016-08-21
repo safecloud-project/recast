@@ -42,8 +42,20 @@ class DriverFactory():
         #ignoring config for now
         self.config = config
 
-        self.splitter = os.environ.get("splitter")
-        self.sec_measure = os.environ.get("sec_measure")
+        if os.environ.has_key("splitter"):
+            self.splitter = os.environ.get("splitter")
+        elif self.config.has_option("main", "splitter"):
+            self.splitter = self.config.get("main", "splitter")
+        else:
+            raise RuntimeError("A value must be defined for the splitter to use either in pycoder.cfg or as an environment variable SPLITTER")
+
+        if os.environ.has_key("sec_measure"):
+            self.sec_measure = os.environ.get("sec_measure")
+        elif self.config.has_option("main", "sec_measure"):
+            self.sec_measure = self.config.get("main", "sec_measure")
+        else:
+            raise RuntimeError("A value must be defined for the security measure to use either in pycoder.cfg or as an environment variable SEC_MEASURE")
+
 
     def setup_driver(self):
 
