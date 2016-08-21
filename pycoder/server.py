@@ -7,18 +7,25 @@ from playcloud_pb2 import beta_create_EncoderDecoder_server
 from coding_servicer import CodingService
 
 if __name__ == "__main__":
-    config = ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
-    PYCODER_LISTEN_ADDRESS = "0.0.0.0"
-    if os.environ.get("GRPC_LISTEN_ADDRESS") is not None:
+    CONFIG = ConfigParser()
+    CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
+
+    PYCODER_LISTEN_ADDRESS = None
+    if os.environ.has_key("GRPC_LISTEN_ADDRESS"):
         PYCODER_LISTEN_ADDRESS = os.environ.get("GRPC_LISTEN_ADDRESS")
-    elif config.has_section("main") and config.get("main", "listen_address") is not None:
-        PYCODER_LISTEN_ADDRESS = config.get("main", "listen_address")
-    PYCODER_LISTEN_PORT = "1234"
-    if os.environ.get("GRPC_LISTEN_PORT"):
+    elif CONFIG.has_option("main", "listen_address"):
+        PYCODER_LISTEN_ADDRESS = CONFIG.get("main", "listen_address")
+    else:
+        raise RuntimeError("A value must be defined for the grpc listen address either in pycoder.cfg or as an environment variable GRPC_LISTEN_ADDRESS")
+
+    PYCODER_LISTEN_PORT = None
+    if os.environ.has_key("GRPC_LISTEN_PORT"):
         PYCODER_LISTEN_PORT = os.environ.get("GRPC_LISTEN_PORT")
-    elif config.has_section("main") and config.get("main", "listen_port") is not None:
-        PYCODER_LISTEN_PORT = config.get("main", "listen_port")
+    elif CONFIG.has_option("main", "listen_port"):
+        PYCODER_LISTEN_PORT = CONFIG.get("main", "listen_port")
+    else:
+        raise RuntimeError("A value must be defined for the grpc listen port either in pycoder.cfg or as an environment variable GRPC_LISTEN_PORT")
+
     PYCODER_LISTEN = PYCODER_LISTEN_ADDRESS + ":" + PYCODER_LISTEN_PORT
     SERVER = beta_create_EncoderDecoder_server(CodingService())
     SERVER.add_insecure_port(PYCODER_LISTEN)
