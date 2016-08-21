@@ -1,8 +1,8 @@
 FROM dburihabwa/grpc-compiler-0.11-flat
 
 #Install dependencies
-RUN apt-get update --quiet && apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet autoconf automake build-essential gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
+RUN apt-get update --quiet && apt-get dist-upgrade --assume-yes --quiet && \
+    apt-get install --assume-yes --quiet autoconf automake build-essential cython gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
     ldconfig
 
 
@@ -22,25 +22,24 @@ RUN git clone https://bitbucket.org/tsg-/liberasurecode.git --quiet
 WORKDIR /tmp/liberasurecode
 RUN git checkout v1.1.1 --quiet && ./autogen.sh && ./configure && make && make test && make install && ldconfig
 
-# Install python runtime requirements
+# Upgrade pip
 RUN pip install --upgrade --quiet pip
-RUN pip install --quiet \
-    # pylonghair dependencies
-    cython==0.23.4 \
-    # Pycoder depenencies
-    grpcio==0.11.0b1 pyeclib==1.2.0 protobuf==3.0.0a3 \
-    # Safestore dependencies
-    cryptography==1.0.1 fake-factory==0.5.7 pycrypto==2.6.1 secretsharing==0.2.6
 
 # Install pylonghair
 WORKDIR /tmp/pylonghair
 RUN git clone https://github.com/sampot/pylonghair . --quiet
 RUN python setup.py install
 
-RUN apt-get install --assume-yes --quiet libgfshare-dev
+# Install libgfshare
+RUN apt-get update --quiet && apt-get install --assume-yes --quiet libgfshare-dev
 
 # Expose port to other containers
 EXPOSE 1234
+
+# Install pip dependencies
+WORKDIR /usr/local/src/app/
+COPY requirements.txt /usr/local/src/app
+RUN pip install --quiet --requirement requirements.txt
 
 # Copy server source
 COPY *py /usr/local/src/app/
@@ -50,7 +49,7 @@ COPY safestore /usr/local/src/app/safestore
 COPY test_files  /usr/local/src/app/test_files
 COPY safestore/keys /usr/local/src/app/safestore/keys
 COPY logging.conf /usr/local/src/app/
+COPY drivers /usr/local/src/app/drivers
 
-WORKDIR /usr/local/src/app
-
-#ENTRYPOINT /usr/bin/python /usr/local/src/app/tests.py
+# Add coder's directory to python path
+ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src:/usr/local/src/app"
