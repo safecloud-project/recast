@@ -18,7 +18,7 @@ if __name__ == "__main__":
     if os.environ.get("GRPC_LISTEN_PORT"):
         PYCODER_LISTEN_PORT = os.environ.get("GRPC_LISTEN_PORT")
     elif config.has_section("main") and config.get("main", "listen_port") is not None:
-        PYCODER = config.get("main", "listen_port")
+        PYCODER_LISTEN_PORT = config.get("main", "listen_port")
     PYCODER_LISTEN = PYCODER_LISTEN_ADDRESS + ":" + PYCODER_LISTEN_PORT
     SERVER = beta_create_EncoderDecoder_server(CodingService())
     SERVER.add_insecure_port(PYCODER_LISTEN)
