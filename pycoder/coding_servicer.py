@@ -114,10 +114,30 @@ class DriverFactory():
         return ShamirDriver(nblocks, threshold)
 
     def erasure_driver(self):
-        ec_k = int(os.environ.get("k"))
-        ec_m = int(os.environ.get("m"))
-        ec_type = os.environ.get("type")
-        logger.info("ec_k {}, ec_m {}, ec_type {}".format(ec_k, ec_m, ec_type))
+        ec_k = None
+        if os.environ.has_key("k"):
+            ec_k = int(os.environ.get("k"))
+        elif self.config.has_option("ec", "k"):
+            ec_k = int(self.config.get("ec", "k"))
+        else:
+            raise RuntimeError("A value must be defined for the numer of data fragments (k) to use either in pycoder.cfg or as an environment variable K")
+
+        ec_m = None
+        if os.environ.has_key("m"):
+            ec_m = int(os.environ.get("m"))
+        elif self.config.has_option("ec", "m"):
+            ec_m = int(self.config.get("ec", "m"))
+        else:
+            raise RuntimeError("A value must be defined for the number of parity fragments (m) to use either in pycoder.cfg or as an environment variable M")
+
+        ec_type = None
+        if os.environ.has_key("type"):
+            ec_type = os.environ.get("type")
+        elif self.config.has_option("ec", "type"):
+            ec_type = self.config.get("ec", "type")
+        else:
+            raise RuntimeError("A value must be defined for the erasure coding type to use either in pycoder.cfg or as an environment variable TYPE")
+        logger.info("ec_k %d, ec_m %d, ec_type %s", ec_k, ec_m, ec_type)
         return Eraser(ec_k, ec_m, ec_type)
 
     def aes_driver(self):
