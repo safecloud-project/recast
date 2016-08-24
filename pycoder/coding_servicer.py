@@ -3,7 +3,6 @@ from ConfigParser import ConfigParser
 import os
 import logging
 import logging.config
-import sys
 
 from pyeclib.ec_iface import ECDriver
 from pyeclib.ec_iface import ECBackendInstanceNotAvailable
@@ -34,6 +33,17 @@ logging.config.fileConfig(log_config)
 
 logger = logging.getLogger("pycoder")
 
+
+def should_be_deactivated(message):
+    """
+    Determines whether a message stands for an option to be turned off.
+    Args:
+        message(str): A message to test
+    Returns:
+        bool: True if the message is negative, False otherwise
+    """
+    NEGATIVE_TERMS = ["deactivated", "disabled", "false", "no", "none", "off"]
+    return message.strip().lower() in NEGATIVE_TERMS
 
 class DriverFactory():
 
@@ -138,7 +148,15 @@ class DriverFactory():
         else:
             raise RuntimeError("A value must be defined for the erasure coding type to use either in pycoder.cfg or as an environment variable TYPE")
         logger.info("ec_k %d, ec_m %d, ec_type %s", ec_k, ec_m, ec_type)
-        return Eraser(ec_k, ec_m, ec_type)
+        # AES encryption is activated by default when using erasure coding
+        # To deactivate it, set the aes env variable or aes in the main section of pycoder.cfg
+        # to off
+        aes_enabled = True
+        if os.environ.has_key("aes") and should_be_deactivated(os.environ.get("aes")):
+            aes_enabled = False
+        elif self.config.has_option("main", "aes") and should_be_deactivated(self.config.get("main", "aes")):
+            aes_enabled = False
+        return Eraser(ec_k, ec_m, ec_type, aes_enabled=aes_enabled)
 
     def aes_driver(self):
         return AESDriver()
@@ -154,9 +172,13 @@ class Eraser(object):
 
     """A wrapper for pyeclib erasure coding driver (ECDriver)"""
 
-    def __init__(self, ec_k, ec_m, ec_type="liberasurecode_rs_vand"):
+    def __init__(self, ec_k, ec_m, ec_type="liberasurecode_rs_vand", aes_enabled=True):
         self.ec_type = ec_type
-        self.aes = AESDriver()
+        if aes_enabled:
+            self.aes = AESDriver()
+            logger.info("Eraser will use AES encryption")
+        else:
+            logger.info("Eraser will not use AES encryption")
         expected_module_name = "drivers." + ec_type.lower() + "_driver"
         expected_class_name = ec_type[0].upper() + ec_type[1:].lower() + "Driver"
         try:
@@ -174,14 +196,18 @@ class Eraser(object):
 
     def encode(self, data):
         """Encode a string of bytes in flattened string of byte strips"""
-        enc = self.aes.encode(data)
-        strips = self.driver.encode(enc[0])
+        payload = data
+        if hasattr(self, 'aes'):
+            payload = self.aes.encode(data)[0]
+        strips = self.driver.encode(payload)
         return strips
 
     def decode(self, strips):
         """Decode byte strips in a string of bytes"""
-        data = self.driver.decode(strips)
-        return self.aes.decode([data])
+        payload = self.driver.decode(strips)
+        if hasattr(self, 'aes'):
+            return self.aes.decode([payload])
+        return payload
 
 
 class HashedDriver():
@@ -231,7 +257,6 @@ class CodingService(BetaEncoderDecoderServicer):
         try:
             reply = EncodeReply()
             logger.info("Received encode request")
-
             raw_strips = self.driver.encode(request.payload)
 
             log_temp = "Encoded and returned {} raw_strips"
