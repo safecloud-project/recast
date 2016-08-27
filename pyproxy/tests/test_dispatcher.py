@@ -1,6 +1,8 @@
 import os
 
-from ..safestore.providers.dispatcher import Dispatcher, Metadata, ProviderFactory
+import pytest
+
+from ..safestore.providers.dispatcher import arrange_elements, Dispatcher, Metadata, ProviderFactory
 from ..safestore.providers.redis_provider import RedisProvider
 
 DEFAULT_PATH = "hello"
@@ -52,3 +54,13 @@ def test_ProdiverFactory_get_factory_returns_a_provider_if_supported():
     factory = ProviderFactory()
     provider = factory.get_provider(VALID_DISPATCHER_CONF)
     assert isinstance(provider, RedisProvider)
+
+def test_arrange_elements_raises():
+    with pytest.raises(ValueError) as error:
+        arrange_elements(2, -1)
+
+    with pytest.raises(ValueError) as error:
+        arrange_elements(-1, 2)
+
+    with pytest.raises(ValueError) as error:
+        arrange_elements(-1, -1)
