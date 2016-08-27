@@ -1,6 +1,7 @@
 """
 A python implementation of playcloud's proxy server
 """
+import json
 import logging
 import logging.config
 import os
@@ -105,6 +106,10 @@ def put_keyless():
     Handle PUT requests for key-less database insertions
     """
     return store(key=None, data=request.body.getvalue())
+
+@APP.route("/", method="GET")
+def list():
+    return json.dumps({"files": DISPATCHER.list()})
 
 if __name__ == "__main__":
     GRPC_SERVER = beta_create_Proxy_server(ProxyService())
