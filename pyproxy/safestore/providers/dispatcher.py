@@ -178,6 +178,10 @@ def arrange_elements(elements, bins):
         A list of index lists describing how the elements can be spread among
         the bins
     """
+    if elements < 0:
+        raise ValueError("")
+    if elements == 0 or bins == 0:
+        return []
     start = random.randint(0, bins - 1)
     dispatching = []
     for i in range(bins):
