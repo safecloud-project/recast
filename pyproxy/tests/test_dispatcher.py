@@ -64,3 +64,17 @@ def test_arrange_elements_raises():
 
     with pytest.raises(ValueError) as error:
         arrange_elements(-1, -1)
+
+def test_Dispatcher_list_files():
+    DISPATCHER_CONF = {"providers": []}
+    dispatcher = Dispatcher(DISPATCHER_CONF)
+    result = dispatcher.list()
+    assert isinstance(result, list)
+    assert len(result) == 0
+    PATH = "key"
+    DATA = "DATA"
+    dispatcher.put(PATH, DATA)
+    result = dispatcher.list()
+    assert isinstance(result, list)
+    assert len(result) == 1
+    assert result[0] == PATH

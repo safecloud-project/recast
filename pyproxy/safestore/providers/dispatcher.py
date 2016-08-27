@@ -213,6 +213,14 @@ class Dispatcher(object):
             self.providers[str(uuid.uuid4())] = provider
         self.files = {}
 
+    def list(self):
+        """
+        Returns a list of the files stored in the system
+        Returns:
+            list(str): A list of the files stored in the system
+        """
+        return self.files.keys()
+
     def put(self, path, blocks):
         """
         Distribute blocks among different providers and a data struct
