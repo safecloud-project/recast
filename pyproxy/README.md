@@ -22,6 +22,10 @@ To send a file to be stored by playcloud using the proxy, run:
 ```bash
 curl -X PUT http://<host>:<port>/<key> -T <my-file>
 ```
+To get information about the file stored in the system, run:
+```bash
+curl -X GET http://<host>:<port>/<key>/__meta
+```
 
 ## Benchmark
 You can benchmark the proxy using [apache bench](https://httpd.apache.org/docs/2.2/programs/ab.html).

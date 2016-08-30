@@ -70,6 +70,35 @@ def get(key):
         decode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).dec_block
     return data
 
+def convert_metadata_to_dictionary(meta):
+    """
+    Converts a Metadata object to a dictionary that can be JSON serialized
+    Args:
+        meta(Metadata): Metadata object to convert
+    Returns:
+        (dict): A dictionary with keys matching the Metadata's attributes
+    """
+    return {
+        "path": meta.path,
+        "creation_date": meta.creation_date.isoformat(),
+        "original_size": meta.original_size
+    }
+
+@APP.route("/<key>/__meta", method="GET")
+def get_file_metadata(key):
+    """
+    Returns Metadata about a file stored in the system.
+    Args:
+        key(string): Key under which the data is supposed to be stored
+    Returns:
+        (string): A listing of the files serialized as JSON
+    """
+    meta = DISPATCHER.files.get(key)
+    if meta is None:
+        response.status = 404
+        return ""
+    return json.dumps(convert_metadata_to_dictionary(meta))
+
 
 def store(key=None, data=None):
     """
@@ -109,7 +138,12 @@ def put_keyless():
 
 @APP.route("/", method="GET")
 def list():
-    entries = [{"path": meta.path, "creation_date": meta.creation_date.isoformat(), "original_size": meta.original_size} for meta in DISPATCHER.list()]
+    """
+    List the files stored in the system.
+    Returns:
+        (string): A listing of the files serialized as JSON
+    """
+    entries = [convert_metadata_to_dictionary(meta) for meta in DISPATCHER.list()]
     return json.dumps({"files": entries})
 
 if __name__ == "__main__":
