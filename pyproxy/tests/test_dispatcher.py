@@ -77,4 +77,5 @@ def test_Dispatcher_list_files():
     result = dispatcher.list()
     assert isinstance(result, list)
     assert len(result) == 1
-    assert result[0] == PATH
+    assert isinstance(result[0], Metadata)
+    assert result[0].path == PATH

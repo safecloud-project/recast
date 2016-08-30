@@ -17,7 +17,7 @@ class HTTPClient(object):
     def get(self, filename):
         if filename is None or len(filename) == 0:
             raise ValueError("filename argument must have a value")
-        url = self.protocol + "://" + self.host + ":" + str(self.port) + "/" + filename
+        url = self.protocol + "://" + self.host + ":" + str(self.port) + filename
         response = self.http.request("GET", url)
         return response.data
 
@@ -29,8 +29,7 @@ class HTTPClient(object):
         """
         url = self.protocol + "://" + self.host + ":" + str(self.port) + "/"
         response = self.http.request("GET", url)
-        files = [".", ".."]
-        files.extend(json.loads(response.data)['files'])
+        files = json.loads(response.data)['files']
         return files
 
 ST_MODES = {
@@ -42,11 +41,17 @@ class FuseClient(Operations):
 
     def __init__(self):
         self.client = HTTPClient(host="127.0.0.1", port=3000)
+        self.files = {}
 
     def readdir(self, path, fh):
         entries = self.client.list()
-        for r in entries:
-            yield r
+        dirents = [".", ".."]
+        for entry in entries:
+            path = entry["path"]
+            self.files[path] = entry
+            dirents.append(path)
+        for ent in dirents:
+            yield ent
 
     def getattr(self, path, fh=None):
         stat = {}
