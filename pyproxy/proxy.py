@@ -109,7 +109,8 @@ def put_keyless():
 
 @APP.route("/", method="GET")
 def list():
-    return json.dumps({"files": DISPATCHER.list()})
+    entries = [{"path": meta.path, "creation_date": meta.creation_date.isoformat()} for meta in DISPATCHER.list()]
+    return json.dumps({"files": entries})
 
 if __name__ == "__main__":
     GRPC_SERVER = beta_create_Proxy_server(ProxyService())

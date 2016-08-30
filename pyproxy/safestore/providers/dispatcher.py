@@ -215,11 +215,12 @@ class Dispatcher(object):
 
     def list(self):
         """
-        Returns a list of the files stored in the system
+        Returns a list of the files stored in the system.
         Returns:
-            list(str): A list of the files stored in the system
+            list(Metadata): A list of Metadata objects representing the files
+                            stored in the system
         """
-        return self.files.keys()
+        return self.files.values()
 
     def put(self, path, blocks):
         """
