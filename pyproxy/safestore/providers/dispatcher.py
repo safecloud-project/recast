@@ -77,11 +77,18 @@ class Metadata(object):
     A class describing how a file has been stored in the system
     """
 
-    def __init__(self, path):
+    def __init__(self, path, original_size=0):
+        """
+        Constructor for Metadata objects
+        Args:
+            path(string): Path to the file in the system
+            original_size(int): Original size of the file in bytes
+        """
         self.path = path
         self.creation_date = datetime.datetime.now()
         self.blocks = []
         self.entangling_blocks = []
+        self.original_size = original_size
 
 class BlockPusher(threading.Thread):
     """
@@ -222,16 +229,17 @@ class Dispatcher(object):
         """
         return self.files.values()
 
-    def put(self, path, blocks):
+    def put(self, path, blocks, original_size=0):
         """
         Distribute blocks among different providers and a data struct
         Args:
             path: Key under which the data is stored
             blocks: A list of byte sequences
+            original_size(int):
         Returns:
             A metadata object describing how the blocks have been stored
         """
-        metadata = Metadata(path)
+        metadata = Metadata(path, original_size=original_size)
         provider_keys = self.providers.keys()
         blocks_to_store = []
         if self.entanglement:
