@@ -86,7 +86,7 @@ def store(key=None, data=None):
     blocks = [strip.data for strip in strips]
     logger.info("Received {} encoded blocks".format(len(blocks)))
     logger.info("Going to store blocks with key {}".format(key))
-    DISPATCHER.put(key, blocks)
+    DISPATCHER.put(key, blocks, original_size=len(data))
     return key
 
 
