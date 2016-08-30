@@ -1,3 +1,4 @@
+import math
 import os
 
 import pytest
@@ -79,3 +80,18 @@ def test_Dispatcher_list_files():
     assert len(result) == 1
     assert isinstance(result[0], Metadata)
     assert result[0].path == PATH
+
+
+def test_Dispatcher_sets_original_size_when_passed():
+    DISPATCHER_CONF = {"providers": []}
+    dispatcher = Dispatcher(DISPATCHER_CONF)
+    PATH = "key"
+    DATA = "DATA"
+    dispatcher.put(PATH, DATA)
+    meta = dispatcher.files[PATH]
+    assert meta.original_size == 0
+    CUSTOM_PATH = "key_with_custom_original_size"
+    CUSTOM_ORIGINAL_SIZE = 16 * int(math.pow(2, 20))
+    dispatcher.put(CUSTOM_PATH, DATA, original_size = CUSTOM_ORIGINAL_SIZE)
+    custom_meta = dispatcher.files[CUSTOM_PATH]
+    assert custom_meta.original_size == CUSTOM_ORIGINAL_SIZE
