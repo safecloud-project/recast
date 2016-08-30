@@ -109,7 +109,7 @@ def put_keyless():
 
 @APP.route("/", method="GET")
 def list():
-    entries = [{"path": meta.path, "creation_date": meta.creation_date.isoformat()} for meta in DISPATCHER.list()]
+    entries = [{"path": meta.path, "creation_date": meta.creation_date.isoformat(), "original_size": meta.original_size} for meta in DISPATCHER.list()]
     return json.dumps({"files": entries})
 
 if __name__ == "__main__":
