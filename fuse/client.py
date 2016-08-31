@@ -86,6 +86,7 @@ class FuseClient(fuse.Operations):
         self.files = {}
         self.file_counter = 1000
         self.files_open = set()
+        self.read_buffers = {}
 
     def readdir(self, path, fh):
         entries = self.client.list()
@@ -151,6 +152,9 @@ class FuseClient(fuse.Operations):
             path(str): Path to the file
             fh(int): File descriptor
         """
+        key = str(fh)
+        if key in self.read_buffers:
+            self.read_buffers.pop(key)
         self.files_open.remove(fh)
 
 
@@ -164,11 +168,12 @@ class FuseClient(fuse.Operations):
         Returns:
             str: Data read from the file
         """
-        #TODO Cache data rather than reading the entire file on every call
         if fh not in self.files_open:
             raise FileNotOpenException(path + " (fh = " + str(fh) + ") is not open")
-        data = self.client.get(path)
-        data_buffer = data[offset: offset + size]
+        key = str(fh)
+        if key not in self.read_buffers:
+            self.read_buffers[key] = self.client.get(path)
+        data_buffer = self.read_buffers[key][offset: offset + size]
         return data_buffer
 
 if __name__ == "__main__":
