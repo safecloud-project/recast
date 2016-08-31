@@ -79,6 +79,7 @@ class FuseClient(fuse.Operations):
     def __init__(self):
         self.client = HTTPClient(host="127.0.0.1", port=3000)
         self.files = {}
+        self.file_counter = 1000
 
     def readdir(self, path, fh):
         entries = self.client.list()
@@ -118,6 +119,39 @@ class FuseClient(fuse.Operations):
         stat["st_size"] = metadata["original_size"]
         stat["st_mode"] = ST_MODES["OTHER_FILES"]
         return stat
+
+    def open(self, path, flags):
+        """
+        Returns a file descriptor if the requested file exists and is not black
+        listed.
+        Args:
+            path(str): Path to the file that has to be open
+        Returns:
+            int: A positive integer if the file could be opened or a negative one otherwise
+        """
+        if path in FILES_BLACKLIST:
+            return -1
+        if self.client.get_metadata(path) is None:
+            return -1
+        fd = self.file_counter
+        self.file_counter += 1
+        return fd
+
+
+    def read(self, path, size, offset, fh):
+        """
+        Read data from a file stored in the system.
+        Args:
+            path(str): Path of the file
+            size(int): Amount of data to read from the file in bytes
+            offset(int): Position of the first byte to read in the file
+        Returns:
+            str: Data read from the file
+        """
+        #TODO Cache data rather than reading the entire file on every call
+        data = self.client.get(path)
+        data_buffer = data[offset: offset + size]
+        return data_buffer
 
 if __name__ == "__main__":
     CLIENT = FuseClient()
