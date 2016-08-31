@@ -56,7 +56,6 @@ ST_MODES = {
     "ROOT_DIRECTORY": 16893
 }
 
-
 ROOT_STAT = {
     "st_atime": time.time(),
     "st_ctime": time.time(),
@@ -74,12 +73,19 @@ FILES_BLACKLIST = [
     "/.Trash-1000"
 ]
 
+class FileNotOpenException(Exception):
+    """
+    An exception to raise when a request to read a file is sent on a file that is not opened
+    """
+    pass
+
 class FuseClient(fuse.Operations):
 
     def __init__(self):
         self.client = HTTPClient(host="127.0.0.1", port=3000)
         self.files = {}
         self.file_counter = 1000
+        self.files_open = set()
 
     def readdir(self, path, fh):
         entries = self.client.list()
@@ -134,8 +140,18 @@ class FuseClient(fuse.Operations):
         if self.client.get_metadata(path) is None:
             return -1
         fd = self.file_counter
+        self.files_open.add(fd)
         self.file_counter += 1
         return fd
+
+    def release(self, path, fh):
+        """
+        Releases a file
+        Args:
+            path(str): Path to the file
+            fh(int): File descriptor
+        """
+        self.files_open.remove(fh)
 
 
     def read(self, path, size, offset, fh):
@@ -149,6 +165,8 @@ class FuseClient(fuse.Operations):
             str: Data read from the file
         """
         #TODO Cache data rather than reading the entire file on every call
+        if fh not in self.files_open:
+            raise FileNotOpenException(path + " (fh = " + str(fh) + ") is not open")
         data = self.client.get(path)
         data_buffer = data[offset: offset + size]
         return data_buffer
