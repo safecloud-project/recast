@@ -35,6 +35,8 @@ class HTTPClient(object):
             raise ValueError("filename argument must have a value")
         url = self.protocol + "://" + self.host + ":" + str(self.port) + filename + "/__meta"
         response = self.http.request("GET", url)
+        if response.status == 404:
+            return None
         metadata = json.loads(response.data)
         return metadata
 
@@ -66,6 +68,12 @@ ROOT_STAT = {
     "st_gid": 1000
 }
 
+# A list of files for which no access should ever be given
+FILES_BLACKLIST = [
+    "/.Trash",
+    "/.Trash-1000"
+]
+
 class FuseClient(fuse.Operations):
 
     def __init__(self):
@@ -92,13 +100,16 @@ class FuseClient(fuse.Operations):
             dict: A dictionary with values matching the file requested
         """
         # Ignore the trash directory that fuse looks up on mount
-        if path in ["/.Trash", "/.Trash-1000"]:
+        if path in FILES_BLACKLIST:
             return {}
         # If stat on root, then return the constant ROOT_STAT
         if path == "/":
             return ROOT_STAT
-        #Otherwise get fresh metadata from the system
+        #Otherwise try to get fresh metadata from the system
         metadata = self.client.get_metadata(path)
+        # If the file does not exist return an empty dictionary
+        if metadata is None:
+            return {}
         creation_date = int(dateutil.parser.parse(metadata["creation_date"]).strftime("%s"))
         stat = copy.deepcopy(ROOT_STAT)
         stat["st_atime"] = time.time()
