@@ -7,6 +7,7 @@ import copy
 import errno
 import json
 import stat
+import sys
 import time
 import urllib3
 
@@ -297,5 +298,9 @@ class FuseClient(fuse.Operations):
         return len(data)
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("usage: %s <mountpoint>" % sys.argv[0])
+        exit(0)
     CLIENT = FuseClient()
-    fuse.FUSE(CLIENT, "/tmp/fuse", nothreads=True, foreground=True)
+    MOUNT_POINT = sys.argv[1]
+    fuse.FUSE(CLIENT, MOUNT_POINT, nothreads=True, foreground=True)
