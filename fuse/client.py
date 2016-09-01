@@ -67,6 +67,25 @@ ROOT_STAT = {
     "st_gid": 1000
 }
 
+def convert_list_entry_to_stat(entry):
+    """
+    Converts a list entry from the proxy API to a dictionary that would be
+    returned by the unix stat command.
+    Args:
+        entry(dict): A dictionary returned from the proxy API containing a
+                     file's metadata
+    Returns:
+        dict: A mapping of API list entry to a stat dictionary
+    """
+    creation_date = int(dateutil.parser.parse(entry["creation_date"]).strftime("%s"))
+    stat = copy.deepcopy(ROOT_STAT)
+    stat["st_atime"] = time.time()
+    stat["st_ctime"] = creation_date
+    stat["st_mtime"] = creation_date
+    stat["st_size"] = entry["original_size"]
+    stat["st_mode"] = ST_MODES["OTHER_FILES"]
+    return stat
+
 # A list of files for which no access should ever be given
 FILES_BLACKLIST = [
     "/.Trash",
@@ -93,7 +112,7 @@ class FuseClient(fuse.Operations):
         dirents = [".", ".."]
         for entry in entries:
             path = entry["path"]
-            self.files[path] = entry
+            self.files[path] = convert_list_entry_to_stat(entry)
             dirents.append(path)
         for ent in dirents:
             yield ent
@@ -113,19 +132,17 @@ class FuseClient(fuse.Operations):
         # If stat on root, then return the constant ROOT_STAT
         if path == "/":
             return ROOT_STAT
-        #Otherwise try to get fresh metadata from the system
+        # If the file has been entered in self.files
+        if path in self.files:
+            return self.files[path]
+        # Otherwise try to get fresh metadata from the system
         metadata = self.client.get_metadata(path)
         # If the file does not exist return an empty dictionary
         if metadata is None:
             return {}
-        creation_date = int(dateutil.parser.parse(metadata["creation_date"]).strftime("%s"))
-        stat = copy.deepcopy(ROOT_STAT)
-        stat["st_atime"] = time.time()
-        stat["st_ctime"] = creation_date
-        stat["st_mtime"] = creation_date
-        stat["st_size"] = metadata["original_size"]
-        stat["st_mode"] = ST_MODES["OTHER_FILES"]
-        return stat
+        stat_entry = convert_list_entry_to_stat(metadata)
+        self.files[path] = stat_entry
+        return stat_entry
 
     def open(self, path, flags):
         """
