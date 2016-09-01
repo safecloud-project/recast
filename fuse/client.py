@@ -79,7 +79,7 @@ class HTTPClient(object):
             "PUT",
             url,
             body=data,
-            headers={'Content-Type': 'application/octet-stream'}
+            headers={"Content-Type": "application/octet-stream"}
         )
         return response.data
 
@@ -187,7 +187,6 @@ class FuseClient(fuse.Operations):
             raise fuse.FuseOSError(errno.ENOENT)
         stat_entry = convert_list_entry_to_stat(metadata)
         self.files[clean_path] = stat_entry
-        print(json.dumps(self.files, indent=4, sort_keys=True))
         return stat_entry
 
     def open(self, path, flags):
@@ -292,7 +291,7 @@ class FuseClient(fuse.Operations):
         """
         key = str(fh)
         if self.write_buffers.has_key(key):
-            self.write_buffers[key].extend(data)
+            self.write_buffers[key] += data
         else:
             self.write_buffers[key] = data
         return len(data)
