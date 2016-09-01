@@ -1,14 +1,21 @@
+#! /usr/bin/env python
+"""
+A FUSE translation of the playcloud proxy API.
+"""
+
 import copy
+import errno
 import json
+import stat
 import time
+import urllib3
 
 import fuse
 import dateutil.parser
-import urllib3
 
 class HTTPClient(object):
     """
-    An HTTP client to store and retrieve files from playcloud
+    An HTTP client to store and retrieve files from playcloud's proxy
     """
     def __init__(self, host="127.0.0.1", port=3000, protocol="http"):
         self.host = host
@@ -17,6 +24,13 @@ class HTTPClient(object):
         self.http = urllib3.PoolManager()
 
     def get(self, filename):
+        """
+        Retrieves a file from the playcloud's proxy.
+        Args:
+            filename(str): Name of the file to retrieve
+        Returns:
+            str: The content of the file requested
+        """
         if filename is None or len(filename) == 0:
             raise ValueError("filename argument must have a value")
         url = self.protocol + "://" + self.host + ":" + str(self.port) + filename
@@ -51,6 +65,24 @@ class HTTPClient(object):
         files = json.loads(response.data)['files']
         return files
 
+    def put(self, path, data):
+        """
+        Send data to the playcloud proxy
+        Args:
+            path(str): key under which the file should be stored
+            data(str): Data to store
+        Args:
+            str: The key under which the file was stored
+        """
+        url = self.protocol + "://" + self.host + ":" + str(self.port) + path
+        response = self.http.request(
+            "PUT",
+            url,
+            body=data,
+            headers={'Content-Type': 'application/octet-stream'}
+        )
+        return response.data
+
 ST_MODES = {
     "OTHER_FILES": 33188,
     "ROOT_DIRECTORY": 16893
@@ -78,19 +110,13 @@ def convert_list_entry_to_stat(entry):
         dict: A mapping of API list entry to a stat dictionary
     """
     creation_date = int(dateutil.parser.parse(entry["creation_date"]).strftime("%s"))
-    stat = copy.deepcopy(ROOT_STAT)
-    stat["st_atime"] = time.time()
-    stat["st_ctime"] = creation_date
-    stat["st_mtime"] = creation_date
-    stat["st_size"] = entry["original_size"]
-    stat["st_mode"] = ST_MODES["OTHER_FILES"]
-    return stat
-
-# A list of files for which no access should ever be given
-FILES_BLACKLIST = [
-    "/.Trash",
-    "/.Trash-1000"
-]
+    stat_entry = copy.deepcopy(ROOT_STAT)
+    stat_entry["st_atime"] = time.time()
+    stat_entry["st_ctime"] = creation_date
+    stat_entry["st_mtime"] = creation_date
+    stat_entry["st_size"] = entry["original_size"]
+    stat_entry["st_mode"] = ST_MODES["OTHER_FILES"]
+    return stat_entry
 
 class FileNotOpenException(Exception):
     """
@@ -99,15 +125,26 @@ class FileNotOpenException(Exception):
     pass
 
 class FuseClient(fuse.Operations):
-
+    """
+    A FUSE translation of the playcloud's proxy API
+    """
     def __init__(self):
         self.client = HTTPClient(host="127.0.0.1", port=3000)
-        self.files = {}
+        self.files = {"/": ROOT_STAT}
         self.file_counter = 1000
         self.files_open = set()
         self.read_buffers = {}
+        self.write_buffers = {}
 
     def readdir(self, path, fh):
+        """
+        Reads the content of a directory and returns the list of filenames
+        Args:
+            path(str): Path to the file
+            fh(int): File descriptor
+        Yields:
+            list(str): A list of filenames for the files present in the document
+        """
         entries = self.client.list()
         dirents = [".", ".."]
         for entry in entries:
@@ -126,20 +163,14 @@ class FuseClient(fuse.Operations):
         Returns:
             dict: A dictionary with values matching the file requested
         """
-        # Ignore the trash directory that fuse looks up on mount
-        if path in FILES_BLACKLIST:
-            return {}
-        # If stat on root, then return the constant ROOT_STAT
-        if path == "/":
-            return ROOT_STAT
         # If the file has been entered in self.files
-        if path in self.files:
+        if self.files.has_key(path):
             return self.files[path]
         # Otherwise try to get fresh metadata from the system
         metadata = self.client.get_metadata(path)
         # If the file does not exist return an empty dictionary
         if metadata is None:
-            return {}
+            raise fuse.FuseOSError(errno.ENOENT)
         stat_entry = convert_list_entry_to_stat(metadata)
         self.files[path] = stat_entry
         return stat_entry
@@ -153,10 +184,8 @@ class FuseClient(fuse.Operations):
         Returns:
             int: A positive integer if the file could be opened or a negative one otherwise
         """
-        if path in FILES_BLACKLIST:
-            return -1
         if self.client.get_metadata(path) is None:
-            return -1
+            raise fuse.FuseOSError(errno.ENOENT)
         fd = self.file_counter
         self.files_open.add(fd)
         self.file_counter += 1
@@ -172,7 +201,12 @@ class FuseClient(fuse.Operations):
         key = str(fh)
         if key in self.read_buffers:
             self.read_buffers.pop(key)
+        if key in self.write_buffers:
+            data = self.write_buffers[key]
+            self.client.put(path, data)
+            self.write_buffers.pop(key)
         self.files_open.remove(fh)
+        self.files.pop(path)
 
 
     def read(self, path, size, offset, fh):
@@ -192,6 +226,61 @@ class FuseClient(fuse.Operations):
             self.read_buffers[key] = self.client.get(path)
         data_buffer = self.read_buffers[key][offset: offset + size]
         return data_buffer
+
+    def create(self, path, mode):
+        """
+        Creates a new file entry in self.files and "opens" a new file for writing.
+        Args:
+            path(str): Path to the new file
+            mode(int): Flags describing the open mode
+        Returns:
+            int: a file descriptor for the new file
+        """
+        creation_date = time.time()
+        self.files[path] = {
+            "st_mode": (stat.S_IFREG | mode),
+            "st_nlink": 1,
+            "st_size": 0,
+            "st_ctime": creation_date,
+            "st_mtime": creation_date,
+            "st_atime": creation_date
+        }
+        fd = self.file_counter
+        self.files_open.add(fd)
+        self.file_counter += 1
+        return fd
+
+    def getxattr(self, path, name, position=0):
+        """
+        Returns a special attribute from the stat structure. Mostly here for
+        compatibility reasons.
+        Args:
+            path(str): Path to the file
+            name(str): Name of the attribute to recover
+        Returns:
+            str: the value behind the attribute
+        """
+        attrs = self.files[path].get("attrs", {})
+        if attrs.has_key(name):
+            return attrs[name]
+        return ""       # Should return ENOATTR
+
+    def write(self, path, data, offset, fh):
+        """
+        Write data to a buffer for to store in the system.
+        Args:
+            path(str): Path of the file
+            size(int): Amount of data to write to the file in bytes
+            offset(int): Position of the first byte to write in the file
+        Returns:
+            int: Number of bytes written to the buffer
+        """
+        key = str(fh)
+        if self.write_buffers.has_key(key):
+            self.write_buffers[key].extend(data)
+        else:
+            self.write_buffers[key] = data
+        return len(data)
 
 if __name__ == "__main__":
     CLIENT = FuseClient()
