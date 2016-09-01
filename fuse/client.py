@@ -118,6 +118,19 @@ def convert_list_entry_to_stat(entry):
     stat_entry["st_mode"] = ST_MODES["OTHER_FILES"]
     return stat_entry
 
+def prepare_path(path):
+    """
+    Takes a path given by FUSE and trims it properly
+    Args:
+        path(str): Original path
+    Returns:
+        str: Trimmed path
+    """
+    if path.startswith("/"):
+        return path
+    return "/" + path
+
+
 class FileNotOpenException(Exception):
     """
     An exception to raise when a request to read a file is sent on a file that is not opened
@@ -149,7 +162,7 @@ class FuseClient(fuse.Operations):
         dirents = [".", ".."]
         for entry in entries:
             path = entry["path"]
-            self.files[path] = convert_list_entry_to_stat(entry)
+            self.files[prepare_path(path)] = convert_list_entry_to_stat(entry)
             dirents.append(path)
         for ent in dirents:
             yield ent
@@ -164,15 +177,17 @@ class FuseClient(fuse.Operations):
             dict: A dictionary with values matching the file requested
         """
         # If the file has been entered in self.files
-        if self.files.has_key(path):
-            return self.files[path]
+        clean_path = prepare_path(path)
+        if self.files.has_key(clean_path):
+            return self.files[clean_path]
         # Otherwise try to get fresh metadata from the system
         metadata = self.client.get_metadata(path)
         # If the file does not exist return an empty dictionary
         if metadata is None:
             raise fuse.FuseOSError(errno.ENOENT)
         stat_entry = convert_list_entry_to_stat(metadata)
-        self.files[path] = stat_entry
+        self.files[clean_path] = stat_entry
+        print(json.dumps(self.files, indent=4, sort_keys=True))
         return stat_entry
 
     def open(self, path, flags):
@@ -184,7 +199,7 @@ class FuseClient(fuse.Operations):
         Returns:
             int: A positive integer if the file could be opened or a negative one otherwise
         """
-        if self.client.get_metadata(path) is None:
+        if self.client.get_metadata(prepare_path(path)) is None:
             raise fuse.FuseOSError(errno.ENOENT)
         fd = self.file_counter
         self.files_open.add(fd)
@@ -203,7 +218,7 @@ class FuseClient(fuse.Operations):
             self.read_buffers.pop(key)
         if key in self.write_buffers:
             data = self.write_buffers[key]
-            self.client.put(path, data)
+            self.client.put(prepare_path(path), data)
             self.write_buffers.pop(key)
         self.files_open.remove(fh)
         self.files.pop(path)
@@ -223,7 +238,7 @@ class FuseClient(fuse.Operations):
             raise FileNotOpenException(path + " (fh = " + str(fh) + ") is not open")
         key = str(fh)
         if key not in self.read_buffers:
-            self.read_buffers[key] = self.client.get(path)
+            self.read_buffers[key] = self.client.get(prepare_path(path))
         data_buffer = self.read_buffers[key][offset: offset + size]
         return data_buffer
 
@@ -237,7 +252,7 @@ class FuseClient(fuse.Operations):
             int: a file descriptor for the new file
         """
         creation_date = time.time()
-        self.files[path] = {
+        self.files[prepare_path(path)] = {
             "st_mode": (stat.S_IFREG | mode),
             "st_nlink": 1,
             "st_size": 0,
@@ -260,7 +275,7 @@ class FuseClient(fuse.Operations):
         Returns:
             str: the value behind the attribute
         """
-        attrs = self.files[path].get("attrs", {})
+        attrs = self.files[prepare_path(path)].get("attrs", {})
         if attrs.has_key(name):
             return attrs[name]
         return ""       # Should return ENOATTR
