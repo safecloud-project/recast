@@ -11,8 +11,10 @@ import sys
 import time
 import urllib3
 
-import fuse
 import dateutil.parser
+import requests
+
+import fuse
 
 class HTTPClient(object):
     """
@@ -76,13 +78,8 @@ class HTTPClient(object):
             str: The key under which the file was stored
         """
         url = self.protocol + "://" + self.host + ":" + str(self.port) + path
-        response = self.http.request(
-            "PUT",
-            url,
-            body=data,
-            headers={"Content-Type": "application/octet-stream"}
-        )
-        return response.data
+        response = requests.put(url, data=data)
+        return response.text
 
 ST_MODES = {
     "OTHER_FILES": 33188,
