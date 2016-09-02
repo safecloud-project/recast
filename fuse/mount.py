@@ -86,10 +86,12 @@ ST_MODES = {
     "ROOT_DIRECTORY": 16893
 }
 
+now = time.time()
+
 ROOT_STAT = {
-    "st_atime": time.time(),
-    "st_ctime": time.time(),
-    "st_mtime": time.time(),
+    "st_atime": now,
+    "st_ctime": now,
+    "st_mtime": now,
     "st_mode": ST_MODES["ROOT_DIRECTORY"],
     "st_nlink": 1,
     "st_size": 4096,
