@@ -15,6 +15,14 @@ import requests
 SIZES = [int(math.pow(2, i)) for i in range(10, 24, 1)]
 
 def write_file(size, mountpoint):
+    """
+    Writes a file of a given size to a given mount point.
+    Args:
+        size(int): Size of the input to generate
+        mountpoint(str): Mount point used by the fuse client
+    Returns:
+        (float, float): A tuple with the response time (in secs) and the throughput (in B/sec)
+    """
     data = os.urandom(size)
     filename = str(uuid.uuid4())
     filepath = os.path.join(mountpoint, filename)
@@ -29,6 +37,14 @@ def write_file(size, mountpoint):
     return elapsed, throughput
 
 def upload_file(size, server):
+    """
+    Uploads a file to a given instance of a playcloud server.
+    Args:
+        size(int): Size of the input to generate
+        server(str): path of the server to contact
+    Returns:
+        (float, float): A tuple with the response time (in secs) and the throughput (in B/sec)
+    """
     data = os.urandom(size)
     filename = str(uuid.uuid4())
     url = server + "/" + filename
@@ -47,13 +63,13 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print "Usage: " + sys.argv[0] + " <mountpoint> <playcloud server>"
         sys.exit(0)
-    REPETITIONS = 15
+    REPETITIONS = 20
     MOUNTPOINT = sys.argv[1]
     ADDRESS = sys.argv[2]
     print "#transport, size, response time (s), throughput (B/s)"
-    for size in SIZES:
+    for data_size in SIZES:
         for i in range(REPETITIONS):
-            write_file(size, MOUNTPOINT)
-    for size in SIZES:
+            write_file(data_size, MOUNTPOINT)
+    for data_size in SIZES:
         for i in range(REPETITIONS):
-            upload_file(size, ADDRESS)
+            upload_file(data_size, ADDRESS)
