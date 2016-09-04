@@ -3,6 +3,7 @@
 A script that tests the sequential insertion of files in playcloud through the
 http interface and the fuse mount
 """
+import argparse
 import logging
 import math
 import os
@@ -69,28 +70,41 @@ def upload_file(size, server):
     LOGGER.debug("http, " + str(size) + ", " + str(elapsed) + ", " + str(throughput))
     return elapsed, throughput
 
+TRANSPORT_HANDLERS = {
+    "fuse": write_file,
+    "http": upload_file
+}
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print "Usage: " + sys.argv[0] + " <mountpoint> <playcloud server>"
-        sys.exit(0)
-    if os.environ.has_key("DEBUG"):
-        LOGGER.setLevel(logging.DEBUG)
-    REPETITIONS = 5
-    MOUNTPOINT = sys.argv[1]
-    ADDRESS = sys.argv[2]
+    PARSER = argparse.ArgumentParser(
+        prog="benchmark.py",
+        description="""
+        A script that tests the sequential insertion of files in playcloud through the http interface and the fuse mount
+        """
+    )
+    PARSER.add_argument("path", nargs=1, type=str,
+                        help="The URL or directory path to use for the benchmark")
+    PARSER.add_argument("-t", "--transport", nargs=1, type=str,
+                        help="The transport to use for the tests http or fuse", required=True)
+    PARSER.add_argument("-r", "--repetitions", nargs="?", type=int, default=10,
+                        help="The number of requests to run for each of the input sizes")
+    ARGS = PARSER.parse_args()
+    # Check transport and transport handler
+    TRANSPORT = ARGS.transport[0]
+    if TRANSPORT not in TRANSPORT_HANDLERS.keys():
+        PARSER.print_help()
+        sys.exit(1)
+    HANDLER = TRANSPORT_HANDLERS[TRANSPORT]
+    # Set the path
+    PATH = ARGS.path[0]
+    # Set repetitions
+    REPETITIONS = ARGS.REPETITIONS
+    # Run the benchmark
     for data_size in SIZES:
         records = []
         for i in range(REPETITIONS):
-            records.append(write_file(data_size, MOUNTPOINT))
+            records.append(HANDLER(data_size, PATH))
         mean_throughput = numpy.mean([r[1] for r in records])
         std_throughput = numpy.std([r[1] for r in records])
-        print "fuse, " + str(data_size) + ", " + str(mean_throughput) + ", " + str(std_throughput)
-
-    for data_size in SIZES:
-        records = []
-        for i in range(REPETITIONS):
-            records.append(upload_file(data_size, ADDRESS))
-        mean_throughput = numpy.mean([r[1] for r in records])
-        std_throughput = numpy.std([r[1] for r in records])
-        print "http, " + str(data_size) + ", " + str(mean_throughput) + ", " + str(std_throughput)
+        print TRANSPORT + ", " + str(data_size) + ", " + str(mean_throughput) + ", " +\
+                str(std_throughput)
