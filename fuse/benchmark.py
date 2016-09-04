@@ -3,13 +3,24 @@
 A script that tests the sequential insertion of files in playcloud through the
 http interface and the fuse mount
 """
+import logging
 import math
 import os
 import sys
 import time
 import uuid
 
+import numpy
 import requests
+
+# Prepare logger
+LOGGER = logging.getLogger(__name__)
+CONSOLE = logging.StreamHandler()
+FORMATTER = logging.Formatter("%(asctime) - %(levelname) : %(message)")
+CONSOLE.setFormatter(FORMATTER)
+LOGGER.addHandler(CONSOLE)
+LOGGER.setLevel(logging.INFO)
+
 
 # File sizes that range from 1KB to 8MB progressing as powers of 2
 SIZES = [int(math.pow(2, i)) for i in range(10, 24, 1)]
@@ -33,7 +44,7 @@ def write_file(size, mountpoint):
     end = time.time()
     elapsed = end - start
     throughput = size / elapsed
-    print "fuse, ", str(size) + ", " + str(elapsed) + ", " + str(throughput)
+    LOGGER.debug("fuse, " + str(size) + ", " + str(elapsed) + ", " + str(throughput))
     return elapsed, throughput
 
 def upload_file(size, server):
@@ -55,7 +66,7 @@ def upload_file(size, server):
     assert response.status_code == 200
     elapsed = end - start
     throughput = size / elapsed
-    print "http, ", str(size) + ", " + str(elapsed) + ", " + str(throughput)
+    LOGGER.debug("http, " + str(size) + ", " + str(elapsed) + ", " + str(throughput))
     return elapsed, throughput
 
 
@@ -63,13 +74,23 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print "Usage: " + sys.argv[0] + " <mountpoint> <playcloud server>"
         sys.exit(0)
-    REPETITIONS = 20
+    if os.environ.has_key("DEBUG"):
+        LOGGER.setLevel(logging.DEBUG)
+    REPETITIONS = 5
     MOUNTPOINT = sys.argv[1]
     ADDRESS = sys.argv[2]
-    print "#transport, size, response time (s), throughput (B/s)"
     for data_size in SIZES:
+        records = []
         for i in range(REPETITIONS):
-            write_file(data_size, MOUNTPOINT)
+            records.append(write_file(data_size, MOUNTPOINT))
+        mean_throughput = numpy.mean([r[1] for r in records])
+        std_throughput = numpy.std([r[1] for r in records])
+        print "fuse, " + str(data_size) + ", " + str(mean_throughput) + ", " + str(std_throughput)
+
     for data_size in SIZES:
+        records = []
         for i in range(REPETITIONS):
-            upload_file(data_size, ADDRESS)
+            records.append(upload_file(data_size, ADDRESS))
+        mean_throughput = numpy.mean([r[1] for r in records])
+        std_throughput = numpy.std([r[1] for r in records])
+        print "http, " + str(data_size) + ", " + str(mean_throughput) + ", " + str(std_throughput)
