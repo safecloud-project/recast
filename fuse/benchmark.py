@@ -16,10 +16,7 @@ import requests
 
 # Prepare logger
 LOGGER = logging.getLogger(__name__)
-CONSOLE = logging.StreamHandler()
-FORMATTER = logging.Formatter("%(asctime) - %(levelname) : %(message)")
-CONSOLE.setFormatter(FORMATTER)
-LOGGER.addHandler(CONSOLE)
+LOGGER.addHandler(logging.StreamHandler())
 LOGGER.setLevel(logging.INFO)
 
 
@@ -45,7 +42,7 @@ def write_file(size, mountpoint):
     end = time.time()
     elapsed = end - start
     throughput = size / elapsed
-    LOGGER.debug("fuse, " + str(size) + ", " + str(elapsed) + ", " + str(throughput))
+    LOGGER.info(str(start) + "\t" + str(elapsed) + "\tfuse\t" + str(size))
     return elapsed, throughput
 
 def upload_file(size, server):
@@ -67,7 +64,7 @@ def upload_file(size, server):
     assert response.status_code == 200
     elapsed = end - start
     throughput = size / elapsed
-    LOGGER.debug("http, " + str(size) + ", " + str(elapsed) + ", " + str(throughput))
+    LOGGER.info(str(start) + "\t" + str(elapsed) + "\thttp\t" + str(size))
     return elapsed, throughput
 
 TRANSPORT_HANDLERS = {
@@ -95,6 +92,8 @@ if __name__ == "__main__":
         PARSER.print_help()
         sys.exit(1)
     HANDLER = TRANSPORT_HANDLERS[TRANSPORT]
+    file_handler = logging.FileHandler(TRANSPORT + ".log")
+    LOGGER.addHandler(file_handler)
     # Set the path
     PATH = ARGS.path[0]
     # Set repetitions
@@ -106,5 +105,4 @@ if __name__ == "__main__":
             records.append(HANDLER(data_size, PATH))
         mean_throughput = numpy.mean([r[1] for r in records])
         std_throughput = numpy.std([r[1] for r in records])
-        print TRANSPORT + ", " + str(data_size) + ", " + str(mean_throughput) + ", " +\
-                str(std_throughput)
+        #print TRANSPORT + ", " + str(data_size) + ", " + str(mean_throughput) + ", " + str(std_throughput)
