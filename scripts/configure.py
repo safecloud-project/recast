@@ -86,6 +86,9 @@ def create_docker_compose_configuration(configuration):
     """
     nodes = int(configuration["storage"]["nodes"])
     compose_configuration = copy.deepcopy(BASIC_COMPOSE_CONFIGURATION)
+    redis_keys = [key for key in compose_configuration["services"] if key.startswith("redis")]
+    for key in redis_keys:
+        del compose_configuration["services"][key]
     for i in range(1, nodes + 1):
         container_name = "redis" + str(i)
         compose_configuration["services"][container_name] = {
