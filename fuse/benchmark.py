@@ -98,7 +98,7 @@ if __name__ == "__main__":
     # Set the path
     PATH = ARGS.path[0]
     # Set repetitions
-    REPETITIONS = ARGS.REPETITIONS
+    REPETITIONS = ARGS.repetitions
     # Run the benchmark
     for data_size in SIZES:
         records = []
