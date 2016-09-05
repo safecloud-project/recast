@@ -18,14 +18,15 @@ set pointsize 2
 #set style line 4 lt 4 lc rgb "black" lw 4 pt 8 ps 1.8
 
 #Entanglement styles
-set style line 5 lt 1 lc rgb "red" lw 1 pt 9 ps 1.5
-set style line 6 lt 2 lc rgb "green" lw 1 pt 11 ps 1.5
-set style line 7 lt 3 lc rgb "blue" lw 1 pt 13 ps 1.5
-set style line 8 lt 4 lc rgb "black" lw 1 pt 8 ps 1.5
+set style line 5 lt 1 lc rgb "red"   lw 2 pt 9 ps 1.5
+set style line 6 lt 2 lc rgb "green" lw 2 pt 11 ps 1.5
+set style line 7 lt 3 lc rgb "blue"  lw 3 pt 13 ps 1.5
+set style line 8 lt 4 lc rgb "black" lw 3 pt 8 ps 1.5
+set style line 9 lt 5 lc rgb "blue"  lw 3 pt 12 ps 1.5
 
 
 #set style line 8 lt 3 lw 2 pt 6
-#set style line 9 lt 0 lw 2 pt 12
+set style line 9 lt 0 lw 2 pt 12
 
 set style line 13 lt 5 lc rgb "black" lw 4 pt 14 ps 2
 
