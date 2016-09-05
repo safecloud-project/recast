@@ -2,12 +2,11 @@
 """
 A FUSE translation of the playcloud proxy API.
 """
-
+import argparse
 import copy
 import errno
 import json
 import stat
-import sys
 import time
 import urllib3
 
@@ -141,8 +140,8 @@ class FuseClient(fuse.Operations):
     """
     A FUSE translation of the playcloud's proxy API
     """
-    def __init__(self):
-        self.client = HTTPClient(host="127.0.0.1", port=3000)
+    def __init__(self, host="127.0.0.1", port=3000):
+        self.client = HTTPClient(host=host, port=port)
         self.files = {"/": ROOT_STAT}
         self.file_counter = 1000
         self.files_open = set()
@@ -297,9 +296,21 @@ class FuseClient(fuse.Operations):
         return len(data)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("usage: %s <mountpoint>" % sys.argv[0])
-        exit(0)
-    CLIENT = FuseClient()
-    MOUNT_POINT = sys.argv[1]
+    PARSER = argparse.ArgumentParser(
+        prog="mount.py",
+        description="A FUSE translation of the playcloud proxy API."
+    )
+    PARSER.add_argument("-m", "--mountpoint", nargs="?", type=str, required=True,
+                        help="The folder that should be used to mount playcloud.")
+    PARSER.add_argument("--host", nargs="?", type=str, default="proxy",
+                        help="The ip or name of the host where the instance of playcloud is running." + \
+                        "Defaults to 'proxy'.")
+    PARSER.add_argument("--port", nargs="?", type=int, default=8000,
+                        help="The port on which the playcloud instance is listening" + \
+                        "Defaults to 8000")
+    ARGS = PARSER.parse_args()
+    HOST = ARGS.host
+    PORT = ARGS.port
+    CLIENT = FuseClient(host=HOST, port=PORT)
+    MOUNT_POINT = ARGS.mountpoint
     fuse.FUSE(CLIENT, MOUNT_POINT, nothreads=True, foreground=True)
