@@ -12,9 +12,9 @@ set xlabel "Requests"
 set grid y
 #set logscale y
 #set ytics 0,20,100
-set yrange [0.01:3]
+set yrange [0.01:8]
 set xrange [0:20]
-set key horizontal samplen 1 width 1 at 16,2.9
+set key horizontal samplen 1 width 1 at 16,7.9
 
 plot \
  	'data/1024_data.txt'  u ($1):($3)\
