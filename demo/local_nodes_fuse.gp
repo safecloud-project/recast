@@ -1,5 +1,5 @@
 set term postscript color eps enhanced 22
-set output "demo_local_fuse.eps"
+set output "local_nodes_fuse.eps"
 load "styles.inc"
 set size 1,0.65
 set bmargin 3
@@ -38,6 +38,6 @@ plot \
 		
 	
 
-!epstopdf "demo_local_fuse.eps"
-!rm "demo_local_fuse.eps"
+!epstopdf "local_nodes_fuse.eps"
+!rm "local_nodes_fuse.eps"
 quit
