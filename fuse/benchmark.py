@@ -21,7 +21,11 @@ LOGGER.setLevel(logging.INFO)
 
 
 # File sizes that range from 1KB to 8MB progressing as powers of 2
-SIZES = [int(math.pow(2, i)) for i in range(10, 24, 1)]
+SIZES = [
+    int(math.pow(2, 10)), #    1 kB
+    int(math.pow(2, 22)), # 4096 kB
+    int(math.pow(2, 23))  # 8120 kB
+]
 
 def write_file(size, mountpoint):
     """
@@ -105,4 +109,3 @@ if __name__ == "__main__":
             records.append(HANDLER(data_size, PATH))
         mean_throughput = numpy.mean([r[1] for r in records])
         std_throughput = numpy.std([r[1] for r in records])
-        #print TRANSPORT + ", " + str(data_size) + ", " + str(mean_throughput) + ", " + str(std_throughput)
