@@ -13,22 +13,22 @@ set grid y
 #set logscale y
 #set ytics 0,20,100
 set yrange [0.01:3]
-set xrange [0:]
-set key outside horizontal samplen 1 width 1 at 16,2.9
+set xrange [0:20]
+set key horizontal samplen 1 width 1 at 16,2.9
 
 plot \
  	'data/1024_data.txt'  u ($1):($3)\
- 		 w l ls 5 notitle '1024',\
+ 		 w l ls 5 notitle '1kB',\
  	'data/1024_data.txt'  u ($1):($3)\
- 		 w p ls 5 notitle '1024',\
+ 		 w p ls 5 notitle '1kB',\
 	'data/4194304_data.txt'  u ($1):($3)\
-		 w l ls 8 notitle '4194304',\
+		 w l ls 8 notitle '4MB',\
 	'data/4194304_data.txt'  u ($1):($3)\
-		 w p ls 8 notitle '4194304',\
+		 w p ls 8 notitle '4MB',\
  	'data/8388608_data.txt'  u ($1):($3)\
- 		 w l ls 7 notitle '8388608',\
+ 		 w l ls 7 notitle '8MB',\
  	'data/8388608_data.txt'  u ($1):($3)\
- 		 w p ls 7 notitle '8388608',\
+ 		 w p ls 7 notitle '8MB',\
    	10000\
  		w lp ls 5 title '1kB',\
    	10000\
