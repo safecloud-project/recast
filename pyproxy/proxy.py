@@ -19,7 +19,7 @@ from proxy_service import ProxyService
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
 logging.config.fileConfig(log_config)
 
-logger = logging.getLogger("proxy")
+LOGGER = logging.getLogger("proxy")
 
 con_log = "Going to connect to {} in {}:{}"
 
@@ -28,7 +28,7 @@ DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
 CODER_HOST = os.getenv("CODER_PORT_1234_TCP_ADDR", "coder")
 CODER_PORT = int(os.getenv("CODER_PORT_1234_TCP_PORT", 1234))
 
-logger.info(con_log.format("pycoder", CODER_HOST, CODER_PORT))
+LOGGER.info(con_log.format("pycoder", CODER_HOST, CODER_PORT))
 GRPC_CHANNEL = implementations.insecure_channel(CODER_HOST, CODER_PORT)
 
 CLIENT_STUB = beta_create_EncoderDecoder_stub(GRPC_CHANNEL)
@@ -48,7 +48,7 @@ def get(key):
 
     key -- Key under which the data should have been stored
     """
-    logger.debug("Received get request for key {}".format(key))
+    LOGGER.debug("Received get request for key {}".format(key))
     blocks = DISPATCHER.get(key)
     if blocks is None:
         response.status = 404
@@ -59,12 +59,12 @@ def get(key):
         strip.data = block
         strips.append(strip)
 
-    logger.debug("Received blocks from redis")
+    LOGGER.debug("Received blocks from redis")
 
     decode_request = DecodeRequest()
     decode_request.strips.extend(strips)
 
-    logger.debug("Goin go to do decode request")
+    LOGGER.debug("Going go to do decode request")
 
     data = CLIENT_STUB.Decode(
         decode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).dec_block
@@ -110,12 +110,14 @@ def store(key=None, data=None):
         key = str(uuid.uuid4())
     encode_request = EncodeRequest()
     encode_request.payload = data
-    logger.info("Going to request data encoding")
+    LOGGER.debug("Going to request data encoding")
     strips = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).strips
     blocks = [strip.data for strip in strips]
-    logger.info("Received {} encoded blocks".format(len(blocks)))
-    logger.info("Going to store blocks with key {}".format(key))
+    number_of_blocks = len(blocks)
+    LOGGER.debug("Received {:2d} encoded blocks from data encoding".format(number_of_blocks))
+    LOGGER.debug("Going to store {:2d} blocks with key {:s}".format(number_of_blocks, key))
     DISPATCHER.put(key, blocks, original_size=len(data))
+    LOGGER.debug("Stored {:2d} blocks with key {:s}".format(number_of_blocks, key))
     return key
 
 
@@ -124,7 +126,7 @@ def put(key):
     """
     Handles PUT requests to store data into playcloud
     """
-    logger.info("Received put request for key {}".format(key))
+    LOGGER.debug("Received put request for key {:s}".format(key))
 
     return store(key=key, data=request.body.getvalue())
 
