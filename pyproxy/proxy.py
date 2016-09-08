@@ -1,6 +1,7 @@
 """
 A python implementation of playcloud's proxy server
 """
+import argparse
 import json
 import logging
 import logging.config
@@ -149,6 +150,16 @@ def list():
     return json.dumps({"files": entries})
 
 if __name__ == "__main__":
+    PARSER = argparse.ArgumentParser(prog="proxy",
+        description="A python implementation of playcloud's proxy server")
+    PARSER.add_argument("--debug", action="store_true", help="Show debug logs")
+    ARGS = PARSER.parse_args()
+    if ARGS.debug or os.environ.has_key("DEBUG") or os.environ.has_key("debug"):
+        LOGGER.setLevel(logging.DEBUG)
+        logging.getLogger("dispatcher").setLevel(logging.DEBUG)
+    else:
+        LOGGER.setLevel(logging.INFO)
+        logging.getLogger("dispatcher").setLevel(logging.INFO)
     GRPC_SERVER = beta_create_Proxy_server(ProxyService())
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
