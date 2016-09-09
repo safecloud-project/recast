@@ -1,0 +1,11 @@
+# Backup files
+*~
+*.bak
+# Log files
+*.log
+*/*.log
+# Python related files
+*.pyc
+VENV
+.cache
+*/.cache
