@@ -313,4 +313,4 @@ if __name__ == "__main__":
     PORT = ARGS.port
     CLIENT = FuseClient(host=HOST, port=PORT)
     MOUNT_POINT = ARGS.mountpoint
-    fuse.FUSE(CLIENT, MOUNT_POINT, nothreads=True, foreground=True)
+    fuse.FUSE(CLIENT, MOUNT_POINT, big_writes=True, foreground=True, nothreads=True)
