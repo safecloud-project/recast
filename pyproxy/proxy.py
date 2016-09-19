@@ -41,8 +41,7 @@ DISPATCHER = get_dispatcher_instance()
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
 APP = bottle.app()
 
-
-@APP.route("/<key>", method="GET")
+@APP.route("/<key:path>", method="GET")
 def get(key):
     """
     Handles GET requests to retrieve data stored under <key> from playcloud
@@ -122,7 +121,7 @@ def store(key=None, data=None):
     return key
 
 
-@APP.route("/<key>", method="PUT")
+@APP.route("/<key:path>", method="PUT")
 def put(key):
     """
     Handles PUT requests to store data into playcloud
