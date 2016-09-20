@@ -1,4 +1,4 @@
-FROM dburihabwa/grpc-compiler-0.11-flat
+FROM dburihabwa/grpc-compiler-1.0-flat
 
 #Install dependencies
 RUN apt-get update --quiet && apt-get dist-upgrade --assume-yes --quiet && \

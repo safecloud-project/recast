@@ -1,4 +1,4 @@
-FROM dburihabwa/grpc-compiler-0.11-flat
+FROM dburihabwa/grpc-compiler-1.0-flat
 
 RUN apt-get update && \
     apt-get dist-upgrade --assume-yes --quiet && \
