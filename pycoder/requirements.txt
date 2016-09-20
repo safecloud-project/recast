@@ -1,6 +1,6 @@
 cryptography==1.0.1
 fake-factory==0.5.7
-grpcio==0.11.0b1
+grpcio==1.0.0
 protobuf==3.0.0a3
 pycrypto==2.6.1
 pyeclib==1.2.0
