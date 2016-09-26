@@ -14,12 +14,12 @@ set title "Storing 4MB files in a 3 remote nodes RS (10,4)" offset 0,-0.5
 set ylabel "Latency (sec)"
 set xlabel "Requests"
 set grid y
-set yrange [0.01:8]
+set yrange [0.01:6]
 set xrange [0:60]
 
-set label 1001 "CH" at 9, 4
-set label 1003 "US" at 29, 5
-set label 1002 "SG" at 49, 6
+set label 1001 "CH" at  9, 3
+set label 1003 "US" at 29, 4
+set label 1002 "SG" at 49, 5
 
 plot \
 	'data/http.log' using ($1):($3) with line linestyle 7 notitle 'http',\
