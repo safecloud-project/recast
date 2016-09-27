@@ -16,17 +16,19 @@ set xlabel "Requests"
 set grid y
 set yrange [0.01:6]
 set xrange [0:60]
-set key right bottom box
+set key right bottom box sample 1
 
 set label 1001 "CH" at  9, 3.5
 set label 1003 "us-east-1" at 26, 4.5
 set label 1002 "ap-southeast-1" at 44, 5.5
 
 plot \
-	'data/http.log' using ($1):($3) with line   linestyle 7 title "http",\
+	'data/http.log' using ($1):($3) with line   linestyle 7 notitle "http",\
 	'data/http.log' using ($1):($3) with points linestyle 7 notitle "http",\
-	'data/fuse.log' using ($1):($3) with line   linestyle 5 title "fuse",\
-	'data/fuse.log' using ($1):($3) with points linestyle 5 notitle "fuse"
+	'data/fuse.log' using ($1):($3) with line   linestyle 5 notitle "fuse",\
+	'data/fuse.log' using ($1):($3) with points linestyle 5 notitle "fuse",\
+	10000 with lp ls 7 title "http",\
+	10000 with lp ls 5 title "fuse"
 
 !epstopdf "remote_3_regions.eps"
 !rm "remote_3_regions.eps"
