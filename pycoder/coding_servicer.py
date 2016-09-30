@@ -1,6 +1,7 @@
 """Wrapper for pyeclib encoders using GRPC"""
 from ConfigParser import ConfigParser
 import os
+import hashlib
 import logging
 import logging.config
 
@@ -264,8 +265,13 @@ class CodingService(BetaEncoderDecoderServicer):
 
             strips = []
             for raw_strip in raw_strips:
+                # Copy data
                 strip = Strip()
                 strip.data = raw_strip
+                # Compute checksum
+                checksum = hashlib.sha256(raw_strip).digest()
+                strip.checksum = checksum
+                # Add strip
                 strips.append(strip)
 
             reply.strips.extend(strips)
