@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='playcloud.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x0fplaycloud.proto\"\x15\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\x87\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.EncodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.EncodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8e\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.DecodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x85\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.DecodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x1e\n\x0c\x42lockRequest\x12\x0e\n\x06\x62locks\x18\x01 \x01(\r\"$\n\nBlockReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip2d\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x32\x38\n\x05Proxy\x12/\n\x0fGetRandomBlocks\x12\r.BlockRequest\x1a\x0b.BlockReply\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3')
+  serialized_pb=_b('\n\x0fplaycloud.proto\"\'\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\x10\n\x08\x63hecksum\x18\x02 \x01(\x0c\"\x87\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.EncodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.EncodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8e\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.DecodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x85\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.DecodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x1e\n\x0c\x42lockRequest\x12\x0e\n\x06\x62locks\x18\x01 \x01(\r\"$\n\nBlockReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip2d\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x32\x38\n\x05Proxy\x12/\n\x0fGetRandomBlocks\x12\r.BlockRequest\x1a\x0b.BlockReply\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -40,6 +40,13 @@ _STRIP = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='checksum', full_name='Strip.checksum', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -53,7 +60,7 @@ _STRIP = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=19,
-  serialized_end=40,
+  serialized_end=58,
 )
 
 
@@ -90,8 +97,8 @@ _ENCODEREQUEST_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=129,
-  serialized_end=178,
+  serialized_start=147,
+  serialized_end=196,
 )
 
 _ENCODEREQUEST = _descriptor.Descriptor(
@@ -127,8 +134,8 @@ _ENCODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=43,
-  serialized_end=178,
+  serialized_start=61,
+  serialized_end=196,
 )
 
 
@@ -165,8 +172,8 @@ _ENCODEREPLY_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=129,
-  serialized_end=178,
+  serialized_start=147,
+  serialized_end=196,
 )
 
 _ENCODEREPLY = _descriptor.Descriptor(
@@ -202,8 +209,8 @@ _ENCODEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=181,
-  serialized_end=319,
+  serialized_start=199,
+  serialized_end=337,
 )
 
 
@@ -240,8 +247,8 @@ _DECODEREQUEST_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=129,
-  serialized_end=178,
+  serialized_start=147,
+  serialized_end=196,
 )
 
 _DECODEREQUEST = _descriptor.Descriptor(
@@ -277,8 +284,8 @@ _DECODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=322,
-  serialized_end=464,
+  serialized_start=340,
+  serialized_end=482,
 )
 
 
@@ -315,8 +322,8 @@ _DECODEREPLY_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=129,
-  serialized_end=178,
+  serialized_start=147,
+  serialized_end=196,
 )
 
 _DECODEREPLY = _descriptor.Descriptor(
@@ -352,8 +359,8 @@ _DECODEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=467,
-  serialized_end=600,
+  serialized_start=485,
+  serialized_end=618,
 )
 
 
@@ -383,8 +390,8 @@ _BLOCKREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=602,
-  serialized_end=632,
+  serialized_start=620,
+  serialized_end=650,
 )
 
 
@@ -414,8 +421,8 @@ _BLOCKREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=634,
-  serialized_end=670,
+  serialized_start=652,
+  serialized_end=688,
 )
 
 _ENCODEREQUEST_PARAMETERSENTRY.containing_type = _ENCODEREQUEST

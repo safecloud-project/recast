@@ -18,6 +18,7 @@ service Proxy {
 //Data types
 message Strip {
 	bytes data = 1;
+	bytes checksum = 2;
 }
 message EncodeRequest {
 	bytes payload = 1;
