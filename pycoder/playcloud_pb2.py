@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='playcloud.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x0fplaycloud.proto\"\'\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\x10\n\x08\x63hecksum\x18\x02 \x01(\x0c\"\x87\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.EncodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.EncodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8e\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.DecodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x85\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.DecodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x1e\n\x0c\x42lockRequest\x12\x0e\n\x06\x62locks\x18\x01 \x01(\r\"$\n\nBlockReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip2d\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x32\x38\n\x05Proxy\x12/\n\x0fGetRandomBlocks\x12\r.BlockRequest\x1a\x0b.BlockReply\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3')
+  serialized_pb=_b('\n\x0fplaycloud.proto\"\'\n\x05Strip\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\x10\n\x08\x63hecksum\x18\x02 \x01(\x0c\"\x87\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.EncodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\x0b\x45ncodeReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.EncodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8e\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.DecodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x85\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.DecodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x1e\n\x0c\x42lockRequest\x12\x0e\n\x06\x62locks\x18\x01 \x01(\r\"$\n\nBlockReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\"0\n\x11NamedBlockRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\r\n\x05index\x18\x02 \x01(\r2d\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x32\x62\n\x05Proxy\x12/\n\x0fGetRandomBlocks\x12\r.BlockRequest\x1a\x0b.BlockReply\"\x00\x12(\n\x08GetBlock\x12\x12.NamedBlockRequest\x1a\x06.Strip\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -425,6 +425,44 @@ _BLOCKREPLY = _descriptor.Descriptor(
   serialized_end=688,
 )
 
+
+_NAMEDBLOCKREQUEST = _descriptor.Descriptor(
+  name='NamedBlockRequest',
+  full_name='NamedBlockRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='path', full_name='NamedBlockRequest.path', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='index', full_name='NamedBlockRequest.index', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=690,
+  serialized_end=738,
+)
+
 _ENCODEREQUEST_PARAMETERSENTRY.containing_type = _ENCODEREQUEST
 _ENCODEREQUEST.fields_by_name['parameters'].message_type = _ENCODEREQUEST_PARAMETERSENTRY
 _ENCODEREPLY_PARAMETERSENTRY.containing_type = _ENCODEREPLY
@@ -443,6 +481,7 @@ DESCRIPTOR.message_types_by_name['DecodeRequest'] = _DECODEREQUEST
 DESCRIPTOR.message_types_by_name['DecodeReply'] = _DECODEREPLY
 DESCRIPTOR.message_types_by_name['BlockRequest'] = _BLOCKREQUEST
 DESCRIPTOR.message_types_by_name['BlockReply'] = _BLOCKREPLY
+DESCRIPTOR.message_types_by_name['NamedBlockRequest'] = _NAMEDBLOCKREQUEST
 
 Strip = _reflection.GeneratedProtocolMessageType('Strip', (_message.Message,), dict(
   DESCRIPTOR = _STRIP,
@@ -524,6 +563,13 @@ BlockReply = _reflection.GeneratedProtocolMessageType('BlockReply', (_message.Me
   # @@protoc_insertion_point(class_scope:BlockReply)
   ))
 _sym_db.RegisterMessage(BlockReply)
+
+NamedBlockRequest = _reflection.GeneratedProtocolMessageType('NamedBlockRequest', (_message.Message,), dict(
+  DESCRIPTOR = _NAMEDBLOCKREQUEST,
+  __module__ = 'playcloud_pb2'
+  # @@protoc_insertion_point(class_scope:NamedBlockRequest)
+  ))
+_sym_db.RegisterMessage(NamedBlockRequest)
 
 
 DESCRIPTOR.has_options = True
@@ -667,6 +713,11 @@ class ProxyStub(object):
         request_serializer=BlockRequest.SerializeToString,
         response_deserializer=BlockReply.FromString,
         )
+    self.GetBlock = channel.unary_unary(
+        '/Proxy/GetBlock',
+        request_serializer=NamedBlockRequest.SerializeToString,
+        response_deserializer=Strip.FromString,
+        )
 
 
 class ProxyServicer(object):
@@ -680,6 +731,11 @@ class ProxyServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def GetBlock(self, request, context):
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_ProxyServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -687,6 +743,11 @@ def add_ProxyServicer_to_server(servicer, server):
           servicer.GetRandomBlocks,
           request_deserializer=BlockRequest.FromString,
           response_serializer=BlockReply.SerializeToString,
+      ),
+      'GetBlock': grpc.unary_unary_rpc_method_handler(
+          servicer.GetBlock,
+          request_deserializer=NamedBlockRequest.FromString,
+          response_serializer=Strip.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
@@ -701,6 +762,8 @@ class BetaProxyServicer(object):
     """Returns at most n random blocks where n is a parameter of the function
     """
     context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+  def GetBlock(self, request, context):
+    context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
 
 class BetaProxyStub(object):
@@ -711,16 +774,22 @@ class BetaProxyStub(object):
     """
     raise NotImplementedError()
   GetRandomBlocks.future = None
+  def GetBlock(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+    raise NotImplementedError()
+  GetBlock.future = None
 
 
 def beta_create_Proxy_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
   request_deserializers = {
+    ('Proxy', 'GetBlock'): NamedBlockRequest.FromString,
     ('Proxy', 'GetRandomBlocks'): BlockRequest.FromString,
   }
   response_serializers = {
+    ('Proxy', 'GetBlock'): Strip.SerializeToString,
     ('Proxy', 'GetRandomBlocks'): BlockReply.SerializeToString,
   }
   method_implementations = {
+    ('Proxy', 'GetBlock'): face_utilities.unary_unary_inline(servicer.GetBlock),
     ('Proxy', 'GetRandomBlocks'): face_utilities.unary_unary_inline(servicer.GetRandomBlocks),
   }
   server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
@@ -729,12 +798,15 @@ def beta_create_Proxy_server(servicer, pool=None, pool_size=None, default_timeou
 
 def beta_create_Proxy_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
   request_serializers = {
+    ('Proxy', 'GetBlock'): NamedBlockRequest.SerializeToString,
     ('Proxy', 'GetRandomBlocks'): BlockRequest.SerializeToString,
   }
   response_deserializers = {
+    ('Proxy', 'GetBlock'): Strip.FromString,
     ('Proxy', 'GetRandomBlocks'): BlockReply.FromString,
   }
   cardinalities = {
+    'GetBlock': cardinality.Cardinality.UNARY_UNARY,
     'GetRandomBlocks': cardinality.Cardinality.UNARY_UNARY,
   }
   stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)

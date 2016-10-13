@@ -3,7 +3,7 @@ A GRPC client for the proxy service that recovers block from the data stores
 """
 from grpc.beta import implementations
 
-from playcloud_pb2 import beta_create_Proxy_stub, BlockRequest
+from playcloud_pb2 import beta_create_Proxy_stub, BlockRequest, NamedBlockRequest
 
 # TODO Read the default grpc timeout in configuration file before assigning this value
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
@@ -34,3 +34,23 @@ class ProxyClient(object):
         reply = self.stub.GetRandomBlocks(request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS)
         strips = [strip for strip in reply.strips]
         return strips
+
+    def get_block(self, path, index):
+        """
+        Returns a single block from the data stores.
+        Args:
+            path(str): Name of the file
+            index(int): Index of the block
+        Returns:
+            Strip: The data requested
+        Raises:
+            ValueError: if the path is empty or the index is negative
+        """
+        if len(path.strip()) == 0:
+            raise ValueError("path argument cannot empty")
+        if index < 0:
+            raise ValueError("index argument cannot be negative")
+        request = NamedBlockRequest()
+        request.path = path
+        request.index = index
+        return self.stub.GetBlock(request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS)

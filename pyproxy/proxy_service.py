@@ -33,6 +33,26 @@ class ProxyService(BetaProxyServicer):
         self.logger.info("Replying to GetRandomBlocks request")
         return reply
 
+    def GetBlock(self, request, context):
+        """
+        Returns one block from the data stores.
+        Args:
+            request (BlockRequest): A block request
+        Returns:
+            Strip: A reply with the requested block
+        """
+        self.logger.info("Received GetBlock request")
+        dispatcher = get_dispatcher_instance()
+        path = request.path
+        index = request.index
+        self.logger.info("Start request to get " + path + "[" + str(index) + "]")
+        data = dispatcher.get_block(path, index)
+        self.logger.info("End request to get " + path + "[" + str(index) + "]")
+        reply = Strip()
+        reply.data = data
+        self.logger.info("Replying to GetBlock request")
+        return reply
+
 def get_random_blocks(blocks):
     """
     Returns a list of blocks

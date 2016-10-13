@@ -13,6 +13,7 @@ service EncoderDecoder {
 service Proxy {
 	// Returns at most n random blocks where n is a parameter of the function
 	rpc GetRandomBlocks (BlockRequest) returns (BlockReply) {};
+	rpc GetBlock (NamedBlockRequest) returns (Strip) {};
 }
 
 //Data types
@@ -46,4 +47,9 @@ message BlockRequest {
 
 message BlockReply {
   repeated Strip strips = 1;
+}
+
+message NamedBlockRequest {
+	string path = 1;
+	uint32 index = 2;
 }
