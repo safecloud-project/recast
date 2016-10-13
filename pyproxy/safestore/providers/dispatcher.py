@@ -262,6 +262,34 @@ class Dispatcher(object):
         self.files[path] = metadata
         return metadata
 
+    def get_block(self, path, index):
+        """
+        Returns a single block for the data store.
+        Args:
+            path(str): Key under which the file is stored
+            index(int): Index of the block
+        Returns:
+            str: A block of data
+        Raises:
+            ValueError: if the path is empty or the index is negative
+            LookupError: if the path does not match any file or the index does not match an existing block
+        """
+        if len(path.strip()) == 0:
+            raise ValueError("argument path cannot be empty")
+        if index < 0:
+            raise ValueError("argument index cannot be negative")
+        metadata = self.files.get(path)
+        if metadata is None:
+            raise LookupError("could not find a file for path " + path)
+        if index >= len(metadata.blocks):
+            raise LookupError("could not find block for index " + str(index))
+
+        block = metadata.blocks[index]
+        provider = self.providers[block.provider]
+        data = provider.get(block.key)
+
+        return data
+
     def get(self, path):
         """
         Recovers and orders blocks stored among the providers
