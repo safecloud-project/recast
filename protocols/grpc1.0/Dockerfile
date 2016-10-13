@@ -34,12 +34,7 @@ RUN rm -rf /protobuf
 # Install GRPC
 RUN git clone https://github.com/grpc/grpc /grpc --quiet
 WORKDIR /grpc
-RUN git checkout v1.0.x --quiet
-RUN git submodule update --init
-RUN ldconfig
-RUN pip install --requirement requirements.txt --quiet
-RUN make
-RUN make install
+RUN git checkout v1.0.x --quiet && git submodule update --init && ldconfig && pip install --requirement requirements.txt --quiet && make && make install
 WORKDIR /
 
 # Cleanup
