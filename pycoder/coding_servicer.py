@@ -15,7 +15,10 @@ from pyeclib.ec_iface import ECDriverError
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
+from playcloud_pb2 import ReconstructReply
 from playcloud_pb2 import Strip
+
+from proxy_client import ProxyClient
 
 from safestore.xor_driver import XorDriver
 from safestore.hashed_splitter_driver import HashedSplitterDriver
@@ -210,6 +213,26 @@ class Eraser(object):
             return self.aes.decode([payload])
         return payload
 
+    def reconstruct(self, available_payload_fragments, missing_indices):
+        """
+        Reconstruct missing fragments of data
+        Args:
+            available_payload_fragments(list(bytes)): Available fragments of data
+            missing_indices(list(int)): List of the indices of the missing blocks
+        Returns:
+            list(bytes): A list of the reconstructed fragments
+        """
+        return self.driver.reconstruct(available_payload_fragments, missing_indices)
+
+    def fragments_needed(self, missing_indices):
+        """
+        Return a list of the fragments needed to recover the missing ones
+        Args:
+            missing_indices(list(int)): The list of indices of the fragments to recover
+        Returns:
+            list(int): A list of the indices of the fragments required to recover the missing ones
+        """
+        return self.driver.fragments_needed(missing_indices)
 
 class HashedDriver():
 
@@ -297,3 +320,35 @@ class CodingService(BetaEncoderDecoderServicer):
         except (ECBackendInstanceNotAvailable, ECBackendNotSupported, ECInvalidParameter, ECOutOfMemory, ECDriverError) as error:
             logger.exception("An exception was while caught decoding blocks")
             raise error
+
+    def Reconstruct(self, request, context):
+        """
+        Reconstruct blocks.
+        Args:
+            request(ReconstructRequest): A playcloud GRPC request
+            context():
+        Returns:
+            ReconstructReply: The reconstructed blocks
+        """
+        logger.info("Received reconstruct request")
+        path = request.path
+        missing_indices = [int(index) for index in request.missing_indices]
+        logger.debug("Retrieved path " + path + " and missing indices (" + ",".join([str(i) for i in missing_indices]) + ")")
+        fragments_needed = self.driver.fragments_needed(missing_indices)
+        logger.debug("Retrieved the list of indices to retrieve (" + "".join([str(i) for i in fragments_needed]) + ")")
+        client = ProxyClient()
+        available_payload_fragments = []
+        for index in fragments_needed:
+            logger.debug("Fetching block " + path + "[" + str(index) + "]")
+            data = client.get_block(path, index).data
+            available_payload_fragments.append(data)
+            logger.debug("Retrieved block " + path + "[" + str(index) + "]")
+        logger.debug("Reconstructing missing fragments [" + ",".join([str(i) for i in missing_indices])  + "]")
+        reconstructed_data = self.driver.reconstruct(available_payload_fragments, missing_indices)
+        logger.debug("Reconstructed missing fragments [" + ",".join([str(i) for i in missing_indices])  + "]")
+        reply = ReconstructReply()
+        for i in range(len(missing_indices)):
+            index = missing_indices[i]
+            reply.reconstructed[index].data = reconstructed_data[i]
+        logger.info("Replying reconstruct request")
+        return reply

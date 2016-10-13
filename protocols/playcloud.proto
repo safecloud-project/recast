@@ -7,6 +7,7 @@ option java_package = "ch.unine.iiun.safecloud";
 service EncoderDecoder {
 	rpc Encode (EncodeRequest) returns (EncodeReply) {}
 	rpc Decode (DecodeRequest) returns (DecodeReply) {}
+	rpc Reconstruct (ReconstructRequest) returns (ReconstructReply) {}
 }
 
 //the proxy service
@@ -52,4 +53,13 @@ message BlockReply {
 message NamedBlockRequest {
 	string path = 1;
 	uint32 index = 2;
+}
+
+message ReconstructRequest {
+	string path = 1;
+	repeated uint32 missing_indices = 2;
+}
+
+message ReconstructReply {
+	map<uint32, Strip> reconstructed = 1;
 }
