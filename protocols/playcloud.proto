@@ -21,6 +21,11 @@ service Proxy {
 message Strip {
 	bytes data = 1;
 	bytes checksum = 2;
+	enum Type {
+		DATA = 0;
+		PARITY = 1;
+	}
+	Type type = 3;
 }
 message EncodeRequest {
 	bytes payload = 1;
