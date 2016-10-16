@@ -216,8 +216,16 @@ class Dispatcher(object):
     retrieve them
     """
 
-    def __init__(self, configuration={}):
+    def __init__(self, configuration=None):
+        """
+        Dispatcher constructor
+        Args:
+            configuration (dict, optional): A dictionary with the configuration
+                values of the dispatcher
+        """
         self.entanglement = False
+        if configuration is None:
+            configuration = {}
         if configuration.has_key("entanglement") and configuration.get("entanglement").has_key("enabled") and configuration.get("entanglement").get("enabled"):
             self.entanglement = True
             self.entanglement_p = int(configuration.get("entanglement").get("p", DEFAULT_ENTANGNLEMENT_P))
@@ -311,7 +319,6 @@ class Dispatcher(object):
         metadata = self.files.get(path)
         if metadata is None:
             return None
-        data = {}
         blocks_per_provider = {}
         for metablock in metadata.blocks:
             blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
