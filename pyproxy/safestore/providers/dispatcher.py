@@ -67,10 +67,20 @@ class MetaBlock(object):
     """
     A class that represents a data block
     """
-    def __init__(self, key, provider, creation_date=datetime.datetime.now()):
+    def __init__(self, key, provider, creation_date=None):
+        """
+        MetaBlock constructor
+        Args:
+            key (str): Key under which the block is stored
+            provider (str): Id of the provider
+            creation_date (datetime.datetime, optional): Time of creation of the block
+        """
         self.key = key
         self.provider = provider
-        self.creation_date = creation_date
+        if creation_date is None:
+            self.creation_date = datetime.datetime.now()
+        else:
+            self.creation_date = creation_date
 
 class Metadata(object):
     """
