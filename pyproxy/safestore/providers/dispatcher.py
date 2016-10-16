@@ -63,17 +63,27 @@ class ProviderFactory(object):
             return initializer(configuration)
         return initializer()
 
+class BlockType(Enum):
+    """
+    Informs on the type of block and its use where DATA blocks are needed for
+    decoding while PARITY blocks are needed for reconstruction
+    """
+    DATA = 0
+    PARITY = 1
+
 class MetaBlock(object):
     """
     A class that represents a data block
     """
-    def __init__(self, key, provider, creation_date=None):
+    def __init__(self, key, provider, creation_date=None, block_type=BlockType.DATA):
         """
         MetaBlock constructor
         Args:
             key (str): Key under which the block is stored
             provider (str): Id of the provider
-            creation_date (datetime.datetime, optional): Time of creation of the block
+            creation_date (datetime.datetime, optional): Time of creation of the
+                block, defaults to current time
+            block_type (BlockType, optional): Type of the block
         """
         self.key = key
         self.provider = provider
@@ -81,6 +91,7 @@ class MetaBlock(object):
             self.creation_date = datetime.datetime.now()
         else:
             self.creation_date = creation_date
+        self.block_type = block_type
 
 class Metadata(object):
     """
@@ -320,7 +331,8 @@ class Dispatcher(object):
         if metadata is None:
             return None
         blocks_per_provider = {}
-        for metablock in metadata.blocks:
+        metablocks = [b for b in metadata.blocks if b.block_type == BlockType.DATA]
+        for metablock in metablocks:
             blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
             blocks_to_fetch.append(metablock.key)
             blocks_per_provider[metablock.provider] = blocks_to_fetch
