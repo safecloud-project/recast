@@ -190,7 +190,7 @@ class Eraser(object):
             driver_class = None
             driver_class = getattr(mod, expected_class_name)
             self.driver = driver_class(k=ec_k, m=ec_m, ec_type=ec_type, hd=None)
-        except ImportError, AttributeError:
+        except (ImportError, AttributeError):
             logger.exception("Driver " + ec_type + " could not be loaded as a custom driver")
             try:
                 self.driver = ECDriver(k=ec_k, m=ec_m, ec_type=ec_type)
@@ -296,8 +296,7 @@ class CodingService(BetaEncoderDecoderServicer):
                 strip.checksum = checksum
                 # Add strip
                 strips.append(strip)
-
-            reply.strips.extend(strips)
+            reply.file.strips.extend(strips)
             reply.parameters["splitter"] = os.environ.get("splitter", CONFIG.get("main", "splitter"))
             log_temp = "Request encoded, returning reply with {} strips"
             logger.info(log_temp.format(len(strips)))

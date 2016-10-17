@@ -111,8 +111,8 @@ def store(key=None, data=None):
     encode_request = EncodeRequest()
     encode_request.payload = data
     LOGGER.debug("Going to request data encoding")
-    strips = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).strips
-    blocks = [strip.data for strip in strips]
+    file = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
+    blocks = [strip.data for strip in file.strips]
     number_of_blocks = len(blocks)
     LOGGER.debug("Received {:2d} encoded blocks from data encoding".format(number_of_blocks))
     LOGGER.debug("Going to store {:2d} blocks with key {:s}".format(number_of_blocks, key))
