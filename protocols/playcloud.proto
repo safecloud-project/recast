@@ -18,6 +18,13 @@ service Proxy {
 }
 
 //Data types
+
+message File {
+	string path = 1;
+	repeated Strip strips = 2;
+	uint64 original_size = 3;
+}
+
 message Strip {
 	bytes data = 1;
 	bytes checksum = 2;
@@ -33,7 +40,7 @@ message EncodeRequest {
 }
 
 message EncodeReply {
-	repeated Strip strips = 1;
+	File file = 1;
 	map<string,string> parameters = 2;
 }
 
