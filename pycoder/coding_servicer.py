@@ -286,14 +286,21 @@ class CodingService(BetaEncoderDecoderServicer):
             log_temp = "Encoded and returned {} raw_strips"
             logger.debug(log_temp.format(len(raw_strips)))
 
+            fragments_needed = self.driver.fragments_needed([])
+
             strips = []
-            for raw_strip in raw_strips:
+            for index, raw_strip in enumerate(raw_strips):
                 # Copy data
                 strip = Strip()
                 strip.data = raw_strip
                 # Compute checksum
                 checksum = hashlib.sha256(raw_strip).digest()
                 strip.checksum = checksum
+                # Mark data type
+                if index in fragments_needed:
+                    strip.type = Strip.DATA
+                else:
+                    strip.type = Strip.PARITY
                 # Add strip
                 strips.append(strip)
             reply.file.strips.extend(strips)
