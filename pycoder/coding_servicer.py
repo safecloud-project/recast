@@ -297,6 +297,7 @@ class CodingService(BetaEncoderDecoderServicer):
                 # Add strip
                 strips.append(strip)
             reply.file.strips.extend(strips)
+            reply.file.original_size = len(request.payload)
             reply.parameters["splitter"] = os.environ.get("splitter", CONFIG.get("main", "splitter"))
             log_temp = "Request encoded, returning reply with {} strips"
             logger.info(log_temp.format(len(strips)))
