@@ -10,12 +10,11 @@ import random
 import threading
 import uuid
 
-import numpy
-
 from enum import Enum
 from dbox import DBox
 from gdrive import GDrive
 from one import ODrive
+from playcloud_pb2 import Strip
 from redis_provider import RedisProvider
 
 logger = logging.getLogger("dispatcher")
@@ -254,7 +253,12 @@ class Dispatcher(object):
             for index in arrangement[i]:
                 strip = encoded_file.strips[index]
                 key = path + "-" + str(index).zfill(index_format_length)
-                metablock = MetaBlock(key, provider=provider_key, checksum=strip.checksum)
+                block_type = None
+                if  strip.type == Strip.DATA:
+                    block_type = BlockType.DATA
+                else:
+                    block_type = BlockType.PARITY
+                metablock = MetaBlock(key, provider=provider_key, checksum=strip.checksum, block_type=block_type)
                 blocks_for_provider[metablock] = strip.data
             pusher = BlockPusher(provider, blocks_for_provider, metablock_queue)
             pusher.start()
