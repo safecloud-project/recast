@@ -75,15 +75,16 @@ class MetaBlock(object):
     """
     A class that represents a data block
     """
-    def __init__(self, key, provider, creation_date=None, block_type=BlockType.DATA):
+    def __init__(self, key, provider=None, creation_date=None, block_type=BlockType.DATA, checksum=None):
         """
         MetaBlock constructor
         Args:
             key (str): Key under which the block is stored
-            provider (str): Id of the provider
+            provider (str, optional): Id of the provider
             creation_date (datetime.datetime, optional): Time of creation of the
                 block, defaults to current time
             block_type (BlockType, optional): Type of the block
+            checksum (str, optional): SHA256 digest of the data
         """
         self.key = key
         self.provider = provider
@@ -92,6 +93,7 @@ class MetaBlock(object):
         else:
             self.creation_date = creation_date
         self.block_type = block_type
+        self.checksum = checksum
 
 class Metadata(object):
     """
@@ -116,24 +118,18 @@ class BlockPusher(threading.Thread):
     Threaded code to push blocks using a given provider
     """
 
-    def __init__(self, provider, provider_key, path, blocks, indices, queue):
+    def __init__(self, provider, blocks, queue):
         """
         Initialize the BlockPusher by providing blocks to store in a provider
         the queue to push the metablocks produced by the insertion
         Args:
             provider -- The provider that will store the data (Provider)
-            provider_key -- Key under which the provider is stored in the Dispatcher (str)
-            path -- Path under which the file should be stored (str)
-            blocks -- The list of blocks that constitutes the file (list)
-            indices -- A list of the indinces that should be stored by the provider (list)
+            blocks -- The list of blocks that constitutes the file (dict(MetaBlock, bytes))
             queue --  Queue where the metablocks should be stored once the block are stored (queue.Queue)
         """
         super(BlockPusher, self).__init__()
         self.provider = provider
-        self.provider_key = provider_key
-        self.path = path
         self.blocks = blocks
-        self.indices = indices
         self.queue = queue
 
     def run(self):
@@ -141,14 +137,10 @@ class BlockPusher(threading.Thread):
         Loop through self.blocks, selecting those stored at indices
         listed in self.indices and feeding them to self.provider for storage
         """
-        index_format_length = len(str(len(self.blocks)))
-        loop_temp = "Going to put block {} with key {} in provider {}"
-        for index in self.indices:
-            block_key = self.path + "-" + str(index).zfill(index_format_length)
-            block_data = self.blocks[index]
-            logger.debug(loop_temp.format(index, block_key, str(type(self.provider))))
-            metablock = MetaBlock(block_key, self.provider_key)
-            self.provider.put(block_data, block_key)
+        loop_temp = "Going to put block with key {} in provider {}"
+        for metablock, data in self.blocks.iteritems():
+            logger.debug(loop_temp.format(metablock.key, str(type(self.provider))))
+            self.provider.put(data, metablock.key)
             self.queue.put(metablock)
 
 class BlockFetcher(threading.Thread):
@@ -235,28 +227,34 @@ class Dispatcher(object):
         """
         return self.files.values()
 
-    def put(self, path, blocks, original_size=0):
+    def put(self, path, encoded_file):
         """
-        Distribute blocks among different providers and a data struct
+        Distribute blocks of a file among different providers.
         Args:
-            path: Key under which the data is stored
-            blocks: A list of byte sequences
-            original_size(int):
+            path (str): Key under which the data is stored
+            encoded_file (File): A File object with blocks to store
         Returns:
             A metadata object describing how the blocks have been stored
         """
-        metadata = Metadata(path, original_size=original_size)
+        metadata = Metadata(path, original_size=long(encoded_file.original_size))
         provider_keys = self.providers.keys()
         blocks = [s.data for s in encoded_file.strips]
         blocks_to_store = blocks
         arrangement = arrange_elements(len(blocks_to_store), len(provider_keys))
         metablock_queue = Queue.Queue(len(blocks_to_store))
         block_pushers = []
+        index_format_length = len(str(len(blocks)))
         for i, provider_key in enumerate(provider_keys):
             provider = self.providers[provider_key]
-            block_pusher = BlockPusher(provider, provider_key, path, blocks, arrangement[i], metablock_queue)
-            block_pusher.start()
-            block_pushers.append(block_pusher)
+            blocks_for_provider = {}
+            for index in arrangement[i]:
+                strip = encoded_file.strips[index]
+                key = path + "-" + str(index).zfill(index_format_length)
+                metablock = MetaBlock(key, provider=provider_key, checksum=strip.checksum)
+                blocks_for_provider[metablock] = strip.data
+            pusher = BlockPusher(provider, blocks_for_provider, metablock_queue)
+            pusher.start()
+            block_pushers.append(pusher)
         for pusher in block_pushers:
             pusher.join()
         while not metablock_queue.empty():
