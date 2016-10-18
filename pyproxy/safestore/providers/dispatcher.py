@@ -180,22 +180,6 @@ class BlockFetcher(threading.Thread):
             self.logger.debug("Storing block " + key + " in synchronization queue")
             self.queue.put((key, data))
 
-def xor(block_a, block_b):
-    """
-    'Private' function used to xor two blocks.
-    """
-    # If a is longer than b, pad b
-    if len(block_a) > len(block_b):
-        for i in range(0, (len(block_a) - len(block_b))):
-            block_b = block_b + '\x00'
-    elif len(block_a) < len(block_b):
-        block_b = block_b[:len(block_a)]
-    a = numpy.frombuffer(block_a, dtype='b')
-    b = numpy.frombuffer(block_b, dtype='b')
-    c = numpy.bitwise_xor(a, b)
-    r = c.tostring()
-    return r
-
 def arrange_elements(elements, bins):
     """
     Propose elements arrangement among a number of bins
@@ -219,8 +203,6 @@ def arrange_elements(elements, bins):
         dispatching[index].append(i)
     return dispatching
 
-DEFAULT_ENTANGNLEMENT_P = 5
-
 class Dispatcher(object):
     """
     A class that decices where to store data blocks and keeps track of how to
@@ -234,13 +216,8 @@ class Dispatcher(object):
             configuration (dict, optional): A dictionary with the configuration
                 values of the dispatcher
         """
-        self.entanglement = False
         if configuration is None:
             configuration = {}
-        if configuration.has_key("entanglement") and configuration.get("entanglement").has_key("enabled") and configuration.get("entanglement").get("enabled"):
-            self.entanglement = True
-            self.entanglement_p = int(configuration.get("entanglement").get("p", DEFAULT_ENTANGNLEMENT_P))
-            logger.info("entanglement enabled with "  + str(self.entanglement_p) + " blocks")
         self.providers = {}
         providers_configuration = configuration.get('providers', [])
         factory = ProviderFactory()
@@ -270,12 +247,8 @@ class Dispatcher(object):
         """
         metadata = Metadata(path, original_size=original_size)
         provider_keys = self.providers.keys()
-        blocks_to_store = []
-        if self.entanglement:
-            blocks, entangling_blocks, blocks_to_store = self.entangle(blocks)
-            metadata.entangling_blocks = entangling_blocks
-        else:
-            blocks_to_store = blocks
+        blocks = [s.data for s in encoded_file.strips]
+        blocks_to_store = blocks
         arrangement = arrange_elements(len(blocks_to_store), len(provider_keys))
         metablock_queue = Queue.Queue(len(blocks_to_store))
         block_pushers = []
@@ -351,53 +324,7 @@ class Dispatcher(object):
             recovered_blocks.append(block_queue.get())
         recovered_blocks.sort(key=lambda tup: tup[0])
         data_blocks = [x[1] for x in recovered_blocks]
-        if self.entanglement:
-            return self.disentangle(data_blocks, metadata.entangling_blocks)
         return data_blocks
-
-    def entangle(self, original_blocks):
-        """
-        Entangles a list of blocks with a chosen list of blocks
-        Args:
-            original_blocks -- A list of blocks to entangle
-        Returns:
-            A tuple with the original blocks, the metadata of the blocks used to
-            encode and the list of modified blocks
-        """
-        if len(original_blocks) == 0:
-            return ([], [], [])
-        random_blocks = self.get_random_blocks(self.entanglement_p)
-        if len(random_blocks) == 0:
-            return (original_blocks, [], original_blocks)
-        metablocks = [tup[0] for tup in random_blocks]
-        datablocks = [tup[1] for tup in random_blocks]
-        entangled_blocks = []
-        for block in original_blocks:
-            for random_block in datablocks:
-                entangled_block = xor(block, random_block)
-            entangled_blocks.append(entangled_block)
-        return (original_blocks, metablocks, entangled_blocks)
-
-    def disentangle(self, entangled_blocks, entangling_metablocks):
-        """
-        Disentangle a list of blocks
-        Args:
-            entangled_blocks -- A list of entangled blocks
-            entangling_metablocks --  A list of metablocks used to disentangle the
-                entangled blocks
-        Returns:
-            A list of disentangled blocks
-        """
-        entangling_blocks = []
-        for metablock in entangling_metablocks:
-            provider = self.providers[metablock.provider]
-            entangling_blocks.append(provider.get(metablock.key))
-        disentangled_blocks = []
-        for entangled_block in entangled_blocks:
-            for entangling_block in entangling_blocks:
-                entangled_block = xor(entangled_block, entangling_block)
-            disentangled_blocks.append(entangled_block)
-        return disentangled_blocks
 
     def get_random_blocks(self, blocks_desired):
         """
