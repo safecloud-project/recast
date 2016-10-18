@@ -2,6 +2,7 @@
 A component that distributes blocks for storage keeps track of their location
 """
 import datetime
+import hashlib
 import logging
 import logging.config
 import Queue
@@ -148,27 +149,30 @@ class BlockFetcher(threading.Thread):
     Threaded code to fetch blocks from a storage provider
     """
 
-    def __init__(self, provider, block_keys, queue):
+    def __init__(self, provider, metablocks, queue):
         """
         Initializes the block fetcher
         Args:
             provider -- The provider that will store the data (Provider)
-            block_keys -- The list of block keys that constitutes the file (list)
+            metablocks -- The list of block keys that constitutes the file (list(MetaBlock))
             queue --  Queue where the recoveded data will be pushed  (queue.Queue)
         """
         super(BlockFetcher, self).__init__()
         self.logger = logging.getLogger("BlockFetcher")
         self.provider = provider
-        self.block_keys = block_keys
+        self.metablocks = metablocks
         self.queue = queue
 
     def run(self):
         """
         Fetches a series of blocks and pushes them the queue
         """
-        for key in self.block_keys:
+        for metablock in self.metablocks:
+            key = metablock.key
             self.logger.debug("About to fetch block " + key + " from the datastore")
             data = self.provider.get(key)
+            self.logger.debug("Checking block " + key + "'s integrity")
+            assert metablock.checksum == hashlib.sha256(data).digest()
             self.logger.debug("Storing block " + key + " in synchronization queue")
             self.queue.put((key, data))
 
@@ -305,7 +309,7 @@ class Dispatcher(object):
         metablocks = [b for b in metadata.blocks if b.block_type == BlockType.DATA]
         for metablock in metablocks:
             blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
-            blocks_to_fetch.append(metablock.key)
+            blocks_to_fetch.append(metablock)
             blocks_per_provider[metablock.provider] = blocks_to_fetch
         fetchers = []
         block_queue = Queue.Queue()
