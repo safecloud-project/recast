@@ -10,6 +10,8 @@ import random
 import threading
 import uuid
 
+from redis import ConnectionError
+
 from enum import Enum
 from dbox import DBox
 from gdrive import GDrive
@@ -143,6 +145,24 @@ class BlockPusher(threading.Thread):
             self.provider.put(data, metablock.key)
             self.queue.put(metablock)
 
+class ProviderUnreachableException(Exception):
+    """
+    An exception raised when a provider cannot be connected to
+    """
+    pass
+
+class BlockNotFoundException(Exception):
+    """
+    An exception raised when a block cannot be found at certain provider
+    """
+    pass
+
+class CorruptedBlockException(Exception):
+    """
+    An exception raised when a block does not match its related checksum
+    """
+    pass
+
 class BlockFetcher(threading.Thread):
     """
     Threaded code to fetch blocks from a storage provider
@@ -169,11 +189,28 @@ class BlockFetcher(threading.Thread):
         for metablock in self.metablocks:
             key = metablock.key
             self.logger.debug("About to fetch block " + key + " from the datastore")
-            data = self.provider.get(key)
-            self.logger.debug("Checking block " + key + "'s integrity")
-            assert metablock.checksum == hashlib.sha256(data).digest()
-            self.logger.debug("Storing block " + key + " in synchronization queue")
-            self.queue[key] = data
+            try:
+                data = self.provider.get(key)
+                if data is None:
+                    message = "Block " + key + " cannot be found in the datastore"
+                    raise BlockNotFoundException(message)
+                self.logger.debug("Checking block " + key + "'s integrity")
+                computed_checksum = hashlib.sha256(data).digest()
+                if metablock.checksum != computed_checksum:
+                    message = "Block " + key + " does not match its checksum"
+                    raise CorruptedBlockException(message)
+                self.logger.debug("Storing block " + key + " in synchronization queue")
+                self.queue[key] = data
+            except ConnectionError as exception:
+                message = "Provider for block " + key + " cannot be accessed"
+                exception = ProviderUnreachableException(message)
+                self.logger.error(exception)
+                self.queue[key] = exception
+            except (BlockNotFoundException, \
+                    CorruptedBlockException, \
+                    ProviderUnreachableException) as exception:
+                self.logger.error(exception)
+                self.queue[key] = exception
 
 def arrange_elements(elements, bins):
     """
@@ -327,6 +364,11 @@ class Dispatcher(object):
             fetcher.join()
         data_blocks = []
         for key in sorted(block_queue.keys()):
+            block = block_queue[key]
+            if (isinstance(block, ProviderUnreachableException) or
+                    isinstance(block, BlockNotFoundException) or
+                    isinstance(block, CorruptedBlockException)):
+                raise block
             data_blocks.append(block_queue[key])
         return data_blocks
 
