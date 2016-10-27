@@ -154,7 +154,7 @@ class BlockFetcher(threading.Thread):
         Args:
             provider -- The provider that will store the data (Provider)
             metablocks -- The list of block keys that constitutes the file (list(MetaBlock))
-            queue --  Queue where the recoveded data will be pushed  (queue.Queue)
+            queue --  Dictionary where the recoveded data will be pushed  (dict)
         """
         super(BlockFetcher, self).__init__()
         self.logger = logging.getLogger("BlockFetcher")
@@ -173,7 +173,7 @@ class BlockFetcher(threading.Thread):
             self.logger.debug("Checking block " + key + "'s integrity")
             assert metablock.checksum == hashlib.sha256(data).digest()
             self.logger.debug("Storing block " + key + " in synchronization queue")
-            self.queue.put((key, data))
+            self.queue[key] = data
 
 def arrange_elements(elements, bins):
     """
@@ -316,7 +316,7 @@ class Dispatcher(object):
             blocks_to_fetch.append(metablock)
             blocks_per_provider[metablock.provider] = blocks_to_fetch
         fetchers = []
-        block_queue = Queue.Queue()
+        block_queue = {}
         for provider_key in blocks_per_provider:
             provider = self.providers[provider_key]
             blocks_to_fetch = blocks_per_provider[provider_key]
@@ -325,11 +325,9 @@ class Dispatcher(object):
             fetchers.append(fetcher)
         for fetcher in fetchers:
             fetcher.join()
-        recovered_blocks = []
-        while not block_queue.empty():
-            recovered_blocks.append(block_queue.get())
-        recovered_blocks.sort(key=lambda tup: tup[0])
-        data_blocks = [x[1] for x in recovered_blocks]
+        data_blocks = []
+        for key in sorted(block_queue.keys()):
+            data_blocks.append(block_queue[key])
         return data_blocks
 
     def get_random_blocks(self, blocks_desired):
