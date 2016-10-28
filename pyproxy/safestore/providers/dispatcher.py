@@ -7,11 +7,13 @@ import logging
 import logging.config
 import Queue
 import random
+import re
 import threading
 import uuid
 
 from redis import ConnectionError
 
+from coder_client import CoderClient
 from enum import Enum
 from dbox import DBox
 from gdrive import GDrive
@@ -96,6 +98,18 @@ class MetaBlock(object):
             self.creation_date = creation_date
         self.block_type = block_type
         self.checksum = checksum
+
+def compute_block_key(path, index, length=2):
+    """
+    Computes a block key from a file path and an index.
+    Args:
+        path(str): Path to the file related to the block
+        index(int): index of the block
+        length(int, optional): Length of the index part of the key for zero filling (Defaults to 2)
+    Returns:
+        str: Block key
+    """
+    return path + "-" + str(index).zfill(length)
 
 class Metadata(object):
     """
@@ -289,7 +303,7 @@ class Dispatcher(object):
             blocks_for_provider = {}
             for index in arrangement[i]:
                 strip = encoded_file.strips[index]
-                key = path + "-" + str(index).zfill(index_format_length)
+                key = compute_block_key(path, index, index_format_length)
                 block_type = None
                 if  strip.type == Strip.DATA:
                     block_type = BlockType.DATA
@@ -302,6 +316,7 @@ class Dispatcher(object):
             block_pushers.append(pusher)
         for pusher in block_pushers:
             pusher.join()
+        # TODO Sort blocks so that other methods don't have to order/search for the right blocks
         while not metablock_queue.empty():
             metadata.blocks.append(metablock_queue.get())
         self.files[path] = metadata
@@ -329,10 +344,11 @@ class Dispatcher(object):
         if index >= len(metadata.blocks):
             raise LookupError("could not find block for index " + str(index))
 
-        block = metadata.blocks[index]
+        index_format_length = len(str(len(metadata.blocks)))
+        key = compute_block_key(path, index, index_format_length)
+        block = [b for b in metadata.blocks if b.key == key][0]
         provider = self.providers[block.provider]
         data = provider.get(block.key)
-
         return data
 
     def get(self, path):
@@ -362,14 +378,26 @@ class Dispatcher(object):
             fetchers.append(fetcher)
         for fetcher in fetchers:
             fetcher.join()
-        data_blocks = []
+        blocks_to_reconstruct = []
+        index_pattern = re.compile(r"\-\d+$")
         for key in sorted(block_queue.keys()):
             block = block_queue[key]
             if (isinstance(block, ProviderUnreachableException) or
                     isinstance(block, BlockNotFoundException) or
                     isinstance(block, CorruptedBlockException)):
-                raise block
-            data_blocks.append(block_queue[key])
+                missing_index = int(index_pattern.findall(key)[0].replace("-", ""))
+                del block_queue[key]
+                blocks_to_reconstruct.append(missing_index)
+
+        if len(blocks_to_reconstruct) > 0:
+            coder = CoderClient()
+            reconstructed_blocks = coder.reconstruct(path, blocks_to_reconstruct)
+            index_format_length = len(str(len(metablocks)))
+            for index in sorted(reconstructed_blocks.keys()):
+                key = compute_block_key(path, index, index_format_length)
+                strip = reconstructed_blocks[index]
+                block_queue[key] = strip.data
+        data_blocks = [block_queue[key] for key in sorted(block_queue.keys())]
         return data_blocks
 
     def get_random_blocks(self, blocks_desired):
