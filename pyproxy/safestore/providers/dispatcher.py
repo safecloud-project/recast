@@ -111,6 +111,17 @@ def compute_block_key(path, index, length=2):
     """
     return path + "-" + str(index).zfill(length)
 
+def extract_index_from_key(key):
+    """
+    Extracts the index from a block key.
+    Args:
+        key(str): Block key
+    Returns:
+        int: Index of the block
+    """
+    index_pattern = re.compile(r"\-\d+$")
+    return int(index_pattern.findall(key)[0].replace("-", ""))
+
 class Metadata(object):
     """
     A class describing how a file has been stored in the system
@@ -139,9 +150,9 @@ class BlockPusher(threading.Thread):
         Initialize the BlockPusher by providing blocks to store in a provider
         the queue to push the metablocks produced by the insertion
         Args:
-            provider -- The provider that will store the data (Provider)
-            blocks -- The list of blocks that constitutes the file (dict(MetaBlock, bytes))
-            queue --  Queue where the metablocks should be stored once the block are stored (queue.Queue)
+            provider(Provider) -- The provider that will store the data
+            blocks(dict(MetaBlock, bytes) -- The list of blocks that constitutes the file
+            queue(dict) --  Queue where the metablocks should be stored once the block are stored
         """
         super(BlockPusher, self).__init__()
         self.provider = provider
@@ -157,7 +168,8 @@ class BlockPusher(threading.Thread):
         for metablock, data in self.blocks.iteritems():
             logger.debug(loop_temp.format(metablock.key, str(type(self.provider))))
             self.provider.put(data, metablock.key)
-            self.queue.put(metablock)
+            index = extract_index_from_key(metablock.key)
+            self.queue[index] = metablock
 
 class ProviderUnreachableException(Exception):
     """
@@ -295,7 +307,7 @@ class Dispatcher(object):
         blocks = [s.data for s in encoded_file.strips]
         blocks_to_store = blocks
         arrangement = arrange_elements(len(blocks_to_store), len(provider_keys))
-        metablock_queue = Queue.Queue(len(blocks_to_store))
+        metablock_queue = {}
         block_pushers = []
         index_format_length = len(str(len(blocks)))
         for i, provider_key in enumerate(provider_keys):
@@ -316,9 +328,8 @@ class Dispatcher(object):
             block_pushers.append(pusher)
         for pusher in block_pushers:
             pusher.join()
-        # TODO Sort blocks so that other methods don't have to order/search for the right blocks
-        while not metablock_queue.empty():
-            metadata.blocks.append(metablock_queue.get())
+        for index in sorted(metablock_queue.keys()):
+            metadata.blocks.append(metablock_queue[index])
         self.files[path] = metadata
         return metadata
 
@@ -344,9 +355,7 @@ class Dispatcher(object):
         if index >= len(metadata.blocks):
             raise LookupError("could not find block for index " + str(index))
 
-        index_format_length = len(str(len(metadata.blocks)))
-        key = compute_block_key(path, index, index_format_length)
-        block = [b for b in metadata.blocks if b.key == key][0]
+        block = metadata.blocks[index]
         provider = self.providers[block.provider]
         data = provider.get(block.key)
         return data
@@ -379,13 +388,12 @@ class Dispatcher(object):
         for fetcher in fetchers:
             fetcher.join()
         blocks_to_reconstruct = []
-        index_pattern = re.compile(r"\-\d+$")
         for key in sorted(block_queue.keys()):
             block = block_queue[key]
             if (isinstance(block, ProviderUnreachableException) or
                     isinstance(block, BlockNotFoundException) or
                     isinstance(block, CorruptedBlockException)):
-                missing_index = int(index_pattern.findall(key)[0].replace("-", ""))
+                missing_index = extract_index_from_key(key)
                 del block_queue[key]
                 blocks_to_reconstruct.append(missing_index)
 
