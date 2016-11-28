@@ -23,25 +23,35 @@ RUN apt-get update --quiet && \
 # Install protobuf
 
 # Setup protobuf version e8ae137c96444ea313485ed1118c5e43b2099cf1
-RUN git clone https://github.com/google/protobuf /protobuf --quiet
-WORKDIR /protobuf
-RUN git checkout 3.0.x --quiet && \
-    ./autogen.sh && ./configure && make && make check && make install && make clean
-RUN ldconfig
-WORKDIR /
-RUN rm -rf /protobuf
+RUN git clone https://github.com/google/protobuf /protobuf --quiet && \
+    cd /protobuf && \
+    git checkout 3.0.x --quiet && \
+    ./autogen.sh && \
+    ./configure && \
+    make -s && \
+    make check -s && \
+    make install -s && \
+    make clean -s && \
+    ldconfig && \
+    cd / && \
+    rm -rf /protobuf
 
 # Install GRPC
-RUN git clone https://github.com/grpc/grpc /grpc --quiet
-WORKDIR /grpc
-RUN git checkout v1.0.x --quiet && git submodule update --init && ldconfig && pip install --requirement requirements.txt --quiet && make && make install
 WORKDIR /
-
-# Cleanup
-RUN apt-get --assume-yes --quiet --purge autoremove \
+RUN git clone https://github.com/grpc/grpc /grpc --quiet && \
+    cd /grpc && \
+    git checkout v1.0.x --quiet && \
+    git submodule update --init && \
+    ldconfig && \
+    pip install --requirement requirements.txt --quiet && \
+    make -s && \
+    make install -s && \
+    ldconfig                                                                && \
+    apt-get --assume-yes --quiet --purge autoremove \
       autoconf \
       curl \
       gcc \
+      git \
       g++ \
       libtool \
       libssl-dev \
@@ -50,9 +60,11 @@ RUN apt-get --assume-yes --quiet --purge autoremove \
       python-pip \
       unzip \
       wget && \
-    apt-get --quiet --assume-yes --quiet clean
-
+    apt-get --quiet --assume-yes --quiet clean && \
+    rm -rf /var/lib/apt/lists/* /var/tmp/* && \
 # Setup necessary env variables
+    echo -e "\nGRPC_ROOT='/grpc/'" >> /etc/environment
 ENV GRPC_ROOT "/grpc/"
+
 
 WORKDIR /
