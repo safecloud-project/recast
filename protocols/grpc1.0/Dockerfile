@@ -1,4 +1,4 @@
-FROM ubuntu:15.10
+FROM ubuntu:16.04
 
 MAINTAINER "Dorian BURIHABWA <dorian DOT burihabwa AT unine DOT ch >"
 
