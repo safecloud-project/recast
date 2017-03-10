@@ -28,11 +28,13 @@ from safestore.aes_driver import AESDriver
 from safestore.shamir_driver import ShamirDriver
 from safestore.assymetric_driver import AssymetricDriver
 
-CONFIG = ConfigParser()
-CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
 
-#TODO: No absolute path
-log_config = os.getenv("LOG_CONFIG", "/usr/local/src/app/logging.conf")
+__LOCAL_DIRECTORY = os.path.dirname(__file__)
+
+CONFIG = ConfigParser()
+CONFIG.read(os.path.join(__LOCAL_DIRECTORY, "pycoder.cfg"))
+
+log_config = os.getenv("LOG_CONFIG", os.path.join(__LOCAL_DIRECTORY, "logging.conf"))
 logging.config.fileConfig(log_config)
 
 logger = logging.getLogger("pycoder")
