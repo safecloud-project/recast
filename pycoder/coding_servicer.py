@@ -51,7 +51,7 @@ def should_be_deactivated(message):
     NEGATIVE_TERMS = ["deactivated", "disabled", "false", "no", "none", "off"]
     return message.strip().lower() in NEGATIVE_TERMS
 
-class DriverFactory():
+class DriverFactory(object):
 
     def __init__(self, config):
 
@@ -71,6 +71,7 @@ class DriverFactory():
             self.sec_measure = self.config.get("main", "sec_measure")
         else:
             raise RuntimeError("A value must be defined for the security measure to use either in pycoder.cfg or as an environment variable SEC_MEASURE")
+        self.splitter_driver = None
 
 
     def setup_driver(self):
@@ -98,15 +99,15 @@ class DriverFactory():
         return self.splitter_driver
 
     def confd_int(self):
-        hash = os.environ.get("hash")
-        driver = HashedSplitterDriver(self.splitter_driver, hash)
+        hashing_scheme = os.environ.get("hash")
+        driver = HashedSplitterDriver(self.splitter_driver, hashing_scheme)
         return driver
 
     def _get_signer(self):
         sign_cypher = os.environ.get("signature")
-        hash = os.environ.get("hash")
+        hashing_scheme = os.environ.get("hash")
         key_size = int(os.environ.get("keysize"))
-        return AssymetricDriver(sign_cypher, key_size, hash)
+        return AssymetricDriver(sign_cypher, key_size, hashing_scheme)
 
     def confd_sign(self):
         signer = self._get_signer()
@@ -236,7 +237,7 @@ class Eraser(object):
         """
         return self.driver.fragments_needed(missing_indices)
 
-class HashedDriver():
+class HashedDriver(object):
 
     """
     Encapsulating driver for encryption schemes with hash.
@@ -356,8 +357,7 @@ class CodingService(BetaEncoderDecoderServicer):
         reconstructed_data = self.driver.reconstruct(available_payload_fragments, missing_indices)
         logger.debug("Reconstructed missing fragments [" + ",".join([str(i) for i in missing_indices])  + "]")
         reply = ReconstructReply()
-        for i in range(len(missing_indices)):
-            index = missing_indices[i]
-            reply.reconstructed[index].data = reconstructed_data[i]
+        for i, missing_index in enumerate(missing_indices):
+            reply.reconstructed[missing_index].data = reconstructed_data[i]
         logger.info("Replying reconstruct request")
         return reply
