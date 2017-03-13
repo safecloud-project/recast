@@ -803,259 +803,304 @@ _DECODEREPLY_PARAMETERSENTRY.has_options = True
 _DECODEREPLY_PARAMETERSENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
 _RECONSTRUCTREPLY_RECONSTRUCTEDENTRY.has_options = True
 _RECONSTRUCTREPLY_RECONSTRUCTEDENTRY._options = _descriptor._ParseOptions(descriptor_pb2.MessageOptions(), _b('8\001'))
-import grpc
-from grpc.beta import implementations as beta_implementations
-from grpc.beta import interfaces as beta_interfaces
-from grpc.framework.common import cardinality
-from grpc.framework.interfaces.face import utilities as face_utilities
+try:
+  # THESE ELEMENTS WILL BE DEPRECATED.
+  # Please use the generated *_pb2_grpc.py files instead.
+  import grpc
+  from grpc.framework.common import cardinality
+  from grpc.framework.interfaces.face import utilities as face_utilities
+  from grpc.beta import implementations as beta_implementations
+  from grpc.beta import interfaces as beta_interfaces
 
 
-class EncoderDecoderStub(object):
-  """the encoder service
-  """
-
-  def __init__(self, channel):
-    """Constructor.
-
-    Args:
-      channel: A grpc.Channel.
+  class EncoderDecoderStub(object):
+    """the encoder service
     """
-    self.Encode = channel.unary_unary(
-        '/EncoderDecoder/Encode',
-        request_serializer=EncodeRequest.SerializeToString,
-        response_deserializer=EncodeReply.FromString,
-        )
-    self.Decode = channel.unary_unary(
-        '/EncoderDecoder/Decode',
-        request_serializer=DecodeRequest.SerializeToString,
-        response_deserializer=DecodeReply.FromString,
-        )
-    self.Reconstruct = channel.unary_unary(
-        '/EncoderDecoder/Reconstruct',
-        request_serializer=ReconstructRequest.SerializeToString,
-        response_deserializer=ReconstructReply.FromString,
-        )
+
+    def __init__(self, channel):
+      """Constructor.
+
+      Args:
+        channel: A grpc.Channel.
+      """
+      self.Encode = channel.unary_unary(
+          '/EncoderDecoder/Encode',
+          request_serializer=EncodeRequest.SerializeToString,
+          response_deserializer=EncodeReply.FromString,
+          )
+      self.Decode = channel.unary_unary(
+          '/EncoderDecoder/Decode',
+          request_serializer=DecodeRequest.SerializeToString,
+          response_deserializer=DecodeReply.FromString,
+          )
+      self.Reconstruct = channel.unary_unary(
+          '/EncoderDecoder/Reconstruct',
+          request_serializer=ReconstructRequest.SerializeToString,
+          response_deserializer=ReconstructReply.FromString,
+          )
 
 
-class EncoderDecoderServicer(object):
-  """the encoder service
-  """
-
-  def Encode(self, request, context):
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def Decode(self, request, context):
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def Reconstruct(self, request, context):
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-
-def add_EncoderDecoderServicer_to_server(servicer, server):
-  rpc_method_handlers = {
-      'Encode': grpc.unary_unary_rpc_method_handler(
-          servicer.Encode,
-          request_deserializer=EncodeRequest.FromString,
-          response_serializer=EncodeReply.SerializeToString,
-      ),
-      'Decode': grpc.unary_unary_rpc_method_handler(
-          servicer.Decode,
-          request_deserializer=DecodeRequest.FromString,
-          response_serializer=DecodeReply.SerializeToString,
-      ),
-      'Reconstruct': grpc.unary_unary_rpc_method_handler(
-          servicer.Reconstruct,
-          request_deserializer=ReconstructRequest.FromString,
-          response_serializer=ReconstructReply.SerializeToString,
-      ),
-  }
-  generic_handler = grpc.method_handlers_generic_handler(
-      'EncoderDecoder', rpc_method_handlers)
-  server.add_generic_rpc_handlers((generic_handler,))
-
-
-class BetaEncoderDecoderServicer(object):
-  """the encoder service
-  """
-  def Encode(self, request, context):
-    context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-  def Decode(self, request, context):
-    context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-  def Reconstruct(self, request, context):
-    context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-
-
-class BetaEncoderDecoderStub(object):
-  """the encoder service
-  """
-  def Encode(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-    raise NotImplementedError()
-  Encode.future = None
-  def Decode(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-    raise NotImplementedError()
-  Decode.future = None
-  def Reconstruct(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-    raise NotImplementedError()
-  Reconstruct.future = None
-
-
-def beta_create_EncoderDecoder_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
-  request_deserializers = {
-    ('EncoderDecoder', 'Decode'): DecodeRequest.FromString,
-    ('EncoderDecoder', 'Encode'): EncodeRequest.FromString,
-    ('EncoderDecoder', 'Reconstruct'): ReconstructRequest.FromString,
-  }
-  response_serializers = {
-    ('EncoderDecoder', 'Decode'): DecodeReply.SerializeToString,
-    ('EncoderDecoder', 'Encode'): EncodeReply.SerializeToString,
-    ('EncoderDecoder', 'Reconstruct'): ReconstructReply.SerializeToString,
-  }
-  method_implementations = {
-    ('EncoderDecoder', 'Decode'): face_utilities.unary_unary_inline(servicer.Decode),
-    ('EncoderDecoder', 'Encode'): face_utilities.unary_unary_inline(servicer.Encode),
-    ('EncoderDecoder', 'Reconstruct'): face_utilities.unary_unary_inline(servicer.Reconstruct),
-  }
-  server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
-  return beta_implementations.server(method_implementations, options=server_options)
-
-
-def beta_create_EncoderDecoder_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
-  request_serializers = {
-    ('EncoderDecoder', 'Decode'): DecodeRequest.SerializeToString,
-    ('EncoderDecoder', 'Encode'): EncodeRequest.SerializeToString,
-    ('EncoderDecoder', 'Reconstruct'): ReconstructRequest.SerializeToString,
-  }
-  response_deserializers = {
-    ('EncoderDecoder', 'Decode'): DecodeReply.FromString,
-    ('EncoderDecoder', 'Encode'): EncodeReply.FromString,
-    ('EncoderDecoder', 'Reconstruct'): ReconstructReply.FromString,
-  }
-  cardinalities = {
-    'Decode': cardinality.Cardinality.UNARY_UNARY,
-    'Encode': cardinality.Cardinality.UNARY_UNARY,
-    'Reconstruct': cardinality.Cardinality.UNARY_UNARY,
-  }
-  stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
-  return beta_implementations.dynamic_stub(channel, 'EncoderDecoder', cardinalities, options=stub_options)
-
-
-class ProxyStub(object):
-  """the proxy service
-  """
-
-  def __init__(self, channel):
-    """Constructor.
-
-    Args:
-      channel: A grpc.Channel.
+  class EncoderDecoderServicer(object):
+    """the encoder service
     """
-    self.GetRandomBlocks = channel.unary_unary(
-        '/Proxy/GetRandomBlocks',
-        request_serializer=BlockRequest.SerializeToString,
-        response_deserializer=BlockReply.FromString,
-        )
-    self.GetBlock = channel.unary_unary(
-        '/Proxy/GetBlock',
-        request_serializer=NamedBlockRequest.SerializeToString,
-        response_deserializer=Strip.FromString,
-        )
+
+    def Encode(self, request, context):
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
+    def Decode(self, request, context):
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
+    def Reconstruct(self, request, context):
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
 
 
-class ProxyServicer(object):
-  """the proxy service
-  """
+  def add_EncoderDecoderServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+        'Encode': grpc.unary_unary_rpc_method_handler(
+            servicer.Encode,
+            request_deserializer=EncodeRequest.FromString,
+            response_serializer=EncodeReply.SerializeToString,
+        ),
+        'Decode': grpc.unary_unary_rpc_method_handler(
+            servicer.Decode,
+            request_deserializer=DecodeRequest.FromString,
+            response_serializer=DecodeReply.SerializeToString,
+        ),
+        'Reconstruct': grpc.unary_unary_rpc_method_handler(
+            servicer.Reconstruct,
+            request_deserializer=ReconstructRequest.FromString,
+            response_serializer=ReconstructReply.SerializeToString,
+        ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+        'EncoderDecoder', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
 
-  def GetRandomBlocks(self, request, context):
-    """Returns at most n random blocks where n is a parameter of the function
+
+  class ProxyStub(object):
+    """the proxy service
     """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
 
-  def GetBlock(self, request, context):
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def __init__(self, channel):
+      """Constructor.
 
-
-def add_ProxyServicer_to_server(servicer, server):
-  rpc_method_handlers = {
-      'GetRandomBlocks': grpc.unary_unary_rpc_method_handler(
-          servicer.GetRandomBlocks,
-          request_deserializer=BlockRequest.FromString,
-          response_serializer=BlockReply.SerializeToString,
-      ),
-      'GetBlock': grpc.unary_unary_rpc_method_handler(
-          servicer.GetBlock,
-          request_deserializer=NamedBlockRequest.FromString,
-          response_serializer=Strip.SerializeToString,
-      ),
-  }
-  generic_handler = grpc.method_handlers_generic_handler(
-      'Proxy', rpc_method_handlers)
-  server.add_generic_rpc_handlers((generic_handler,))
+      Args:
+        channel: A grpc.Channel.
+      """
+      self.GetRandomBlocks = channel.unary_unary(
+          '/Proxy/GetRandomBlocks',
+          request_serializer=BlockRequest.SerializeToString,
+          response_deserializer=BlockReply.FromString,
+          )
+      self.GetBlock = channel.unary_unary(
+          '/Proxy/GetBlock',
+          request_serializer=NamedBlockRequest.SerializeToString,
+          response_deserializer=Strip.FromString,
+          )
 
 
-class BetaProxyServicer(object):
-  """the proxy service
-  """
-  def GetRandomBlocks(self, request, context):
-    """Returns at most n random blocks where n is a parameter of the function
+  class ProxyServicer(object):
+    """the proxy service
     """
-    context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-  def GetBlock(self, request, context):
-    context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+
+    def GetRandomBlocks(self, request, context):
+      """Returns at most n random blocks where n is a parameter of the function
+      """
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
+    def GetBlock(self, request, context):
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
 
 
-class BetaProxyStub(object):
-  """the proxy service
-  """
-  def GetRandomBlocks(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-    """Returns at most n random blocks where n is a parameter of the function
+  def add_ProxyServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+        'GetRandomBlocks': grpc.unary_unary_rpc_method_handler(
+            servicer.GetRandomBlocks,
+            request_deserializer=BlockRequest.FromString,
+            response_serializer=BlockReply.SerializeToString,
+        ),
+        'GetBlock': grpc.unary_unary_rpc_method_handler(
+            servicer.GetBlock,
+            request_deserializer=NamedBlockRequest.FromString,
+            response_serializer=Strip.SerializeToString,
+        ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+        'Proxy', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+  class BetaEncoderDecoderServicer(object):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This class was generated
+    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
+    """the encoder service
     """
-    raise NotImplementedError()
-  GetRandomBlocks.future = None
-  def GetBlock(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-    raise NotImplementedError()
-  GetBlock.future = None
+    def Encode(self, request, context):
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def Decode(self, request, context):
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def Reconstruct(self, request, context):
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
 
-def beta_create_Proxy_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
-  request_deserializers = {
-    ('Proxy', 'GetBlock'): NamedBlockRequest.FromString,
-    ('Proxy', 'GetRandomBlocks'): BlockRequest.FromString,
-  }
-  response_serializers = {
-    ('Proxy', 'GetBlock'): Strip.SerializeToString,
-    ('Proxy', 'GetRandomBlocks'): BlockReply.SerializeToString,
-  }
-  method_implementations = {
-    ('Proxy', 'GetBlock'): face_utilities.unary_unary_inline(servicer.GetBlock),
-    ('Proxy', 'GetRandomBlocks'): face_utilities.unary_unary_inline(servicer.GetRandomBlocks),
-  }
-  server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
-  return beta_implementations.server(method_implementations, options=server_options)
+  class BetaEncoderDecoderStub(object):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This class was generated
+    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
+    """the encoder service
+    """
+    def Encode(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      raise NotImplementedError()
+    Encode.future = None
+    def Decode(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      raise NotImplementedError()
+    Decode.future = None
+    def Reconstruct(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      raise NotImplementedError()
+    Reconstruct.future = None
 
 
-def beta_create_Proxy_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
-  request_serializers = {
-    ('Proxy', 'GetBlock'): NamedBlockRequest.SerializeToString,
-    ('Proxy', 'GetRandomBlocks'): BlockRequest.SerializeToString,
-  }
-  response_deserializers = {
-    ('Proxy', 'GetBlock'): Strip.FromString,
-    ('Proxy', 'GetRandomBlocks'): BlockReply.FromString,
-  }
-  cardinalities = {
-    'GetBlock': cardinality.Cardinality.UNARY_UNARY,
-    'GetRandomBlocks': cardinality.Cardinality.UNARY_UNARY,
-  }
-  stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
-  return beta_implementations.dynamic_stub(channel, 'Proxy', cardinalities, options=stub_options)
+  def beta_create_EncoderDecoder_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This function was
+    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
+    request_deserializers = {
+      ('EncoderDecoder', 'Decode'): DecodeRequest.FromString,
+      ('EncoderDecoder', 'Encode'): EncodeRequest.FromString,
+      ('EncoderDecoder', 'Reconstruct'): ReconstructRequest.FromString,
+    }
+    response_serializers = {
+      ('EncoderDecoder', 'Decode'): DecodeReply.SerializeToString,
+      ('EncoderDecoder', 'Encode'): EncodeReply.SerializeToString,
+      ('EncoderDecoder', 'Reconstruct'): ReconstructReply.SerializeToString,
+    }
+    method_implementations = {
+      ('EncoderDecoder', 'Decode'): face_utilities.unary_unary_inline(servicer.Decode),
+      ('EncoderDecoder', 'Encode'): face_utilities.unary_unary_inline(servicer.Encode),
+      ('EncoderDecoder', 'Reconstruct'): face_utilities.unary_unary_inline(servicer.Reconstruct),
+    }
+    server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
+    return beta_implementations.server(method_implementations, options=server_options)
+
+
+  def beta_create_EncoderDecoder_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This function was
+    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
+    request_serializers = {
+      ('EncoderDecoder', 'Decode'): DecodeRequest.SerializeToString,
+      ('EncoderDecoder', 'Encode'): EncodeRequest.SerializeToString,
+      ('EncoderDecoder', 'Reconstruct'): ReconstructRequest.SerializeToString,
+    }
+    response_deserializers = {
+      ('EncoderDecoder', 'Decode'): DecodeReply.FromString,
+      ('EncoderDecoder', 'Encode'): EncodeReply.FromString,
+      ('EncoderDecoder', 'Reconstruct'): ReconstructReply.FromString,
+    }
+    cardinalities = {
+      'Decode': cardinality.Cardinality.UNARY_UNARY,
+      'Encode': cardinality.Cardinality.UNARY_UNARY,
+      'Reconstruct': cardinality.Cardinality.UNARY_UNARY,
+    }
+    stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
+    return beta_implementations.dynamic_stub(channel, 'EncoderDecoder', cardinalities, options=stub_options)
+
+
+  class BetaProxyServicer(object):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This class was generated
+    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
+    """the proxy service
+    """
+    def GetRandomBlocks(self, request, context):
+      """Returns at most n random blocks where n is a parameter of the function
+      """
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def GetBlock(self, request, context):
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+
+
+  class BetaProxyStub(object):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This class was generated
+    only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
+    """the proxy service
+    """
+    def GetRandomBlocks(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      """Returns at most n random blocks where n is a parameter of the function
+      """
+      raise NotImplementedError()
+    GetRandomBlocks.future = None
+    def GetBlock(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      raise NotImplementedError()
+    GetBlock.future = None
+
+
+  def beta_create_Proxy_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This function was
+    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
+    request_deserializers = {
+      ('Proxy', 'GetBlock'): NamedBlockRequest.FromString,
+      ('Proxy', 'GetRandomBlocks'): BlockRequest.FromString,
+    }
+    response_serializers = {
+      ('Proxy', 'GetBlock'): Strip.SerializeToString,
+      ('Proxy', 'GetRandomBlocks'): BlockReply.SerializeToString,
+    }
+    method_implementations = {
+      ('Proxy', 'GetBlock'): face_utilities.unary_unary_inline(servicer.GetBlock),
+      ('Proxy', 'GetRandomBlocks'): face_utilities.unary_unary_inline(servicer.GetRandomBlocks),
+    }
+    server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
+    return beta_implementations.server(method_implementations, options=server_options)
+
+
+  def beta_create_Proxy_stub(channel, host=None, metadata_transformer=None, pool=None, pool_size=None):
+    """The Beta API is deprecated for 0.15.0 and later.
+
+    It is recommended to use the GA API (classes and functions in this
+    file not marked beta) for all further purposes. This function was
+    generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
+    request_serializers = {
+      ('Proxy', 'GetBlock'): NamedBlockRequest.SerializeToString,
+      ('Proxy', 'GetRandomBlocks'): BlockRequest.SerializeToString,
+    }
+    response_deserializers = {
+      ('Proxy', 'GetBlock'): Strip.FromString,
+      ('Proxy', 'GetRandomBlocks'): BlockReply.FromString,
+    }
+    cardinalities = {
+      'GetBlock': cardinality.Cardinality.UNARY_UNARY,
+      'GetRandomBlocks': cardinality.Cardinality.UNARY_UNARY,
+    }
+    stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
+    return beta_implementations.dynamic_stub(channel, 'Proxy', cardinalities, options=stub_options)
+except ImportError:
+  pass
 # @@protoc_insertion_point(module_scope)
