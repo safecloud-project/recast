@@ -1,9 +1,14 @@
 """Main pycoder module that launches the GRPC server."""
-from ConfigParser import ConfigParser
+
 import os
 import time
 
-from playcloud_pb2 import beta_create_EncoderDecoder_server
+from ConfigParser import ConfigParser
+
+import concurrent.futures
+import grpc
+
+import playcloud_pb2
 from coding_servicer import CodingService
 
 if __name__ == "__main__":
@@ -26,8 +31,9 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("A value must be defined for the grpc listen port either in pycoder.cfg or as an environment variable GRPC_LISTEN_PORT")
 
+    SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10))
+    playcloud_pb2.add_EncoderDecoderServicer_to_server(CodingService(), SERVER)
     PYCODER_LISTEN = PYCODER_LISTEN_ADDRESS + ":" + PYCODER_LISTEN_PORT
-    SERVER = beta_create_EncoderDecoder_server(CodingService())
     SERVER.add_insecure_port(PYCODER_LISTEN)
     SERVER.start()
     print "pycoder server listening on ", PYCODER_LISTEN

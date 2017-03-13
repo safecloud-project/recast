@@ -3,12 +3,14 @@ A GRPC service that provides clients with blocks from the active data stores
 """
 import logging
 
-from pyproxy_globals import get_dispatcher_instance
-from playcloud_pb2 import BetaProxyServicer
+import grpc
+
+from playcloud_pb2_grpc import ProxyServicer
 from playcloud_pb2 import BlockReply
 from playcloud_pb2 import Strip
+from pyproxy_globals import get_dispatcher_instance
 
-class ProxyService(BetaProxyServicer):
+class ProxyService(ProxyServicer):
     """
     A GRPC enabled server that serves blocks.
     """

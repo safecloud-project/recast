@@ -1,9 +1,10 @@
 """
 A GRPC client for the proxy service that recovers block from the data stores
 """
-from grpc.beta import implementations
+import grpc
 
-from playcloud_pb2 import beta_create_Proxy_stub, BlockRequest, NamedBlockRequest
+import playcloud_pb2_grpc
+from playcloud_pb2 import BlockRequest, NamedBlockRequest
 
 # TODO Read the default grpc timeout in configuration file before assigning this value
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
@@ -13,8 +14,9 @@ class ProxyClient(object):
     A GRPC client for the proxy service that gets blocks from the data stores
     """
     def __init__(self, host="proxy", port=1234):
-        grpc_channel = implementations.insecure_channel(host, port)
-        self.stub = beta_create_Proxy_stub(grpc_channel)
+        server_listen = host + ":" + str(port)
+        grpc_channel = grpc.insecure_channel(server_listen)
+        self.stub = playcloud_pb2_grpc.ProxyStub(grpc_channel)
 
     def get_random_blocks(self, blocks):
         """

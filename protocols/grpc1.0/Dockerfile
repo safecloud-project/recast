@@ -18,14 +18,11 @@ RUN apt-get update --quiet && \
       python-pip \
       unzip \
       wget \
-      zlib1g-dev
-
+      zlib1g-dev && \
 # Install protobuf
-
-# Setup protobuf version e8ae137c96444ea313485ed1118c5e43b2099cf1
-RUN git clone https://github.com/google/protobuf /protobuf --quiet && \
+    git clone https://github.com/google/protobuf /protobuf --quiet && \
     cd /protobuf && \
-    git checkout 3.0.x --quiet && \
+    git checkout v3.2.0 --quiet && \
     ./autogen.sh && \
     ./configure && \
     make -s && \
@@ -34,19 +31,18 @@ RUN git clone https://github.com/google/protobuf /protobuf --quiet && \
     make clean -s && \
     ldconfig && \
     cd / && \
-    rm -rf /protobuf
-
+    rm -rf /protobuf && \
 # Install GRPC
-WORKDIR /
-RUN git clone https://github.com/grpc/grpc /grpc --quiet && \
+    cd / && \
+    git clone https://github.com/grpc/grpc /grpc --quiet && \
     cd /grpc && \
-    git checkout v1.0.x --quiet && \
+    git checkout v1.1.2 --quiet && \
     git submodule update --init && \
     ldconfig && \
     pip install --requirement requirements.txt --quiet && \
     make -s && \
     make install -s && \
-    ldconfig                                                                && \
+    ldconfig && \
     apt-get --assume-yes --quiet --purge autoremove \
       autoconf \
       curl \

@@ -10,11 +10,14 @@ import uuid
 
 from bottle import request, response, run
 import bottle
-from grpc.beta import implementations
+import concurrent.futures
+import grpc
 
+import playcloud_pb2
+import playcloud_pb2_grpc
 
 from pyproxy_globals import get_dispatcher_instance
-from playcloud_pb2 import beta_create_EncoderDecoder_stub, DecodeRequest, EncodeRequest, Strip, beta_create_Proxy_server
+from playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
 from proxy_service import ProxyService
 
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
@@ -30,9 +33,10 @@ CODER_HOST = os.getenv("CODER_PORT_1234_TCP_ADDR", "coder")
 CODER_PORT = int(os.getenv("CODER_PORT_1234_TCP_PORT", 1234))
 
 LOGGER.info(con_log.format("pycoder", CODER_HOST, CODER_PORT))
-GRPC_CHANNEL = implementations.insecure_channel(CODER_HOST, CODER_PORT)
 
-CLIENT_STUB = beta_create_EncoderDecoder_stub(GRPC_CHANNEL)
+CODER_ADDRESS = CODER_HOST + ":" + str(CODER_PORT)
+GRPC_CHANNEL = grpc.insecure_channel(CODER_ADDRESS)
+CLIENT_STUB = playcloud_pb2_grpc.EncoderDecoderStub(GRPC_CHANNEL)
 
 # Loading dispatcher
 DISPATCHER = get_dispatcher_instance()
@@ -158,7 +162,8 @@ if __name__ == "__main__":
     else:
         LOGGER.setLevel(logging.INFO)
         logging.getLogger("dispatcher").setLevel(logging.INFO)
-    GRPC_SERVER = beta_create_Proxy_server(ProxyService())
+    GRPC_SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10))
+    playcloud_pb2.add_ProxyServicer_to_server(ProxyService(), GRPC_SERVER)
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
     run(server="paste", app=APP, host="0.0.0.0", port=8000)
