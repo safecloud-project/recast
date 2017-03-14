@@ -172,7 +172,9 @@ class DriverFactory(object):
         return self.setup_driver()
 
 
-
+def convert_strips_to_bytes_list(playcloud_strips):
+    """Extract the data bytes from alist of playcloud strips"""
+    return [strip.data for strip in playcloud_strips]
 
 
 class Eraser(object):
@@ -246,30 +248,22 @@ class HashedDriver(object):
     When decoding it converts the other way around.
     """
 
+    def __init__(self, driver):
+        self.driver = driver
 
-class Eraser(object):
-    """A wrapper for pyeclib erasure coding driver (ECDriver)"""
-
-    def __init__(self, k=8, m=2, ec_type="liberasurecode_rs_vand"):
-        self.k=k
-        self.m=m
-        self.ec_type=ec_type
-        if EC_TYPE == "pylonghair":
-            self.driver=PylonghairDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
-        elif EC_TYPE == "striping" or EC_TYPE == "bypass":
-            self.driver=ECStripingDriver(k=EC_K, m=0, hd=None)
-        else:
-            self.driver=ECDriver(k=EC_K, m=EC_M, ec_type=EC_TYPE)
+    def _flat(self, data):
+        return [item for sublist in data for item in sublist]
 
     def encode(self, data):
-        """Encode a string of bytes in flattened string of byte strips"""
-        strips=self.driver.encode(data)
-        return strips_to_bytes(strips)
+        encoded_data = self.driver.encode(data)
+        res = self._flat(map(lambda (x, y): [x, y], encoded_data))
+        return res
 
     def decode(self, data):
-        """Decode a flattened string of byte strips in a string of bytes"""
-        strips=bytes_to_strips(self.k, self.m, data)
-        return self.driver.decode(strips)
+        result = []
+        for i in range(0, len(data), 2):
+            result.append((data[i], data[i + 1]))
+        return self.driver.decode(result)
 
 
 class CodingService(BetaEncoderDecoderServicer):
@@ -278,6 +272,10 @@ class CodingService(BetaEncoderDecoderServicer):
     An Encoder/Decoder built on top of playcloud.proto that can be loaded by a
     GRPC server
     """
+
+    def __init__(self):
+        factory = DriverFactory(CONFIG)
+        self.driver = factory.get_driver()
 
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
