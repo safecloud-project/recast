@@ -31,7 +31,11 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("A value must be defined for the grpc listen port either in pycoder.cfg or as an environment variable GRPC_LISTEN_PORT")
 
-    SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10))
+    GRPC_SERVER_OPTIONS = [
+        ("grpc.max_message_length", 16 * 1024 * 1024)
+    ]
+    SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10),
+                         options=GRPC_SERVER_OPTIONS)
     playcloud_pb2.add_EncoderDecoderServicer_to_server(CodingService(), SERVER)
     PYCODER_LISTEN = PYCODER_LISTEN_ADDRESS + ":" + PYCODER_LISTEN_PORT
     SERVER.add_insecure_port(PYCODER_LISTEN)

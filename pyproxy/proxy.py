@@ -34,8 +34,15 @@ CODER_PORT = int(os.getenv("CODER_PORT_1234_TCP_PORT", 1234))
 
 LOGGER.info(con_log.format("pycoder", CODER_HOST, CODER_PORT))
 
+
+GRPC_OPTIONS = [
+    ("grpc.max_message_length", 16 * 1024 * 1024),
+    ("grpc.max_receive_message_length", 16 * 1024 * 1024),
+    ("grpc.max_send_message_length", 16 * 1024 * 1024)
+]
+
 CODER_ADDRESS = CODER_HOST + ":" + str(CODER_PORT)
-GRPC_CHANNEL = grpc.insecure_channel(CODER_ADDRESS)
+GRPC_CHANNEL = grpc.insecure_channel(CODER_ADDRESS, options=GRPC_OPTIONS)
 CLIENT_STUB = playcloud_pb2_grpc.EncoderDecoderStub(GRPC_CHANNEL)
 
 # Loading dispatcher
@@ -162,7 +169,8 @@ if __name__ == "__main__":
     else:
         LOGGER.setLevel(logging.INFO)
         logging.getLogger("dispatcher").setLevel(logging.INFO)
-    GRPC_SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10))
+    GRPC_SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10),
+                              options=GRPC_OPTIONS)
     playcloud_pb2.add_ProxyServicer_to_server(ProxyService(), GRPC_SERVER)
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
