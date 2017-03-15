@@ -31,8 +31,10 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("A value must be defined for the grpc listen port either in pycoder.cfg or as an environment variable GRPC_LISTEN_PORT")
 
+    GRPC_MESSAGE_SIZE = 1024 * 1024 * 1024 # 1 GiB
     GRPC_SERVER_OPTIONS = [
-        ("grpc.max_message_length", 16 * 1024 * 1024)
+        ("grpc.max_receive_message_length", GRPC_MESSAGE_SIZE),
+        ("grpc.max_send_message_length", GRPC_MESSAGE_SIZE)
     ]
     SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10),
                          options=GRPC_SERVER_OPTIONS)
