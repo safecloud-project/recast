@@ -14,7 +14,7 @@ class RedisProvider(object):
     def __init__(self, configuration={}):
         host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "redis"))
         port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
-        self.redis = redis.StrictRedis(host=host, port=port, db=0)
+        self.redis = redis.StrictRedis(host=host, port=port, db=0, encoding=None)
 
     def get(self, path):
         """
