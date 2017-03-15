@@ -34,11 +34,10 @@ CODER_PORT = int(os.getenv("CODER_PORT_1234_TCP_PORT", 1234))
 
 LOGGER.info(con_log.format("pycoder", CODER_HOST, CODER_PORT))
 
-
+GRPC_MESSAGE_SIZE = 1024 * 1024 * 1024 # 1 GiB
 GRPC_OPTIONS = [
-    ("grpc.max_message_length", 16 * 1024 * 1024),
-    ("grpc.max_receive_message_length", 16 * 1024 * 1024),
-    ("grpc.max_send_message_length", 16 * 1024 * 1024)
+    ("grpc.max_receive_message_length", GRPC_MESSAGE_SIZE),
+    ("grpc.max_send_message_length", GRPC_MESSAGE_SIZE)
 ]
 
 CODER_ADDRESS = CODER_HOST + ":" + str(CODER_PORT)

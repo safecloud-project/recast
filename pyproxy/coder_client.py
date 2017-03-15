@@ -2,9 +2,10 @@
 Client implementation and util functions to interact with EncoderDecoder service
 """
 #TODO: Move encode and decode calls to the CoderClient class
-from grpc.beta import implementations
+import grpc
 
-from playcloud_pb2 import beta_create_EncoderDecoder_stub, ReconstructRequest
+import playcloud_pb2_grpc
+from playcloud_pb2 import ReconstructRequest
 
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
 
@@ -13,8 +14,14 @@ class CoderClient(object):
     A GRPC client for the coder service
     """
     def __init__(self, host="coder", port=1234):
-        grpc_channel = implementations.insecure_channel(host, port)
-        self.stub = beta_create_EncoderDecoder_stub(grpc_channel)
+        server_listen = host + ":" + str(port)
+        grpc_message_size = 1024 * 1024 * 1024 # 1 GiB
+        grpc_options = [
+            ("grpc.max_receive_message_length", grpc_message_size),
+            ("grpc.max_send_message_length", grpc_message_size)
+        ]
+        grpc_channel = grpc.insecure_channel(server_listen, options=grpc_options)
+        self.stub = playcloud_pb2_grpc.EncoderDecoderStub(grpc_channel)
 
     def reconstruct(self, path, missing_indices):
         """

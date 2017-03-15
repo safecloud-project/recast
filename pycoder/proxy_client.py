@@ -15,7 +15,12 @@ class ProxyClient(object):
     """
     def __init__(self, host="proxy", port=1234):
         server_listen = host + ":" + str(port)
-        grpc_channel = grpc.insecure_channel(server_listen)
+        grpc_message_size = 1024 * 1024 * 1024 # 1 GiB
+        grpc_options = [
+            ("grpc.max_receive_message_length", grpc_message_size),
+            ("grpc.max_send_message_length", grpc_message_size)
+        ]
+        grpc_channel = grpc.insecure_channel(server_listen, options=grpc_options)
         self.stub = playcloud_pb2_grpc.ProxyStub(grpc_channel)
 
     def get_random_blocks(self, blocks):
