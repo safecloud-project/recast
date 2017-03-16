@@ -424,7 +424,7 @@ class Dispatcher(object):
         random.shuffle(all_metablocks)
         random_metablocks = all_metablocks[:number_of_blocks_to_fetch]
         fetchers = []
-        block_queue = Queue.Queue(number_of_blocks_to_fetch)
+        block_queue = {}
         metablocks = {}
         providers_to_use = set([metablock.provider for metablock in random_metablocks])
         for provider_key in providers_to_use:
@@ -433,7 +433,7 @@ class Dispatcher(object):
             block_keys = []
             for metablock in blocks_stored_at_provider:
                 block_key = metablock.key
-                block_keys.append(block_key)
+                block_keys.append(metablock)
                 metablocks[block_key] = metablock
             fetcher = BlockFetcher(provider, block_keys, block_queue)
             fetcher.start()
@@ -441,8 +441,7 @@ class Dispatcher(object):
         for fetcher in fetchers:
             fetcher.join()
         random_blocks = []
-        while not block_queue.empty():
-            block_key, block_data = block_queue.get()
-            metablock = metablocks[block_key]
-            random_blocks.append((metablock, block_data))
+        for key in sorted(block_queue.keys()):
+            block = block_queue[key]
+            random_blocks.append(block)
         return random_blocks
