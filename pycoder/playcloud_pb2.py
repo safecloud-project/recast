@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='playcloud.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x0fplaycloud.proto\"C\n\x04\x46ile\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x16\n\x06strips\x18\x02 \x03(\x0b\x32\x06.Strip\x12\x15\n\roriginal_size\x18\x03 \x01(\x04\"l\n\x05Strip\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x10\n\x08\x63hecksum\x18\x03 \x01(\x0c\x12\x19\n\x04type\x18\x04 \x01(\x0e\x32\x0b.Strip.Type\"\x1c\n\x04Type\x12\x08\n\x04\x44\x41TA\x10\x00\x12\n\n\x06PARITY\x10\x01\"\x87\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.EncodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x87\x01\n\x0b\x45ncodeReply\x12\x13\n\x04\x66ile\x18\x01 \x01(\x0b\x32\x05.File\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.EncodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8e\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.DecodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x85\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.DecodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x1e\n\x0c\x42lockRequest\x12\x0e\n\x06\x62locks\x18\x01 \x01(\r\"$\n\nBlockReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\"0\n\x11NamedBlockRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\r\n\x05index\x18\x02 \x01(\r\";\n\x12ReconstructRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x17\n\x0fmissing_indices\x18\x02 \x03(\r\"\x8d\x01\n\x10ReconstructReply\x12;\n\rreconstructed\x18\x01 \x03(\x0b\x32$.ReconstructReply.ReconstructedEntry\x1a<\n\x12ReconstructedEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12\x15\n\x05value\x18\x02 \x01(\x0b\x32\x06.Strip:\x02\x38\x01\x32\x9d\x01\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x12\x37\n\x0bReconstruct\x12\x13.ReconstructRequest\x1a\x11.ReconstructReply\"\x00\x32\x62\n\x05Proxy\x12/\n\x0fGetRandomBlocks\x12\r.BlockRequest\x1a\x0b.BlockReply\"\x00\x12(\n\x08GetBlock\x12\x12.NamedBlockRequest\x1a\x06.Strip\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3')
+  serialized_pb=_b('\n\x0fplaycloud.proto\"C\n\x04\x46ile\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x16\n\x06strips\x18\x02 \x03(\x0b\x32\x06.Strip\x12\x15\n\roriginal_size\x18\x03 \x01(\x04\"|\n\x05Strip\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05index\x18\x02 \x01(\r\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\x0c\x12\x10\n\x08\x63hecksum\x18\x04 \x01(\x0c\x12\x19\n\x04type\x18\x05 \x01(\x0e\x32\x0b.Strip.Type\"\x1c\n\x04Type\x12\x08\n\x04\x44\x41TA\x10\x00\x12\n\n\x06PARITY\x10\x01\"\x87\x01\n\rEncodeRequest\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.EncodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x87\x01\n\x0b\x45ncodeReply\x12\x13\n\x04\x66ile\x18\x01 \x01(\x0b\x32\x05.File\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.EncodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8e\x01\n\rDecodeRequest\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\x12\x32\n\nparameters\x18\x02 \x03(\x0b\x32\x1e.DecodeRequest.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x85\x01\n\x0b\x44\x65\x63odeReply\x12\x11\n\tdec_block\x18\x01 \x01(\x0c\x12\x30\n\nparameters\x18\x02 \x03(\x0b\x32\x1c.DecodeReply.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x1e\n\x0c\x42lockRequest\x12\x0e\n\x06\x62locks\x18\x01 \x01(\r\"$\n\nBlockReply\x12\x16\n\x06strips\x18\x01 \x03(\x0b\x32\x06.Strip\"0\n\x11NamedBlockRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\r\n\x05index\x18\x02 \x01(\r\";\n\x12ReconstructRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x17\n\x0fmissing_indices\x18\x02 \x03(\r\"\x8d\x01\n\x10ReconstructReply\x12;\n\rreconstructed\x18\x01 \x03(\x0b\x32$.ReconstructReply.ReconstructedEntry\x1a<\n\x12ReconstructedEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12\x15\n\x05value\x18\x02 \x01(\x0b\x32\x06.Strip:\x02\x38\x01\x32\x9d\x01\n\x0e\x45ncoderDecoder\x12(\n\x06\x45ncode\x12\x0e.EncodeRequest\x1a\x0c.EncodeReply\"\x00\x12(\n\x06\x44\x65\x63ode\x12\x0e.DecodeRequest\x1a\x0c.DecodeReply\"\x00\x12\x37\n\x0bReconstruct\x12\x13.ReconstructRequest\x1a\x11.ReconstructReply\"\x00\x32\x62\n\x05Proxy\x12/\n\x0fGetRandomBlocks\x12\r.BlockRequest\x1a\x0b.BlockReply\"\x00\x12(\n\x08GetBlock\x12\x12.NamedBlockRequest\x1a\x06.Strip\"\x00\x42\x19\n\x17\x63h.unine.iiun.safecloudb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -42,8 +42,8 @@ _STRIP_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=168,
-  serialized_end=196,
+  serialized_start=184,
+  serialized_end=212,
 )
 _sym_db.RegisterEnumDescriptor(_STRIP_TYPE)
 
@@ -101,29 +101,36 @@ _STRIP = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='id', full_name='Strip.id', index=0,
+      name='key', full_name='Strip.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='data', full_name='Strip.data', index=1,
-      number=2, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b(""),
+      name='index', full_name='Strip.index', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='checksum', full_name='Strip.checksum', index=2,
+      name='data', full_name='Strip.data', index=2,
       number=3, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='type', full_name='Strip.type', index=3,
-      number=4, type=14, cpp_type=8, label=1,
+      name='checksum', full_name='Strip.checksum', index=3,
+      number=4, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='Strip.type', index=4,
+      number=5, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -142,7 +149,7 @@ _STRIP = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=88,
-  serialized_end=196,
+  serialized_end=212,
 )
 
 
@@ -179,8 +186,8 @@ _ENCODEREQUEST_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=285,
-  serialized_end=334,
+  serialized_start=301,
+  serialized_end=350,
 )
 
 _ENCODEREQUEST = _descriptor.Descriptor(
@@ -216,8 +223,8 @@ _ENCODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=199,
-  serialized_end=334,
+  serialized_start=215,
+  serialized_end=350,
 )
 
 
@@ -254,8 +261,8 @@ _ENCODEREPLY_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=285,
-  serialized_end=334,
+  serialized_start=301,
+  serialized_end=350,
 )
 
 _ENCODEREPLY = _descriptor.Descriptor(
@@ -291,8 +298,8 @@ _ENCODEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=337,
-  serialized_end=472,
+  serialized_start=353,
+  serialized_end=488,
 )
 
 
@@ -329,8 +336,8 @@ _DECODEREQUEST_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=285,
-  serialized_end=334,
+  serialized_start=301,
+  serialized_end=350,
 )
 
 _DECODEREQUEST = _descriptor.Descriptor(
@@ -366,8 +373,8 @@ _DECODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=475,
-  serialized_end=617,
+  serialized_start=491,
+  serialized_end=633,
 )
 
 
@@ -404,8 +411,8 @@ _DECODEREPLY_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=285,
-  serialized_end=334,
+  serialized_start=301,
+  serialized_end=350,
 )
 
 _DECODEREPLY = _descriptor.Descriptor(
@@ -441,8 +448,8 @@ _DECODEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=620,
-  serialized_end=753,
+  serialized_start=636,
+  serialized_end=769,
 )
 
 
@@ -472,8 +479,8 @@ _BLOCKREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=755,
-  serialized_end=785,
+  serialized_start=771,
+  serialized_end=801,
 )
 
 
@@ -503,8 +510,8 @@ _BLOCKREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=787,
-  serialized_end=823,
+  serialized_start=803,
+  serialized_end=839,
 )
 
 
@@ -541,8 +548,8 @@ _NAMEDBLOCKREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=825,
-  serialized_end=873,
+  serialized_start=841,
+  serialized_end=889,
 )
 
 
@@ -579,8 +586,8 @@ _RECONSTRUCTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=875,
-  serialized_end=934,
+  serialized_start=891,
+  serialized_end=950,
 )
 
 
@@ -617,8 +624,8 @@ _RECONSTRUCTREPLY_RECONSTRUCTEDENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1018,
-  serialized_end=1078,
+  serialized_start=1034,
+  serialized_end=1094,
 )
 
 _RECONSTRUCTREPLY = _descriptor.Descriptor(
@@ -647,8 +654,8 @@ _RECONSTRUCTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=937,
-  serialized_end=1078,
+  serialized_start=953,
+  serialized_end=1094,
 )
 
 _FILE.fields_by_name['strips'].message_type = _STRIP
