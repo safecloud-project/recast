@@ -295,7 +295,9 @@ class CodingService(BetaEncoderDecoderServicer):
                 # Copy data
                 strip = Strip()
                 # Create random id
-                strip.id = str(uuid.uuid4())
+                strip.key = str(uuid.uuid4())
+                # Set index
+                strip.index = index
                 strip.data = raw_strip
                 # Compute checksum
                 checksum = hashlib.sha256(raw_strip).digest()
