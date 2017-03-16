@@ -26,13 +26,14 @@ message File {
 }
 
 message Strip {
-	bytes data = 1;
-	bytes checksum = 2;
+	string id = 1;
+	bytes data = 2;
+	bytes checksum = 3;
 	enum Type {
 		DATA = 0;
 		PARITY = 1;
 	}
-	Type type = 3;
+	Type type = 4;
 }
 message EncodeRequest {
 	bytes payload = 1;

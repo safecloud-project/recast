@@ -1,5 +1,6 @@
 """Wrapper for pyeclib encoders using GRPC"""
 from ConfigParser import ConfigParser
+import uuid
 import os
 import hashlib
 import logging
@@ -293,6 +294,8 @@ class CodingService(BetaEncoderDecoderServicer):
             for index, raw_strip in enumerate(raw_strips):
                 # Copy data
                 strip = Strip()
+                # Create random id
+                strip.id = str(uuid.uuid4())
                 strip.data = raw_strip
                 # Compute checksum
                 checksum = hashlib.sha256(raw_strip).digest()
