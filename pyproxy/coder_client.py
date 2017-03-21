@@ -15,7 +15,7 @@ class CoderClient(object):
     """
     def __init__(self, host="coder", port=1234):
         server_listen = host + ":" + str(port)
-        grpc_message_size = 1024 * 1024 * 1024 # 1 GiB
+        grpc_message_size = (2 * 1024 * 1024 * 1024) - 1 # 2^31 - 1
         grpc_options = [
             ("grpc.max_receive_message_length", grpc_message_size),
             ("grpc.max_send_message_length", grpc_message_size)
