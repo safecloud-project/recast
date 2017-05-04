@@ -8,7 +8,7 @@ import logging.config
 import os
 import uuid
 
-from bottle import request, response, run
+from bottle import abort, request, response, run
 import bottle
 import concurrent.futures
 import grpc
@@ -136,7 +136,11 @@ def put(key):
     Handles PUT requests to store data into playcloud
     """
     LOGGER.debug("Received put request for key {:s}".format(key))
-
+    # Check if the PUT request actually carries any data in its body to avoid
+    # storing empty blocks under a key.
+    data = request.body.getvalue()
+    if not data:
+        return abort(400, "The request body must contain data to store")
     return store(key=key, data=request.body.getvalue())
 
 
@@ -145,6 +149,11 @@ def put_keyless():
     """
     Handle PUT requests for key-less database insertions
     """
+    # Check if the PUT request actually carries any data in its body to avoid
+    # storing empty blocks under a key.
+    data = request.body.getvalue()
+    if not data:
+        return abort(400, "The request body must contain data to store")
     return store(key=None, data=request.body.getvalue())
 
 @APP.route("/", method="GET")
@@ -159,7 +168,7 @@ def list():
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(prog="proxy",
-        description="A python implementation of playcloud's proxy server")
+                                     description="A python implementation of playcloud's proxy server")
     PARSER.add_argument("--debug", action="store_true", help="Show debug logs")
     ARGS = PARSER.parse_args()
     if ARGS.debug or os.environ.has_key("DEBUG") or os.environ.has_key("debug"):
