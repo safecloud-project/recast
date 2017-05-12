@@ -120,6 +120,7 @@ def store(key=None, data=None):
         key = str(uuid.uuid4())
     encode_request = EncodeRequest()
     encode_request.payload = data
+    encode_request.parameters["key"] = key
     LOGGER.debug("Going to request data encoding")
     encoded_file = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
     number_of_blocks = len(encoded_file.strips)

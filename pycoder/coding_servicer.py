@@ -13,6 +13,8 @@ from pyeclib.ec_iface import ECInvalidParameter
 from pyeclib.ec_iface import ECOutOfMemory
 from pyeclib.ec_iface import ECDriverError
 
+from entangled_driver import EntanglementDriver
+
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
@@ -276,15 +278,15 @@ class CodingService(BetaEncoderDecoderServicer):
 
     def __init__(self):
         factory = DriverFactory(CONFIG)
-        self.driver = factory.get_driver()
+        source = ProxyClient()
+        self.driver = EntanglementDriver(source, source_blocks=3)
 
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
         try:
             reply = EncodeReply()
-            logger.info("Received encode request")
+            logger.info("Received encode request for " + str(request.parameters["key"]))
             raw_strips = self.driver.encode(request.payload)
-
             log_temp = "Encoded and returned {} raw_strips"
             logger.debug(log_temp.format(len(raw_strips)))
 

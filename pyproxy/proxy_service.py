@@ -72,6 +72,7 @@ def get_random_blocks(blocks):
     strips = []
     for random_block in random_blocks:
         strip = Strip()
+        strip.id = random_block[0]
         strip.data = random_block[1]
         strips.append(strip)
     return strips
