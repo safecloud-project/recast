@@ -5,14 +5,16 @@ import datetime
 import hashlib
 import logging
 import logging.config
+import Queue
 import random
+import re
 import threading
 import uuid
 
-from enum import Enum
 from redis import ConnectionError
 
 from coder_client import CoderClient
+from enum import Enum
 from dbox import DBox
 from gdrive import GDrive
 from one import ODrive
@@ -77,12 +79,11 @@ class MetaBlock(object):
     """
     A class that represents a data block
     """
-    def __init__(self, key, index, provider=None, creation_date=None, block_type=BlockType.DATA, checksum=None):
+    def __init__(self, key, provider=None, creation_date=None, block_type=BlockType.DATA, checksum=None):
         """
         MetaBlock constructor
         Args:
             key (str): Key under which the block is stored
-            index (int): Position of the block in the list of related blocks
             provider (str, optional): Id of the provider
             creation_date (datetime.datetime, optional): Time of creation of the
                 block, defaults to current time
@@ -90,7 +91,6 @@ class MetaBlock(object):
             checksum (str, optional): SHA256 digest of the data
         """
         self.key = key
-        self.index = index
         self.provider = provider
         if creation_date is None:
             self.creation_date = datetime.datetime.now()
@@ -99,13 +99,28 @@ class MetaBlock(object):
         self.block_type = block_type
         self.checksum = checksum
 
-    def __eq__(self, other):
-        return self.key == other.key and self.index == self.index and \
-               self.provider == self.provider and \
-               self.creation_date == self.creation_date
-    
-    def __repr__(self):
-        return "MetaBlock(key=" + self.key + ", index=" + str(self.index) + ")"
+def compute_block_key(path, index, length=2):
+    """
+    Computes a block key from a file path and an index.
+    Args:
+        path(str): Path to the file related to the block
+        index(int): index of the block
+        length(int, optional): Length of the index part of the key for zero filling (Defaults to 2)
+    Returns:
+        str: Block key
+    """
+    return path + "-" + str(index).zfill(length)
+
+def extract_index_from_key(key):
+    """
+    Extracts the index from a block key.
+    Args:
+        key(str): Block key
+    Returns:
+        int: Index of the block
+    """
+    index_pattern = re.compile(r"\-\d+$")
+    return int(index_pattern.findall(key)[0].replace("-", ""))
 
 class Metadata(object):
     """
@@ -151,9 +166,10 @@ class BlockPusher(threading.Thread):
         """
         loop_temp = "Going to put block with key {} in provider {}"
         for metablock, data in self.blocks.iteritems():
-            logger.info(loop_temp.format(metablock.key, str(type(self.provider))))
+            logger.debug(loop_temp.format(metablock.key, str(type(self.provider))))
             self.provider.put(data, metablock.key)
-            self.queue[metablock] = metablock
+            index = extract_index_from_key(metablock.key)
+            self.queue[index] = metablock
 
 class ProviderUnreachableException(Exception):
     """
@@ -210,17 +226,17 @@ class BlockFetcher(threading.Thread):
                     message = "Block " + key + " does not match its checksum"
                     raise CorruptedBlockException(message)
                 self.logger.debug("Storing block " + key + " in synchronization queue")
-                self.queue[metablock] = data
+                self.queue[key] = data
             except ConnectionError as exception:
                 message = "Provider for block " + key + " cannot be accessed"
                 exception = ProviderUnreachableException(message)
                 self.logger.error(exception)
-                self.queue[metablock] = exception
+                self.queue[key] = exception
             except (BlockNotFoundException, \
                     CorruptedBlockException, \
                     ProviderUnreachableException) as exception:
                 self.logger.error(exception)
-                self.queue[metablock] = exception
+                self.queue[key] = exception
 
 def arrange_elements(elements, bins):
     """
@@ -293,26 +309,27 @@ class Dispatcher(object):
         arrangement = arrange_elements(len(blocks_to_store), len(provider_keys))
         metablock_queue = {}
         block_pushers = []
+        index_format_length = len(str(len(blocks)))
         for i, provider_key in enumerate(provider_keys):
             provider = self.providers[provider_key]
             blocks_for_provider = {}
             for index in arrangement[i]:
                 strip = encoded_file.strips[index]
+                key = compute_block_key(path, index, index_format_length)
                 block_type = None
                 if  strip.type == Strip.DATA:
                     block_type = BlockType.DATA
                 else:
                     block_type = BlockType.PARITY
-                metablock = MetaBlock(str(strip.key), strip.index, provider=provider_key, checksum=strip.checksum, block_type=block_type)
-                logger.info("About to push " + str(metablock))
+                metablock = MetaBlock(key, provider=provider_key, checksum=strip.checksum, block_type=block_type)
                 blocks_for_provider[metablock] = strip.data
             pusher = BlockPusher(provider, blocks_for_provider, metablock_queue)
             pusher.start()
             block_pushers.append(pusher)
         for pusher in block_pushers:
             pusher.join()
-        for metablock in sorted(metablock_queue.keys(), key=lambda mb: mb.index):
-            metadata.blocks.append(metablock)
+        for index in sorted(metablock_queue.keys()):
+            metadata.blocks.append(metablock_queue[index])
         self.files[path] = metadata
         return metadata
 
@@ -371,24 +388,24 @@ class Dispatcher(object):
         for fetcher in fetchers:
             fetcher.join()
         blocks_to_reconstruct = []
-        for metablock in sorted(block_queue.keys(), key=lambda mb: mb.index):
-            block = block_queue[metablock]
+        for key in sorted(block_queue.keys()):
+            block = block_queue[key]
             if (isinstance(block, ProviderUnreachableException) or
                     isinstance(block, BlockNotFoundException) or
                     isinstance(block, CorruptedBlockException)):
-                del block_queue[metablock]
-                blocks_to_reconstruct.append(metablock)
+                missing_index = extract_index_from_key(key)
+                del block_queue[key]
+                blocks_to_reconstruct.append(missing_index)
 
         if len(blocks_to_reconstruct) > 0:
             coder = CoderClient()
-            missing_block_indices = [mb.index for mb in blocks_to_reconstruct]
-            index_to_key = {mb.index: mb.key for mb in blocks_to_reconstruct}
-            reconstructed_blocks = coder.reconstruct(path, missing_block_indices)
-            for index in reconstructed_blocks.keys():
-                key = index_to_key[index]
+            reconstructed_blocks = coder.reconstruct(path, blocks_to_reconstruct)
+            index_format_length = len(str(len(metablocks)))
+            for index in sorted(reconstructed_blocks.keys()):
+                key = compute_block_key(path, index, index_format_length)
                 strip = reconstructed_blocks[index]
                 block_queue[key] = strip.data
-        data_blocks = [block_queue[key] for key in sorted(block_queue.keys(), key=lambda mb: mb.index)]
+        data_blocks = [block_queue[key] for key in sorted(block_queue.keys())]
         return data_blocks
 
     def get_random_blocks(self, blocks_desired):
@@ -424,6 +441,7 @@ class Dispatcher(object):
         for fetcher in fetchers:
             fetcher.join()
         random_blocks = []
-        for metablock, block in block_queue.iteritems():
+        for key in sorted(block_queue.keys()):
+            block = block_queue[key]
             random_blocks.append(block)
         return random_blocks
