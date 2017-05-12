@@ -7,7 +7,6 @@ import sys
 
 import redis
 
-
 class RedisProvider(object):
     """
     A storage provider that stores data in a Redis database
