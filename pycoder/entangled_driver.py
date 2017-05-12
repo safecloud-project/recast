@@ -6,6 +6,7 @@ import logging
 import logging.config
 import math
 import os
+import re
 
 import numpy
 
@@ -136,9 +137,15 @@ class EntanglementDriver(object):
     def __merge_data(fragments):
         return "".join(fragments)
 
-    @staticmethod
-    def __generate_entanglement_header(blocks):
-        header = [(block.key, block.index) for block in blocks]
+    def __generate_entanglement_header(self, strips):
+        self.logger.info("len(blocks) = " + str(len(strips)))
+        path_pattern = re.compile(r"^(.+)\-\d+$")
+        index_pattern = re.compile(r"\-(\d+)$")
+        header = []
+        for strip in strips:
+            path = path_pattern.findall(strip.id)[0]
+            index = int(index_pattern.findall(strip.id)[0])
+            header.append((path, index))
         return json.dumps(header)
 
     @staticmethod
@@ -157,7 +164,7 @@ class EntanglementDriver(object):
         random_blocks = []
         if self.source_blocks > 0:
             random_blocks = self.source.get_random_blocks(self.source_blocks)
-        block_header = EntanglementDriver.__generate_entanglement_header(random_blocks)
+        block_header = self.__generate_entanglement_header(random_blocks)
         random_blocks = [block.data for block in random_blocks]
         self.logger.info(block_header)
         encoded_blocks = []
@@ -179,8 +186,11 @@ class EntanglementDriver(object):
         if self.source_blocks > 0:
             random_blocks = self.source.get_random_blocks(self.source_blocks)
         block_header = EntanglementDriver.__read_entanglement_header(strips[0].split(self.CUTOFF_SYMBOL)[0])
+        for block in block_header:
+            self.logger.info("[ type(block) = " + str(type(block)) + "]")
+            #self.logger.info(block[0] + "[" + str(block[1]) + "]")
         strips = [strip.split(self.CUTOFF_SYMBOL)[1] for strip in strips]
-        random_blocks = [block.data for block in random_blocks]
+        random_blocks = [self.source.get_block(block[0], block[1]).data for block in block_header]
         self.logger.info(block_header)
         decoded_blocks = []
         for strip in strips:
@@ -215,9 +225,14 @@ class BlockSource(object):
             block = ""
             for j in xrange(self.block_size):
                 block += '\0'
-            random_blocks.append(DataBlock("myfile", j, block))
+            random_blocks.append(DataBlock("myfile", i, block))
         return random_blocks
-
+        
+    def get_block(self, path, index):
+        block = self.get_random_blocks(1)[0]
+        block.key = path
+        block.index = index
+        return block
 
 if __name__ == "__main__":
     with open("entangled_driver.py", "r") as f:

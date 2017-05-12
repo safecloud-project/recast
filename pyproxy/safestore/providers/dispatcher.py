@@ -111,6 +111,17 @@ def compute_block_key(path, index, length=2):
     """
     return path + "-" + str(index).zfill(length)
 
+def extract_path_from_key(key):
+    """
+    Extracts the path from a block key.
+    Args:
+        key(str): Block key
+    Returns:
+        path: Path of the file the block belongs to
+    """
+    path_pattern = re.compile(r"^(.+)\-\d+$")
+    return path_pattern.findall(key)[0]
+
 def extract_index_from_key(key):
     """
     Extracts the index from a block key.
@@ -441,7 +452,6 @@ class Dispatcher(object):
         for fetcher in fetchers:
             fetcher.join()
         random_blocks = []
-        for key in sorted(block_queue.keys()):
-            block = block_queue[key]
-            random_blocks.append(block)
+        for key, block in block_queue.iteritems():
+            random_blocks.append((key, block))
         return random_blocks
