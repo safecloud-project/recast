@@ -2,10 +2,7 @@
 A module with entanglement utilities
 """
 import json
-import logging
-import logging.config
 import math
-import os
 import re
 
 import numpy
@@ -86,15 +83,14 @@ class Dagster(object):
         """
         length_diff = len(block_a) - len(block_b)
         if length_diff > 0:
-            for i in xrange(length_diff):
+            for _ in xrange(length_diff):
                 block_b += '\0'
         elif length_diff < 0:
             block_b = block_b[0:length_diff]
 
-        a = numpy.frombuffer(block_a, dtype='b')
-        b = numpy.frombuffer(block_b, dtype='b')
-        c = numpy.bitwise_xor(a, b).tostring()
-        return c
+        entangled = numpy.frombuffer(block_a, dtype='b')
+        entanglee = numpy.frombuffer(block_b, dtype='b')
+        return numpy.bitwise_xor(entangled, entanglee).tostring()
 
 
 class EntanglementDriver(object):
@@ -105,7 +101,7 @@ class EntanglementDriver(object):
     # Use the Group Separator from the ASCII table as the delimiter between the
     # entanglement header and the data itself
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
-    CUTOFF_SYMBOL = chr(29)
+    HEADER_DELIMITER = chr(29)
 
     def __init__(self, block_source, entanglement=Dagster, source_blocks=5):
         """
@@ -118,11 +114,6 @@ class EntanglementDriver(object):
         self.k = 5
         self.entangler = entanglement()
         self.source_blocks = source_blocks
-        local_directory = os.path.dirname(__file__)
-        log_config = os.getenv("LOG_CONFIG", os.path.join(local_directory, "logging.conf"))
-        logging.config.fileConfig(log_config)
-        self.logger = logging.getLogger("EntanglementDriver")
-
 
     @staticmethod
     def __split_data(data, k):
@@ -130,15 +121,16 @@ class EntanglementDriver(object):
         fragments = []
         for i in range(k):
             offset = i * fragment_size
-            fragments.append(data[offset:offset + fragment_size])
+            fragment = data[offset:offset + fragment_size]
+            fragments.append(fragment)
         return fragments
 
     @staticmethod
     def __merge_data(fragments):
         return "".join(fragments)
 
-    def __generate_entanglement_header(self, strips):
-        self.logger.info("len(blocks) = " + str(len(strips)))
+    @staticmethod
+    def __serialize_entanglement_header(strips):
         path_pattern = re.compile(r"^(.+)\-\d+$")
         index_pattern = re.compile(r"\-(\d+)$")
         header = []
@@ -149,7 +141,7 @@ class EntanglementDriver(object):
         return json.dumps(header)
 
     @staticmethod
-    def __read_entanglement_header(header):
+    def __parse_entanglement_header(header):
         return json.loads(header)
 
     def encode(self, data):
@@ -164,15 +156,40 @@ class EntanglementDriver(object):
         random_blocks = []
         if self.source_blocks > 0:
             random_blocks = self.source.get_random_blocks(self.source_blocks)
-        block_header = self.__generate_entanglement_header(random_blocks)
+        block_header = self.__serialize_entanglement_header(random_blocks)
         random_blocks = [block.data for block in random_blocks]
-        self.logger.info(block_header)
         encoded_blocks = []
         for block in blocks:
             encoded_block, random_blocks = self.entangler.entangle(block, random_blocks)
-            encoded_block = block_header + self.CUTOFF_SYMBOL + encoded_block
+            encoded_block = block_header + self.HEADER_DELIMITER + encoded_block
             encoded_blocks.append(encoded_block)
         return encoded_blocks
+
+
+    @staticmethod
+    def __get_header_from_strip(strip):
+        """
+        Returns the header part of the bytes strip
+        Args:
+            strip(bytes): The bytes containing the header and the data
+        Returns:
+            bytes: The header part of the strip
+        """
+        pos = strip.find(EntanglementDriver.HEADER_DELIMITER)
+        return strip[:pos]
+
+    @staticmethod
+    def __get_data_from_strip(strip):
+        """
+        Returns the data part of the bytes strip
+        Args:
+            strip(bytes): The bytes containing the header and the data
+        Returns:
+            bytes: The data part of the strip
+        """
+        pos = strip.find(EntanglementDriver.HEADER_DELIMITER) + \
+              len(EntanglementDriver.HEADER_DELIMITER)
+        return strip[pos:]
 
     def decode(self, strips):
         """
@@ -185,13 +202,10 @@ class EntanglementDriver(object):
         random_blocks = []
         if self.source_blocks > 0:
             random_blocks = self.source.get_random_blocks(self.source_blocks)
-        block_header = EntanglementDriver.__read_entanglement_header(strips[0].split(self.CUTOFF_SYMBOL)[0])
-        for block in block_header:
-            self.logger.info("[ type(block) = " + str(type(block)) + "]")
-            #self.logger.info(block[0] + "[" + str(block[1]) + "]")
-        strips = [strip.split(self.CUTOFF_SYMBOL)[1] for strip in strips]
+        block_header_text = EntanglementDriver.__get_header_from_strip(strips[0])
+        block_header = EntanglementDriver.__parse_entanglement_header(block_header_text)
+        strips = [self.__get_data_from_strip(strip) for strip in strips]
         random_blocks = [self.source.get_block(block[0], block[1]).data for block in block_header]
-        self.logger.info(block_header)
         decoded_blocks = []
         for strip in strips:
             decoded_block, random_blocks = self.entangler.disentangle(strip, random_blocks)
@@ -207,40 +221,3 @@ class EntanglementDriver(object):
             list(int): The indices of the fragments needed for reconstruction
         """
         return [index for index in xrange(self.k) if index not in given]
-
-
-class DataBlock(object):
-    def __init__(self, key, index, data):
-        self.key = key
-        self.index = index
-        self.data = data
-
-class BlockSource(object):
-    def __init__(self, block_size):
-        self.block_size = block_size
-
-    def get_random_blocks(self, blocks):
-        random_blocks = []
-        for i in xrange(blocks):
-            block = ""
-            for j in xrange(self.block_size):
-                block += '\0'
-            random_blocks.append(DataBlock("myfile", i, block))
-        return random_blocks
-        
-    def get_block(self, path, index):
-        block = self.get_random_blocks(1)[0]
-        block.key = path
-        block.index = index
-        return block
-
-if __name__ == "__main__":
-    with open("entangled_driver.py", "r") as f:
-        DATA = f.read()
-    BLOCK_SIZE = int(math.ceil(float(len(DATA)) / 5))
-    SOURCE = BlockSource(BLOCK_SIZE)
-    SOURCE_BLOCKS = 3
-    DRIVER = EntanglementDriver(SOURCE, source_blocks=SOURCE_BLOCKS)
-    ENCODED = DRIVER.encode(DATA)
-    DECODED = DRIVER.decode(ENCODED)
-    assert DECODED == DATA
