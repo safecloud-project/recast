@@ -21,7 +21,6 @@ services:
     build: ./pycoder
     environment:
       - sec_measure=confd
-      - splitter=ec
     env_file:
       - ./erasure.env
     # volumes:

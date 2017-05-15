@@ -79,11 +79,13 @@ class DriverFactory(object):
 
     def setup_driver(self):
 
-        splitters = {'xor': self.xor,
-                     'shamir': self.shamir,
-                     'ec': self.erasure_driver,
-                     'aes': self.aes_driver
-                    }
+        splitters = {
+            "xor": self.xor,
+            "shamir": self.shamir,
+            "ec": self.erasure_driver,
+            "aes": self.aes_driver,
+            "entanglement": self.entanglement_driver
+        }
 
         self.splitter_driver = splitters[self.splitter]()
 
@@ -170,6 +172,32 @@ class DriverFactory(object):
 
     def aes_driver(self):
         return AESDriver()
+
+    def entanglement_driver(self):
+        """
+        Returns an entanglement_driver
+        Returns:
+            EntanglementDriver: An instance of EntanglementDriver
+        """
+        k = None
+        if os.environ.has_key("ENTANGLEMENT_K"):
+            k = int(os.environ.get("ENTANGLEMENT_K"))
+        elif self.config.has_option("entanglement", "k"):
+            k = int(self.config.get("entanglement", "k"))
+        else:
+            raise RuntimeError("A value must be defined for the number of data blocks (k) to use either in pycoder.cfg or as an environment variable ENTANGLEMENT_K")
+
+        pointers = None
+        if os.environ.has_key("ENTANGLEMENT_POINTERS"):
+            pointers = int(os.environ.get("ENTANGLEMENT_POINTERS"))
+        elif self.config.has_option("entanglement", "pointers"):
+            pointers = int(self.config.get("entanglement", "pointers"))
+
+        source = ProxyClient()
+        driver = EntanglementDriver(source, k=k, pointers=pointers)
+        logger.info("Loaded entanglement driver " + str(type(driver.entangler).__name__) + " with " + str(k) + " data blocks and " + str(pointers) + " pointers")
+        return driver
+
 
     def get_driver(self):
         return self.setup_driver()
@@ -278,8 +306,7 @@ class CodingService(BetaEncoderDecoderServicer):
 
     def __init__(self):
         factory = DriverFactory(CONFIG)
-        source = ProxyClient()
-        self.driver = EntanglementDriver(source)
+        self.driver = factory.get_driver()
 
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
