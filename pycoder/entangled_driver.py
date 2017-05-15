@@ -103,17 +103,18 @@ class EntanglementDriver(object):
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
     HEADER_DELIMITER = chr(29)
 
-    def __init__(self, block_source, entanglement=Dagster, source_blocks=5):
+    def __init__(self, block_source, k=5, entanglement=Dagster, pointers=5):
         """
         Args:
             block_source(object): An entity that can return random blocks
+            k(int): The number of blocks to split the data in (defaults to 5)
             entanglement(Entangler): A type of entanglement to use (defaults to Dagster)
-            source_blocks(int): The number of source blocks to entangle with (defaults to 5)
+            pointers(int): The number of old blocks to entangle with (defaults to 5)
         """
         self.source = block_source
-        self.k = 5
+        self.k = k
         self.entangler = entanglement()
-        self.source_blocks = source_blocks
+        self.pointers = pointers
 
     @staticmethod
     def __split_data(data, k):
@@ -154,8 +155,8 @@ class EntanglementDriver(object):
         """
         blocks = self.__split_data(data, self.k)
         random_blocks = []
-        if self.source_blocks > 0:
-            random_blocks = self.source.get_random_blocks(self.source_blocks)
+        if self.pointers > 0:
+            random_blocks = self.source.get_random_blocks(self.pointers)
         block_header = self.__serialize_entanglement_header(random_blocks)
         random_blocks = [block.data for block in random_blocks]
         encoded_blocks = []
@@ -200,8 +201,8 @@ class EntanglementDriver(object):
             bytes: The decoded data
         """
         random_blocks = []
-        if self.source_blocks > 0:
-            random_blocks = self.source.get_random_blocks(self.source_blocks)
+        if self.pointers > 0:
+            random_blocks = self.source.get_random_blocks(self.pointers)
         block_header_text = EntanglementDriver.__get_header_from_strip(strips[0])
         block_header = EntanglementDriver.__parse_entanglement_header(block_header_text)
         strips = [self.__get_data_from_strip(strip) for strip in strips]

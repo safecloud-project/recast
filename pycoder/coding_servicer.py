@@ -279,7 +279,7 @@ class CodingService(BetaEncoderDecoderServicer):
     def __init__(self):
         factory = DriverFactory(CONFIG)
         source = ProxyClient()
-        self.driver = EntanglementDriver(source, source_blocks=3)
+        self.driver = EntanglementDriver(source)
 
     def Encode(self, request, context):
         """Encode data sent in an EncodeRequest into a EncodeReply"""
