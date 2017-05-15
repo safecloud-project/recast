@@ -103,18 +103,20 @@ class EntanglementDriver(object):
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
     HEADER_DELIMITER = chr(29)
 
-    def __init__(self, block_source, k=5, entanglement=Dagster, pointers=5):
+    def __init__(self, block_source, k=5, entanglement=Dagster, pointers=5, replicas=3):
         """
         Args:
             block_source(object): An entity that can return random blocks
             k(int): The number of blocks to split the data in (defaults to 5)
             entanglement(Entangler): A type of entanglement to use (defaults to Dagster)
             pointers(int): The number of old blocks to entangle with (defaults to 5)
+            replicas(int): The number of replicas of the entangled blocks (defaults to 3)
         """
         self.source = block_source
         self.k = k
         self.entangler = entanglement()
         self.pointers = pointers
+        self.replicas = replicas
 
     @staticmethod
     def __split_data(data, k):
@@ -145,6 +147,25 @@ class EntanglementDriver(object):
     def __parse_entanglement_header(header):
         return json.loads(header)
 
+    @staticmethod
+    def make_replicas(blocks, replicas):
+        """
+        Copy blocks to make replicas
+        f([data_0  , data_1  , ..., data_n ], r) ->
+          [data_0_1, data_1_1, ..., data_n_1,
+           ...,
+           data_0_r, data_1_r, ..., data_n_r]
+        Args:
+            blocks(list(bytes)): Original blocks of data
+            replicas(int): The number of replicas to return
+        """
+        copies = []
+        for _ in xrange(replicas):
+            for block in blocks:
+                copy = block[:]
+                copies.append(copy)
+        return copies
+
     def encode(self, data):
         """
         Encodes data into a series of strips after entangling them
@@ -164,7 +185,8 @@ class EntanglementDriver(object):
             encoded_block, random_blocks = self.entangler.entangle(block, random_blocks)
             encoded_block = block_header + self.HEADER_DELIMITER + encoded_block
             encoded_blocks.append(encoded_block)
-        return encoded_blocks
+        # Create replicas
+        return self.make_replicas(encoded_blocks, self.replicas)
 
 
     @staticmethod
