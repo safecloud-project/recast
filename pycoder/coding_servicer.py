@@ -192,10 +192,20 @@ class DriverFactory(object):
             pointers = int(os.environ.get("ENTANGLEMENT_POINTERS"))
         elif self.config.has_option("entanglement", "pointers"):
             pointers = int(self.config.get("entanglement", "pointers"))
+        else:
+            raise RuntimeError("A value must defined for the number of pointers to exisiting data blocks (pointers) either in pycoder.cfg or as environment variable ENTANGLEMENT_POINTERS")
+
+        replicas = None
+        if os.environ.has_key("ENTANGLEMENT_REPLICAS"):
+            replicas = int(os.environ.get("ENTANGLEMENT_REPLICAS"))
+        elif self.config.has_option("entanglement", "replicas"):
+            replicas = int(self.config.get("entanglement", "replicas"))
+        else:
+            raise RuntimeError("A value must defined for the number of replicas of the data blocks (replicas) either in pycoder.cfg or as environment variable ENTANGLEMENT_REPLICAS")
 
         source = ProxyClient()
-        driver = EntanglementDriver(source, k=k, pointers=pointers)
-        logger.info("Loaded entanglement driver " + str(type(driver.entangler).__name__) + " with " + str(k) + " data blocks and " + str(pointers) + " pointers")
+        driver = EntanglementDriver(source, k=k, pointers=pointers, replicas=replicas)
+        logger.info("Loaded entanglement driver " + str(type(driver.entangler).__name__) + " with " + str(driver.k) + " data blocks, " + str(driver.pointers) + " pointers and " + str(driver.replicas) + " replicas")
         return driver
 
 

@@ -432,8 +432,9 @@ class Dispatcher(object):
         """
         all_metablocks = [block for filename in self.files.keys() for block in self.files.get(filename).blocks]
         number_of_blocks_to_fetch = min(len(all_metablocks), blocks_desired)
-        random.shuffle(all_metablocks)
-        random_metablocks = all_metablocks[:number_of_blocks_to_fetch]
+        data_metablocks = [m for m in all_metablocks if m.block_type == BlockType.DATA]
+        random.shuffle(data_metablocks)
+        random_metablocks = data_metablocks[:number_of_blocks_to_fetch]
         fetchers = []
         block_queue = {}
         metablocks = {}
