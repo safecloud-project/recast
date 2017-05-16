@@ -224,13 +224,14 @@ class EntanglementDriver(object):
         Returns:
             bytes: The decoded data
         """
-        random_blocks = []
-        if self.pointers > 0:
-            random_blocks = self.source.get_random_blocks(self.pointers)
         block_header_text = EntanglementDriver.__get_header_from_strip(strips[0])
         block_header = EntanglementDriver.__parse_entanglement_header(block_header_text)
         strips = [self.__get_data_from_strip(strip) for strip in strips]
-        random_blocks = [self.source.get_block(block[0], block[1]).data for block in block_header]
+
+        random_blocks = []
+        if self.pointers > 0:
+            random_blocks = [self.source.get_block(block[0], block[1]).data for block in block_header]
+
         decoded_blocks = []
         for strip in strips:
             decoded_block, random_blocks = self.entangler.disentangle(strip, random_blocks)
