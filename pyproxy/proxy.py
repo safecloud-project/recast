@@ -123,6 +123,7 @@ def store(key=None, data=None):
     encode_request.parameters["key"] = key
     LOGGER.debug("Going to request data encoding")
     encoded_file = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
+    #TODO Build entanglement dictionnary
     number_of_blocks = len(encoded_file.strips)
     LOGGER.debug("Received {:2d} encoded blocks from data encoding".format(number_of_blocks))
     LOGGER.debug("Going to store {:2d} blocks with key {:s}".format(number_of_blocks, key))

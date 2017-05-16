@@ -5,6 +5,8 @@ import json
 import math
 import re
 
+from pyeclib.ec_iface import ECDriverError
+
 import numpy
 
 class Entangler(object):
@@ -235,12 +237,39 @@ class EntanglementDriver(object):
             decoded_blocks.append(decoded_block)
         return self.__merge_data(decoded_blocks)
 
-    def fragments_needed(self, given):
+    def fragments_needed(self, missing_fragment_indexes):
         """
         Returns the ids of the fragments needed to reconstruct the missing fragments
         Args:
-            given(list(int)): Indices of the available fragments
+            missing_fragment_indexes(list(int)): Indices of the missing fragments
         Returns:
             list(int): The indices of the fragments needed for reconstruction
         """
-        return [index for index in xrange(self.k) if index not in given]
+        data_indexes = [index for index in xrange(self.k) if index not in missing_fragment_indexes]
+        reconstruction_indexes = []
+        blocks = self.k * self.replicas
+        missing_data_indexes = [index for index in missing_fragment_indexes if index < self.k]
+        for missing_index in missing_data_indexes:
+            copies = []
+            for replica_index in xrange(missing_index + self.k, blocks, self.k):
+                if replica_index not in missing_fragment_indexes:
+                    copies.append(replica_index)
+            if not copies:
+                raise ECDriverError("Cannot find available replica for block " + str(missing_index))
+            reconstruction_indexes.append(copies[0])
+        return sorted(data_indexes + reconstruction_indexes, key=lambda index: (index % self.k))
+
+    @staticmethod
+    def reconstruct(available_fragment_payloads, missing_fragment_indexes):
+        """
+        Returns copies of the original blocks from the replicas
+        Args:
+            available_fragment_payloads(list(bytes)): Available blocks of data
+            missing_data_indexes(list(int)): Indexes of the missing blocks
+        Returns:
+            list(bytes): The reconstructed blocks
+        """
+        reconstructed_blocks = []
+        for i in xrange(len(missing_fragment_indexes)):
+            reconstructed_blocks.append(available_fragment_payloads[i])
+        return reconstructed_blocks
