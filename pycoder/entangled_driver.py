@@ -271,6 +271,6 @@ class EntanglementDriver(object):
             list(bytes): The reconstructed blocks
         """
         reconstructed_blocks = []
-        for i in xrange(len(missing_fragment_indexes)):
+        for i in missing_fragment_indexes:
             reconstructed_blocks.append(available_fragment_payloads[i])
         return reconstructed_blocks

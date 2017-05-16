@@ -368,6 +368,9 @@ class Dispatcher(object):
         block = metadata.blocks[index]
         provider = self.providers[block.provider]
         data = provider.get(block.key)
+        if data is None:
+            coder_client = CoderClient()
+            data = coder_client.reconstruct(path, [index])[index].data
         return data
 
     def get(self, path):
