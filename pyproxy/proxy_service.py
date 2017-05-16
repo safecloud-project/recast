@@ -29,7 +29,7 @@ class ProxyService(ProxyServicer):
         blocks = request.blocks
         self.logger.info("Start request to get " + str(blocks) + " random blocks")
         strips = get_random_blocks(blocks)
-        self.logger.info("End request to get " + str(blocks) + " random blocks")
+        self.logger.info("End request to get " + str(blocks) + " random blocks with " + str(len(strips)) + " blocks")
         reply = BlockReply()
         reply.strips.extend(strips)
         self.logger.info("Replying to GetRandomBlocks request")
