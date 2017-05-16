@@ -5,7 +5,6 @@ import datetime
 import hashlib
 import logging
 import logging.config
-import Queue
 import random
 import re
 import threading
@@ -454,5 +453,9 @@ class Dispatcher(object):
             fetcher.join()
         random_blocks = []
         for key, block in block_queue.iteritems():
+            if  isinstance(block, (BlockNotFoundException, \
+                                   ProviderUnreachableException, \
+                                   CorruptedBlockException)):
+                continue
             random_blocks.append((key, block))
         return random_blocks
