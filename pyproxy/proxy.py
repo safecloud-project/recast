@@ -20,6 +20,7 @@ from pyproxy_globals import get_dispatcher_instance
 from playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
 from proxy_service import ProxyService
 
+
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
 logging.config.fileConfig(log_config)
 
@@ -50,6 +51,11 @@ DISPATCHER = get_dispatcher_instance()
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
 APP = bottle.app()
+
+# Inizialize the dictionary for keeping track of blocks used in encoding
+HEADER_DICTIONARY = {}
+HEADER_DELIMITER = chr(29) # The header delimiter used in entangled_driver
+
 
 @APP.route("/<key:path>", method="GET")
 def get(key):
@@ -116,6 +122,7 @@ def store(key=None, data=None):
 
     key -- Key under which the data should be stored (default None)
     """
+    
     if key is None:
         key = str(uuid.uuid4())
     encode_request = EncodeRequest()
@@ -123,12 +130,23 @@ def store(key=None, data=None):
     encode_request.parameters["key"] = key
     LOGGER.debug("Going to request data encoding")
     encoded_file = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
-    #TODO Build entanglement dictionnary
+          
     number_of_blocks = len(encoded_file.strips)
     LOGGER.debug("Received {:2d} encoded blocks from data encoding".format(number_of_blocks))
     LOGGER.debug("Going to store {:2d} blocks with key {:s}".format(number_of_blocks, key))
-    DISPATCHER.put(key, encoded_file)
+    metadata = DISPATCHER.put(key, encoded_file)
     LOGGER.debug("Stored {:2d} blocks with key {:s}".format(number_of_blocks, key))
+
+    keys_and_providers = [ [b.key,b.provider] for b in metadata.blocks]
+    providers = [b.provider for b in metadata.blocks]
+        
+    #TODO Build entanglement dictionnary
+    for s in encoded_file.strips:
+        s = str(s.data)
+        pos = s.find(HEADER_DELIMITER)
+        # Dictionary: timestamp, pointers, current blocks keys and hosting nodes
+        HEADER_DICTIONARY[key] = [str(metadata.creation_date) , s[:pos] , str(keys_and_providers)]
+           
     return key
 
 
@@ -167,6 +185,14 @@ def list():
     """
     entries = [convert_metadata_to_dictionary(meta) for meta in DISPATCHER.list()]
     return json.dumps({"files": entries})
+
+@APP.route("/dict", method="GET")
+def dictionary():
+    """
+    Show the dictionary used by the proxy to the trace blocks used in encoding.
+    """
+    return json.dumps(HEADER_DICTIONARY, indent=4, separators=(',', ': '))
+
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(prog="proxy",
