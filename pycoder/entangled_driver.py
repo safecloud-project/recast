@@ -5,6 +5,7 @@ import json
 import math
 import re
 
+from pyeclib.ec_iface import ECDriver
 from pyeclib.ec_iface import ECDriverError
 
 import numpy
@@ -94,6 +95,40 @@ class Dagster(object):
         entanglee = numpy.frombuffer(block_b, dtype='b')
         return numpy.bitwise_xor(entangled, entanglee).tostring()
 
+def pad(data, length):
+    length_diff = length - len(data)
+    if not length_diff:
+        return data
+    if length_diff > 0:
+        for _ in xrange(length_diff):
+            data += '\0'
+        return data
+    return data[0:length_diff]
+
+class StepEntangler(object):
+    #FIXME Determining original fragment size fails if the number of source blocks is lower or equal to  the number of pointer blocks (s<=t)
+    def __init__(self, s, t, p):
+        self.s = s
+        self.t = t
+        self.p = p
+        self.k = s + t
+        self.driver = ECDriver(k=self.k, m=self.p, ec_type="liberasurecode_rs_vand")
+
+    def entangle(self, data):
+        fragment_size = int(math.ceil(len(data) / float(self.s)))
+        #TODO get blocks from the source
+        blocks = [pad("", fragment_size) for _ in xrange(self.t)]
+        data += "".join(blocks)
+        return self.driver.encode(data)
+
+    def disentangle(self, encoded):
+        decoded = self.driver.decode(encoded)
+        actual_fragment_size = len(decoded) /  float(self.k)
+        bytes_to_recover = int(actual_fragment_size * self.s)
+        return decoded[:bytes_to_recover]
+
+    def __repr__(self):
+        return "StepEntangler(s=" + str(self.s) + ", t=" + str(self.t) + ", p=" + str(self.p) + ")"
 
 class EntanglementDriver(object):
     """
