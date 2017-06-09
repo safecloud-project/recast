@@ -13,7 +13,7 @@ from pyeclib.ec_iface import ECInvalidParameter
 from pyeclib.ec_iface import ECOutOfMemory
 from pyeclib.ec_iface import ECDriverError
 
-from entangled_driver import EntanglementDriver
+from entangled_driver import StepEntangler
 
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
@@ -179,33 +179,8 @@ class DriverFactory(object):
         Returns:
             EntanglementDriver: An instance of EntanglementDriver
         """
-        k = None
-        if os.environ.has_key("ENTANGLEMENT_K"):
-            k = int(os.environ.get("ENTANGLEMENT_K"))
-        elif self.config.has_option("entanglement", "k"):
-            k = int(self.config.get("entanglement", "k"))
-        else:
-            raise RuntimeError("A value must be defined for the number of data blocks (k) to use either in pycoder.cfg or as an environment variable ENTANGLEMENT_K")
-
-        pointers = None
-        if os.environ.has_key("ENTANGLEMENT_POINTERS"):
-            pointers = int(os.environ.get("ENTANGLEMENT_POINTERS"))
-        elif self.config.has_option("entanglement", "pointers"):
-            pointers = int(self.config.get("entanglement", "pointers"))
-        else:
-            raise RuntimeError("A value must defined for the number of pointers to exisiting data blocks (pointers) either in pycoder.cfg or as environment variable ENTANGLEMENT_POINTERS")
-
-        replicas = None
-        if os.environ.has_key("ENTANGLEMENT_REPLICAS"):
-            replicas = int(os.environ.get("ENTANGLEMENT_REPLICAS"))
-        elif self.config.has_option("entanglement", "replicas"):
-            replicas = int(self.config.get("entanglement", "replicas"))
-        else:
-            raise RuntimeError("A value must defined for the number of replicas of the data blocks (replicas) either in pycoder.cfg or as environment variable ENTANGLEMENT_REPLICAS")
-
-        source = ProxyClient()
-        driver = EntanglementDriver(source, k=k, pointers=pointers, replicas=replicas)
-        logger.info("Loaded entanglement driver " + str(type(driver.entangler).__name__) + " with " + str(driver.k) + " data blocks, " + str(driver.pointers) + " pointers and " + str(driver.replicas) + " replicas")
+        driver = StepEntangler(5, 5, 5)
+        logger.info("Loaded entanglement driver " + str(driver))
         return driver
 
 
