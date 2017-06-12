@@ -263,11 +263,13 @@ class StepEntangler(object):
         block_header = self.__serialize_entanglement_header(pointer_blocks)
         size = len(data)
         fragment_size = int(math.ceil(size / float(self.s)))
+        if (fragment_size % 2) == 1:
+            fragment_size += 1
         padded_size = fragment_size * self.s
         padded_data = pad(data, padded_size)
         pointer_blocks = [pad(self.__get_data_from_strip(block.data)[80:], fragment_size) for block in pointer_blocks]
         encoded = self.entangle(padded_data, pointer_blocks)
-        parity_blocks = [block_header + self.HEADER_DELIMITER + str(size) + self.HEADER_DELIMITER + parity_block for parity_block in encoded]
+        parity_blocks = [block_header + self.HEADER_DELIMITER + str(size) + self.HEADER_DELIMITER + parity_block for parity_block in encoded[self.k:]]
         return parity_blocks
 
     def entangle(self, data, blocks):
@@ -282,8 +284,7 @@ class StepEntangler(object):
                          pointer blocks and running them through Reed-Solomon
                          encoding
         """
-        encoded_blocks = self.driver.encode(data + "".join(blocks))
-        return encoded_blocks[self.k:]
+        return self.driver.encode(data + "".join(blocks))
 
     def decode(self, strips):
         """
