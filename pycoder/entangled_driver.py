@@ -4,6 +4,7 @@ A module with entanglement utilities
 import json
 import math
 import re
+import hashlib
 import struct
 
 from pyeclib.ec_iface import ECDriver
@@ -12,42 +13,6 @@ from pyeclib.ec_iface import ECDriverError
 import numpy
 
 from proxy_client import ProxyClient
-
-class Entangler(object):
-    """
-    An abstraction representing the expected interface of an Entangler
-    implementation
-    """
-    def __init__(self, data_source):
-        """
-        Args:
-            data_source(object): A data source that can be used to fetch blocks
-        """
-        self.data_source = data_source
-
-    def entangle(self, data):
-        """
-        Entangles data with blocks from the data source
-        Args:
-            data(list(str)): Data to entangle
-        Returns:
-            dict: A dictionary with the entangled data blocks and the ids of the
-                  blocks used for the entanglement
-        """
-        raise NotImplementedError()
-
-    def disentangle(self, data, blocks):
-        """
-        Disentangles data
-        Args:
-            data(list(str)): Entangled data
-            blocks(list(str)): Id of the blocks used for the original entanglement
-        Returns:
-            list(str): data
-        """
-        raise NotImplementedError()
-
-
 
 class Dagster(object):
     """
@@ -99,8 +64,14 @@ class Dagster(object):
         return numpy.bitwise_xor(entangled, entanglee).tostring()
 
 def pad(data, length):
+    """
+    Trims or zero-fills a sequence of bytes to match a given length
+    Args:
+        data(bytes): The data to adapt
+    Returns:
+        (bytes): The adapted sequence of bytes
+    """
     length_diff = length - len(data)
-    print "[pad] length_diff = " + str(length_diff)
     if not length_diff:
         return data
     if length_diff > 0:
@@ -115,7 +86,6 @@ class FragmentHeader(object):
     """
     HEADER_FORMAT = "=IIIxxxxxxxxx"
     def __init__(self, blob):
-        print "[FragmentHeader] len(blob) = " + str(len(blob))
         self.metadata = FragmentMetadata(blob[:59])
         extracted = struct.unpack(FragmentHeader.HEADER_FORMAT, blob[59:])
         self.magic = extracted[0]
@@ -149,7 +119,6 @@ class FragmentMetadata(object):
     """
     METADATA_FORMAT = "=IIIQBIIIIIIIIBBI"
     def __init__(self, blob):
-        print "[FragmentMetadata] len(blob) = " + str(len(blob))
         extracted = struct.unpack(FragmentMetadata.METADATA_FORMAT, blob)
         self.index = extracted[0]
         self.size = extracted[1]
@@ -205,7 +174,6 @@ class StepEntangler(object):
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
     HEADER_DELIMITER = chr(29)
 
-    #FIXME Determining original fragment size fails if the number of source blocks is lower or equal to  the number of pointer blocks (s<=t)
     def __init__(self, s, t, p):
         self.s = s
         self.t = t
@@ -250,7 +218,7 @@ class StepEntangler(object):
         Returns:
             int: The size of the original data
         """
-        start = strip.find(EntanglementDriver.HEADER_DELIMITER) + \
+        start = strip.find(EntanglementDriver.HEADER_DELIMITER) +\
                 len(EntanglementDriver.HEADER_DELIMITER)
         end = strip.rfind(EntanglementDriver.HEADER_DELIMITER)
         return int(strip[start:end])
@@ -264,7 +232,9 @@ class StepEntangler(object):
         Returns:
             bytes: The data part of the strip
         """
-        pos = strip.rfind(EntanglementDriver.HEADER_DELIMITER) + \
+        first_pos =  strip.find(EntanglementDriver.HEADER_DELIMITER) +\
+                     len(EntanglementDriver.HEADER_DELIMITER)
+        pos = strip.find(EntanglementDriver.HEADER_DELIMITER, first_pos) +\
               len(EntanglementDriver.HEADER_DELIMITER)
         return strip[pos:]
 
@@ -284,19 +254,18 @@ class StepEntangler(object):
         size = len(data)
         fragment_size = int(math.ceil(size / float(self.s)))
         padded_size = fragment_size * self.s
-        print "[encode] fragment_size = " + str(fragment_size)
         padded_data = pad(data, padded_size)
-        pointer_blocks = [pad(self.__get_data_from_strip(block.data), fragment_size) for block in pointer_blocks]
+        pointer_blocks = [pad(self.__get_data_from_strip(block.data)[80:], fragment_size) for block in pointer_blocks]
         encoded = self.entangle(padded_data, pointer_blocks)
-        for block in encoded:
-            header = FragmentHeader(block[:80])
-            print "[encode] " + str(header)
-            print "[encode] len(block) = " + str(len(block))
         parity_blocks = [block_header + self.HEADER_DELIMITER + str(size) + self.HEADER_DELIMITER + parity_block for parity_block in encoded]
         return parity_blocks
 
     def entangle(self, data, blocks):
-        return self.driver.encode(data + "".join(blocks))[-(self.p):]
+        encoded_blocks = self.driver.encode(data + "".join(blocks))
+        for block in encoded_blocks[5:]:
+            header = FragmentHeader(block[:80])
+            print "[   entangle] encoded[{:>2}] = {} ({} bytes vs {} bytes)".format(header.metadata.index, hashlib.sha256(block[80:]).hexdigest(), header.metadata.size, len(block[80:]))
+        return encoded_blocks[self.k:]
 
     @staticmethod
     def is_part_of_a_codeword(block):
@@ -320,67 +289,58 @@ class StepEntangler(object):
         Returns:
             bytes: The decoded data
         """
-        print "[decode] Entering decode method"
         pointer_blocks = []
-        
         model_fragment_header = FragmentHeader(self.__get_data_from_strip(strips[0])[:80])
         fragment_size = model_fragment_header.metadata.size
         orig_data_size = model_fragment_header.metadata.orig_data_size
-        
+        print "[decode] len(strips[0])                                      = {}".format(len(strips[0]))
+        print "[decode] len(self.__get_header_from_strip(strips[0]))        = {}".format(len(self.__get_header_from_strip(strips[0])))
+        print "[decode] len(self.__get_original_size_from_strip(strips[0])) = {}".format(len(str(self.__get_original_size_from_strip(strips[0]))))
+        print "[decode] len(self.__get_data_from_strip(strips[0]))          = {}".format(len(self.__get_data_from_strip(strips[0])))
+        print "[decode] orig_data_size = {}".format(orig_data_size)
+        print "[decode] fragment_size  = {}".format(fragment_size)
+
         if self.t > 0:
-            print "[decode] About to fetch " + str(self.t) + " pointer blocks"
             block_header_text = self.__get_header_from_strip(strips[0])
             block_header = self.__parse_entanglement_header(block_header_text)
             pointer_blocks = [self.source.get_block(block[0], block[1]).data for block in block_header]
-            print "[decode] About to prepare the pointer blocks for decoding"
             modified_pointer_blocks = []
+            for block in strips:
+                print "[decode] len(        block) = {}".format(len(block))
             for index, pb in enumerate(pointer_blocks):
-                print "[decode] Preparing pointer_block " + str(self.s + index)
                 pointer_block = self.__get_data_from_strip(pb)
-                print "[decode] YOLO"
-                if self.is_part_of_a_codeword(pointer_block):
-                    print "[decode] Pointer_block " + str(self.s + index) + "'s header needs to be modified"
-                    fragment_header = FragmentHeader(pointer_block[:80])
-                    fragment_header.metadata.index = self.s + index
-                    fragment_header.metadata.size = fragment_size
-                    fragment_header.metadata.orig_data_size = orig_data_size
-                    pointer_block = fragment_header.pack() + pointer_block[80:]
-                    print "[decode] Finished preparing pointer block " + str(self.s + index)
-                else:
-                    print "[decode] SWAG"
-                modified_pointer_blocks.append(pointer_block)
-                print "[decode] HKJDSHKDJSHKJDHS"
-            
-            print "About to pad the shit out of the data"
-            modified_pointer_blocks = [pad(block, 80 + fragment_size) for block in modified_pointer_blocks]
-            print "[decode] Finished preparing pointer blocks"
-        print "[decode] Preparing archived parity plocas"
-        
+                fragment_header = FragmentHeader(pointer_block[:80])
+                fragment_header.metadata.index = self.s + index
+                fragment_header.metadata.size = fragment_size
+                fragment_header.metadata.orig_data_size = orig_data_size
+                modified_block = fragment_header.pack() + "" + pad(pointer_block[80:], fragment_size)
+                print "[decode] len(modified_block) = {}".format(len(modified_block))
+                modified_pointer_blocks.append(modified_block)
+
         original_data_size = self.__get_original_size_from_strip(strips[0])
         strips = [self.__get_data_from_strip(strip) for strip in strips]
-        print "[decode] Finished preparing archived parity blocks"
-        print "[decode] Decoding data"
         decoded = self.disentangle(strips, modified_pointer_blocks)
-        print "[decode] Decoded data"
-        return decoded
+        return decoded[:original_data_size]
 
     def disentangle(self, parity_blocks, pointer_blocks):
+        """
+        Performs disentanglement in order to reconstruct and decode the original
+        data.
+        Args:
+            parity_blocks(bytes): The parity blocks produced from the original encoding
+            pointer_blocks(bytes): The blocks used in the original entanglement adjusted to the right size
+        Returns:
+            bytes: The data is it was originally mixed with the pointer blocks before encoding
+        """
         available_blocks = pointer_blocks + parity_blocks
         for block in available_blocks:
             header = FragmentHeader(block[:80])
-            print header.metadata.index
-            print header.metadata.size
-            print header.metadata.orig_data_size
-            print header.metadata.fragment_backend_metadata_size
+            print "[disentangle] encoded[{:>2}] = {} ({} bytes vs {} bytes)".format(header.metadata.index, hashlib.sha256(block[80:]).hexdigest(), header.metadata.size, len(block[80:]))
         missing_indexes = [index for index in xrange(self.s)]
-        #FIXME cannot use the ponter blocks "as-is" because they don't carry metadata
         source_blocks = self.driver.reconstruct(available_blocks, missing_indexes)
         data_blocks = source_blocks + pointer_blocks
-        for block in data_blocks:
-            header = FragmentHeader(block[:80])
-            print str(header.metadata.index) + ", " +  str(header.metadata.size) + ", " + str(header.metadata.orig_data_size) + ", " + str(header.metadata.fragment_backend_metadata_size)
         return self.driver.decode(data_blocks)
-        
+
     def fragments_needed(self, missing_fragment_indexes):
         return [index for index in xrange(self.s)]
 
@@ -568,18 +528,12 @@ class EntanglementDriver(object):
         return reconstructed_blocks
 
 if __name__ == "__main__":
-    s = 5
-    t = 5
-    p = 5
-    entangler = StepEntangler(s, t, p)
-    print entangler
+    SOURCE_BLOCKS = 5
+    POINTER_BLOCKS = 5
+    PARITY_BLOCKS = 5
+    ENTANGLER = StepEntangler(SOURCE_BLOCKS, PARITY_BLOCKS, PARITY_BLOCKS)
     with open("requirements.txt", "r") as requirement_file:
-        data = requirement_file.read()
-    encoded = entangler.encode(data)
-    decoded = entangler.decode(encoded)
-    print "len(data)    = " + str(len(data))
-    print "len(decoded) = " + str(len(decoded))
-    print decoded
-    for j in xrange(min(len(data), len(encoded))):
-        assert decoded[j] == data[j]
-        print j 
+        DATA = requirement_file.read()
+    ENCODED = ENTANGLER.encode(DATA)
+    DECODED = ENTANGLER.decode(ENCODED)
+    assert DATA == DECODED
