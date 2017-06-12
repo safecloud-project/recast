@@ -14,6 +14,7 @@ from pyeclib.ec_iface import ECOutOfMemory
 from pyeclib.ec_iface import ECDriverError
 
 from entangled_driver import EntanglementDriver
+from entangled_driver import StepEntangler
 
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
@@ -179,35 +180,72 @@ class DriverFactory(object):
         Returns:
             EntanglementDriver: An instance of EntanglementDriver
         """
-        k = None
-        if os.environ.has_key("ENTANGLEMENT_K"):
-            k = int(os.environ.get("ENTANGLEMENT_K"))
-        elif self.config.has_option("entanglement", "k"):
-            k = int(self.config.get("entanglement", "k"))
+        entanglement_type = None
+        if os.environ.has_key("ENTANGLEMENT_TYPE"):
+            entanglement_type = os.environ.get("ENTANGLEMENT_TYPE")
+        elif self.config.has_option("entanglement", "type"):
+            entanglement_type = self.config.get("entanglement", "type")
         else:
-            raise RuntimeError("A value must be defined for the number of data blocks (k) to use either in pycoder.cfg or as an environment variable ENTANGLEMENT_K")
+            raise RuntimeError("A type of entanglement must be defined by setting the key type in the entanglement section of pycoder.cfg or through the environment variable ENTANGLEMENT_TYPE")
+        entanglement_type = entanglement_type.strip().lower()
+        if entanglement_type == "dagster":
+            k = None
+            if os.environ.has_key("ENTANGLEMENT_K"):
+                k = int(os.environ.get("ENTANGLEMENT_K"))
+            elif self.config.has_option("dagster", "k"):
+                k = int(self.config.get("dagster", "k"))
+            else:
+                raise RuntimeError("A value must be defined for the number of data blocks (k) to use either in pycoder.cfg or as an environment variable ENTANGLEMENT_K")
+            pointers = None
+            if os.environ.has_key("ENTANGLEMENT_POINTERS"):
+                pointers = int(os.environ.get("ENTANGLEMENT_POINTERS"))
+            elif self.config.has_option("dagster", "pointers"):
+                pointers = int(self.config.get("dagster", "pointers"))
+            else:
+                raise RuntimeError("A value must defined for the number of pointers to exisiting data blocks (pointers) either in pycoder.cfg or as environment variable ENTANGLEMENT_POINTERS")
 
-        pointers = None
-        if os.environ.has_key("ENTANGLEMENT_POINTERS"):
-            pointers = int(os.environ.get("ENTANGLEMENT_POINTERS"))
-        elif self.config.has_option("entanglement", "pointers"):
-            pointers = int(self.config.get("entanglement", "pointers"))
+            replicas = None
+            if os.environ.has_key("ENTANGLEMENT_REPLICAS"):
+                replicas = int(os.environ.get("ENTANGLEMENT_REPLICAS"))
+            elif self.config.has_option("dagster", "replicas"):
+                replicas = int(self.config.get("dagster", "replicas"))
+            else:
+                raise RuntimeError("A value must defined for the number of replicas of the data blocks (replicas) either in pycoder.cfg or as environment variable ENTANGLEMENT_REPLICAS")
+
+            source = ProxyClient()
+            driver = EntanglementDriver(source, k=k, pointers=pointers, replicas=replicas)
+            logger.info("Loaded entanglement driver " + str(type(driver.entangler).__name__) + " with " + str(driver.k) + " data blocks, " + str(driver.pointers) + " pointers and " + str(driver.replicas) + " replicas")
+            return driver
+        elif entanglement_type == "step":
+            source_blocks = None
+            if os.environ.has_key("ENTANGLEMENT_S"):
+                source_blocks = int(os.environ.get("ENTANGLEMENT_S"))
+            elif self.config.has_option("step", "s"):
+                source_blocks = int(self.config.get("step", "s"))
+            else:
+                raise RuntimeError("A value must be defined for the number of source blocks to split the data into either in pycoder.cfg as a value for the key s under the step section or through the environment variable ENTANGLEMENT_S")
+
+            pointer_blocks = None
+            if os.environ.has_key("ENTANGLEMENT_T"):
+                pointer_blocks = int(os.environ.get("ENTANGLEMENT_T"))
+            elif self.config.has_option("step", "t"):
+                pointer_blocks = int(self.config.get("step", "t"))
+            else:
+                raise RuntimeError("A value must be defined for the number of pointer blocks to entangle with in pycoder.cfg as a value for the key t under the step section or through the environment variable ENTANGLEMENT_T")
+
+            parity_blocks = None
+            if os.environ.has_key("ENTANGLEMENT_P"):
+                parity_blocks = int(os.environ.get("ENTANGLEMENT_P"))
+            elif self.config.has_option("step", "p"):
+                parity_blocks = int(self.config.get("step", "p"))
+            else:
+                raise RuntimeError("A value must be defined for the number of parity blocks generated as part of the erasure coding either in pycoder.cfg as a value for the key t under the step section or through the environment variable ENTANGLEMENT_T")
+
+            driver = StepEntangler(source_blocks, pointer_blocks, parity_blocks)
+            logger.info("Loaded driver {}".format(driver))
+            return driver
         else:
-            raise RuntimeError("A value must defined for the number of pointers to exisiting data blocks (pointers) either in pycoder.cfg or as environment variable ENTANGLEMENT_POINTERS")
-
-        replicas = None
-        if os.environ.has_key("ENTANGLEMENT_REPLICAS"):
-            replicas = int(os.environ.get("ENTANGLEMENT_REPLICAS"))
-        elif self.config.has_option("entanglement", "replicas"):
-            replicas = int(self.config.get("entanglement", "replicas"))
-        else:
-            raise RuntimeError("A value must defined for the number of replicas of the data blocks (replicas) either in pycoder.cfg or as environment variable ENTANGLEMENT_REPLICAS")
-
-        source = ProxyClient()
-        driver = EntanglementDriver(source, k=k, pointers=pointers, replicas=replicas)
-        logger.info("Loaded entanglement driver " + str(type(driver.entangler).__name__) + " with " + str(driver.k) + " data blocks, " + str(driver.pointers) + " pointers and " + str(driver.replicas) + " replicas")
-        return driver
-
+            raise RuntimeError("Type of entanglement {} is not supported".format(entanglement_type))
 
     def get_driver(self):
         return self.setup_driver()
