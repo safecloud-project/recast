@@ -230,7 +230,7 @@ class StepEntangler(object):
         """
         start = strip.find(EntanglementDriver.HEADER_DELIMITER) +\
                 len(EntanglementDriver.HEADER_DELIMITER)
-        end = strip.rfind(EntanglementDriver.HEADER_DELIMITER)
+        end = strip.find(EntanglementDriver.HEADER_DELIMITER, start)
         return int(strip[start:end])
 
     @staticmethod
