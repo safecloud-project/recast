@@ -190,7 +190,7 @@ class StepEntangler(object):
         self.p = p
         self.k = s + t
         self.source = ProxyClient()
-        self.driver = ECDriver(k=self.k, m=self.p, ec_type="liberasurecode_rs_vand")
+        self.driver = ECDriver(k=self.k, m=self.p, ec_type="isa_l_rs_vand")
 
     @staticmethod
     def __serialize_entanglement_header(strips):
