@@ -62,9 +62,9 @@ function ycsb_main {
 	# Need to move to the YCSB directory to access the contextual files such as the properties file
 	cd "${YCSB_HOME}"
 	wait_for_proxy
-	bin/ycsb load playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}" > /opt/ycsb/load.txt 2>&1
-	bin/ycsb run playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}" > /opt/ycsb/run.txt 2>&1
-	chmod -R 0777 /opt/ycsb/
+	bin/ycsb load playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}" > /opt/ycsb/load.txt 2> /opt/ycsb/load_noise.txt
+	bin/ycsb run playcloud -s -P "${WORKLOAD}" -p "playcloud.host=${PROXY_PORT_8080_TCP_ADDR}" -p "playcloud.port=${PROXY_PORT_8080_TCP_PORT}" > /opt/ycsb/run.txt 2> /opt/ycsb/run_noise.txt
+	chmod 0777 -R /opt/ycsb/
 }
 
 
