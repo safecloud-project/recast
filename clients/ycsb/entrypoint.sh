@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 
+readonly DEFAULT_TIMEOUT_IN_SECONDS=60
 #############################################################################
 # Check if all the variables needed to run the benchmark are defined
 #############################################################################
@@ -39,7 +40,7 @@ function ycsb_check_variables {
 function wait_for_proxy {
   local TIMER="${DEFAULT_TIMEOUT_IN_SECONDS}"
   while [[ "${TIMER}" -gt 0 ]]; do
-    nc -q 1 "${PROXY_PORT_8080_TCP_ADDR}" "${PROXY_PORT_8080_TCP_PORT}" </dev/null
+    nc -w 1 "${PROXY_PORT_8080_TCP_ADDR}" "${PROXY_PORT_8080_TCP_PORT}" </dev/null
     if [[ "${?}" -eq 0 ]]; then
       break
     fi
