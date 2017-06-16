@@ -25,3 +25,11 @@ services:
       - ./erasure.env
     # volumes:
     #  - ./pycoder:/usr/local/src/app
+  zoo1:
+    container_name: zoo1
+    image: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+    environment:
+      - ZOO_MY_ID=1

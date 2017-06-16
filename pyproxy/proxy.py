@@ -12,6 +12,7 @@ from bottle import abort, request, response, run
 import bottle
 import concurrent.futures
 import grpc
+from kazoo.client import KazooClient
 
 import playcloud_pb2
 import playcloud_pb2_grpc
@@ -52,6 +53,10 @@ DISPATCHER = get_dispatcher_instance()
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
 APP = bottle.app()
 
+# Setup kazoo
+KAZOO = KazooClient("zoo1:2181")
+KAZOO.start()
+
 # Inizialize the dictionary for keeping track of blocks used in encoding
 HEADER_DICTIONARY = {}
 HEADER_DELIMITER = chr(29) # The header delimiter used in entangled_driver
@@ -65,26 +70,28 @@ def get(key):
     key -- Key under which the data should have been stored
     """
     LOGGER.debug("Received get request for key {}".format(key))
-    blocks = DISPATCHER.get(key)
-    if blocks is None:
-        response.status = 404
-        return ""
-    strips = []
-    for block in blocks:
-        strip = Strip()
-        strip.data = block
-        strips.append(strip)
+    lock = KAZOO.ReadLock(key, "my-identifier")
+    with lock:
+        blocks = DISPATCHER.get(key)
+        if blocks is None:
+            response.status = 404
+            return ""
+        strips = []
+        for block in blocks:
+            strip = Strip()
+            strip.data = block
+            strips.append(strip)
 
-    LOGGER.debug("Received blocks from redis")
+        LOGGER.debug("Received blocks from redis")
 
-    decode_request = DecodeRequest()
-    decode_request.strips.extend(strips)
+        decode_request = DecodeRequest()
+        decode_request.strips.extend(strips)
 
-    LOGGER.debug("Going go to do decode request")
+        LOGGER.debug("Going go to do decode request")
 
-    data = CLIENT_STUB.Decode(
-        decode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).dec_block
-    return data
+        data = CLIENT_STUB.Decode(
+            decode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).dec_block
+        return data
 
 def convert_metadata_to_dictionary(meta):
     """
@@ -122,32 +129,32 @@ def store(key=None, data=None):
 
     key -- Key under which the data should be stored (default None)
     """
-    
     if key is None:
         key = str(uuid.uuid4())
-    encode_request = EncodeRequest()
-    encode_request.payload = data
-    encode_request.parameters["key"] = key
-    LOGGER.debug("Going to request data encoding")
-    encoded_file = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
-          
-    number_of_blocks = len(encoded_file.strips)
-    LOGGER.debug("Received {:2d} encoded blocks from data encoding".format(number_of_blocks))
-    LOGGER.debug("Going to store {:2d} blocks with key {:s}".format(number_of_blocks, key))
-    metadata = DISPATCHER.put(key, encoded_file)
-    LOGGER.debug("Stored {:2d} blocks with key {:s}".format(number_of_blocks, key))
+    lock = KAZOO.WriteLock(key, "my-identifier")
+    with lock:
+        encode_request = EncodeRequest()
+        encode_request.payload = data
+        encode_request.parameters["key"] = key
+        LOGGER.debug("Going to request data encoding")
+        encoded_file = CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
 
-    keys_and_providers = [ [b.key,b.provider] for b in metadata.blocks]
-    providers = [b.provider for b in metadata.blocks]
-        
-    #TODO Build entanglement dictionnary
-    for s in encoded_file.strips:
-        s = str(s.data)
-        pos = s.find(HEADER_DELIMITER)
-        # Dictionary: timestamp, pointers, current blocks keys and hosting nodes
-        HEADER_DICTIONARY[key] = [str(metadata.creation_date) , s[:pos] , str(keys_and_providers)]
-           
-    return key
+        number_of_blocks = len(encoded_file.strips)
+        LOGGER.debug("Received {:2d} encoded blocks from data encoding".format(number_of_blocks))
+        LOGGER.debug("Going to store {:2d} blocks with key {:s}".format(number_of_blocks, key))
+        metadata = DISPATCHER.put(key, encoded_file)
+        LOGGER.debug("Stored {:2d} blocks with key {:s}".format(number_of_blocks, key))
+
+        keys_and_providers = [[b.key, b.provider] for b in metadata.blocks]
+        providers = [b.provider for b in metadata.blocks]
+
+        #TODO Build entanglement dictionnary
+        for s in encoded_file.strips:
+            s = str(s.data)
+            pos = s.find(HEADER_DELIMITER)
+            # Dictionary: timestamp, pointers, current blocks keys and hosting nodes
+            HEADER_DICTIONARY[key] = [str(metadata.creation_date), s[:pos], str(keys_and_providers)]
+        return key
 
 
 @APP.route("/<key:path>", method="PUT")
