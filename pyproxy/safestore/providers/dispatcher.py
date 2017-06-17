@@ -287,11 +287,10 @@ class Dispatcher(object):
         if configuration is None:
             configuration = {}
         self.providers = {}
-        providers_configuration = configuration.get('providers', [])
+        providers_configuration = configuration.get('providers', {})
         factory = ProviderFactory()
-        for configuration in providers_configuration:
-            provider = factory.get_provider(configuration)
-            self.providers[str(uuid.uuid4())] = provider
+        for name, configuration in providers_configuration.items():
+            self.providers[name] = factory.get_provider(configuration)
         self.files = {}
 
     def list(self):
