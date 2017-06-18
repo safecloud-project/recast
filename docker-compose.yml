@@ -1,8 +1,6 @@
 version: "2"
 services:
   proxy:
-    container_name: proxy
-    hostname: proxy
     build: ./pyproxy
     ports:
     - "3000:8000"
@@ -12,12 +10,9 @@ services:
     #  - ./pyproxy:/usr/local/src/pyproxy
 
   redis:
-    container_name: redis
     image: redis:3.2.8
 
   coder:
-    container_name: coder
-    hostname: coder
     build: ./pycoder
     environment:
       - sec_measure=confd
@@ -26,7 +21,6 @@ services:
     # volumes:
     #  - ./pycoder:/usr/local/src/app
   zoo1:
-    container_name: zoo1
     image: zookeeper
     restart: always
     ports:
