@@ -187,10 +187,18 @@ class StepEntangler(object):
             t(int): Number of old blocks to entangle with
             p(int): Number of parity blocks to produce using Reed-Solomon
         """
+        if s <= 0:
+            raise ValueError("s({}) must be greater or equal to 1")
+        if t < 0:
+            raise ValueError("t({}) must be greater or equal to 0")
+        if p < s:
+            raise ValueError("p({}) must be greater or equal to s({})".format(p, s))
         self.s = s
         self.t = t
         self.p = p
+        self.e = self.p - self.s
         self.k = s + t
+
         self.source = source
         self.driver = ECDriver(k=self.k, m=self.p, ec_type="isa_l_rs_vand")
 
