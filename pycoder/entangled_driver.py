@@ -176,10 +176,12 @@ class StepEntangler(object):
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
     HEADER_DELIMITER = chr(29)
 
-    def __init__(self, s, t, p):
+    def __init__(self, source, s, t, p):
         """
         StepEntangler constructor
         Args:
+            source(Source): Block source implementing the get_random_blocks and
+                            get_block primitives
             s(int): Number of source blocks or the number of chunks to make from
                     the original data
             t(int): Number of old blocks to entangle with
@@ -189,7 +191,7 @@ class StepEntangler(object):
         self.t = t
         self.p = p
         self.k = s + t
-        self.source = ProxyClient()
+        self.source = source
         self.driver = ECDriver(k=self.k, m=self.p, ec_type="isa_l_rs_vand")
 
     @staticmethod

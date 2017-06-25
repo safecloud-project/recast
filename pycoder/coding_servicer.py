@@ -241,7 +241,8 @@ class DriverFactory(object):
             else:
                 raise RuntimeError("A value must be defined for the number of parity blocks generated as part of the erasure coding either in pycoder.cfg as a value for the key t under the step section or through the environment variable ENTANGLEMENT_T")
 
-            driver = StepEntangler(source_blocks, pointer_blocks, parity_blocks)
+            source = ProxyClient()
+            driver = StepEntangler(source, source_blocks, pointer_blocks, parity_blocks)
             logger.info("Loaded driver {}".format(driver))
             return driver
         else:
