@@ -352,7 +352,56 @@ class StepEntangler(object):
         Returns:
             list(int): The list of fragments required for decoding/reconstruction
         """
-        return [index for index in xrange(self.s)]
+        if not missing_fragment_indexes:
+            return [index for index in xrange(self.s)]
+        if self.e == 0:
+            raise ECDriverError("Configuration of Step (s={}, t={}, e={}, p={}) does not allow for reconstruction".format(self.s, self.t, self.e, self.p))
+        if self.e < len(missing_fragment_indexes):
+            raise ECDriverError("Configuration of Step (s={}, t={}, e={}, p={}) does not allow for reconstruction of {} missing blocks".format(self.s, self.t, self.e, self.p, len(missing_fragment_indexes)))
+
+        required_indices = [index for index in xrange(self.s) if index not in missing_fragment_indexes]
+        required_indices += [self.s + index for index in xrange(len(missing_fragment_indexes))]
+
+        return required_indices
+
+    def reconstruct(self, available_fragment_payloads, missing_fragment_indexes):
+        """
+        Reconstruct the missing fragements
+        Args:
+            list(bytes): Avalaible fragments
+            list(int): Indices of the missing fragments
+        Returns:
+            list(bytes): The list of reconstructed blocks
+        """
+        header_text = self.__get_header_from_strip(available_fragment_payloads[0])
+        list_of_pointer_blocks = self.__parse_entanglement_header(header_text)
+
+        parity_header = FragmentHeader(self.__get_data_from_strip(available_fragment_payloads[0])[:80])
+        original_data_size = self.__get_original_size_from_strip(available_fragment_payloads[0])
+
+        pointer_blocks = []
+        for index in xrange(self.t):
+            pointer_block = list_of_pointer_blocks[index]
+            original_pointer_block = self.source.get_block(pointer_block[0], int(pointer_block[1])).data
+            prepared_header = FragmentHeader(parity_header.pack())
+            prepared_header.metadata.index = self.s + index
+            prepared_data = pad(self.__get_data_from_strip(original_pointer_block)[80:],
+                                prepared_header.metadata.size)
+            prepared_block = prepared_header.pack() + "" + prepared_data
+            pointer_blocks.append(prepared_block)
+
+        parity_blocks = [self.__get_data_from_strip(block) for block in available_fragment_payloads]
+
+        missing_source_indexes = [index for index in xrange(self.s)]
+        reconstructed = self.driver.reconstruct(pointer_blocks + parity_blocks,
+                                                missing_source_indexes + missing_fragment_indexes)
+
+        requested_blocks = []
+        for block in reconstructed[self.s:]:
+            requested_block = header_text + self.HEADER_DELIMITER + str(original_data_size) + self.HEADER_DELIMITER + block
+            requested_blocks.append(requested_block)
+
+        return requested_blocks
 
     def __repr__(self):
         return "StepEntangler(s=" + str(self.s) + ", t=" + str(self.t) + ", p=" + str(self.p) + ")"
