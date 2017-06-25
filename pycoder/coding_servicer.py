@@ -422,7 +422,7 @@ class CodingService(BetaEncoderDecoderServicer):
         logger.info("Received reconstruct request")
         path = request.path
         missing_indices = [int(index) for index in request.missing_indices]
-        logger.debug("Retrieved path " + path + " and missing indices (" + ",".join([str(i) for i in missing_indices]) + ")")
+        logger.info("Retrieved path " + path + " and missing indices (" + ",".join([str(i) for i in missing_indices]) + ")")
         fragments_needed = self.driver.fragments_needed(missing_indices)
         logger.debug("Retrieved the list of indices to retrieve (" + "".join([str(i) for i in fragments_needed]) + ")")
         client = ProxyClient()
