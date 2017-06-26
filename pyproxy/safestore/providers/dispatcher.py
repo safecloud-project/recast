@@ -329,7 +329,10 @@ class Dispatcher(object):
                     block_type = BlockType.DATA
                 else:
                     block_type = BlockType.PARITY
-                metablock = MetaBlock(key, provider=provider_key, checksum=strip.checksum, block_type=block_type)
+                metablock = MetaBlock(key,
+                                      provider=provider_key,
+                                      checksum=strip.checksum,
+                                      block_type=block_type)
                 blocks_for_provider[metablock] = strip.data
             pusher = BlockPusher(provider, blocks_for_provider, metablock_queue)
             pusher.start()
@@ -351,7 +354,8 @@ class Dispatcher(object):
             str: A block of data
         Raises:
             ValueError: if the path is empty or the index is negative
-            LookupError: if the path does not match any file or the index does not match an existing block
+            LookupError: if the path does not match any file or the index does not
+                         match an existing block
         """
         if len(path.strip()) == 0:
             raise ValueError("argument path cannot be empty")
@@ -363,6 +367,7 @@ class Dispatcher(object):
         if index >= len(metadata.blocks):
             raise LookupError("could not find block for index " + str(index))
 
+        #TODO get block using self.__get_blocks
         block = metadata.blocks[index]
         provider = self.providers[block.provider]
         data = provider.get(block.key)
@@ -370,6 +375,31 @@ class Dispatcher(object):
             coder_client = CoderClient()
             data = coder_client.reconstruct(path, [index])[index].data
         return data
+
+    def __get_blocks(self, metablocks):
+        """
+        Args:
+            metablocks(list): The list of metablocks describing the blocks to get
+                              from the data stores
+        Returns:
+            dict(metablock, bytes): The blocks fetched from the data stores
+        """
+        blocks_per_provider = {}
+        for metablock in metablocks:
+            blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
+            blocks_to_fetch.append(metablock)
+            blocks_per_provider[metablock.provider] = blocks_to_fetch
+        fetchers = []
+        blocks = {}
+        for provider_key in blocks_per_provider:
+            provider = self.providers[provider_key]
+            blocks_to_fetch = blocks_per_provider[provider_key]
+            fetcher = BlockFetcher(provider, blocks_to_fetch, blocks)
+            fetcher.start()
+            fetchers.append(fetcher)
+        for fetcher in fetchers:
+            fetcher.join()
+        return blocks
 
     def get(self, path):
         """
@@ -382,33 +412,21 @@ class Dispatcher(object):
         metadata = self.files.get(path)
         if metadata is None:
             return None
-        blocks_per_provider = {}
         metablocks = [b for b in metadata.blocks if b.block_type == BlockType.DATA]
-        for metablock in metablocks:
-            blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
-            blocks_to_fetch.append(metablock)
-            blocks_per_provider[metablock.provider] = blocks_to_fetch
-        fetchers = []
-        block_queue = {}
-        for provider_key in blocks_per_provider:
-            provider = self.providers[provider_key]
-            blocks_to_fetch = blocks_per_provider[provider_key]
-            fetcher = BlockFetcher(provider, blocks_to_fetch, block_queue)
-            fetcher.start()
-            fetchers.append(fetcher)
-        for fetcher in fetchers:
-            fetcher.join()
+
+        block_queue = self.__get_blocks(metablocks)
+
         blocks_to_reconstruct = []
         for key in sorted(block_queue.keys()):
             block = block_queue[key]
-            if (isinstance(block, ProviderUnreachableException) or
-                    isinstance(block, BlockNotFoundException) or
-                    isinstance(block, CorruptedBlockException)):
+            if isinstance(block, (ProviderUnreachableException, \
+                                   BlockNotFoundException, \
+                                   CorruptedBlockException)):
                 missing_index = extract_index_from_key(key)
                 del block_queue[key]
                 blocks_to_reconstruct.append(missing_index)
 
-        if len(blocks_to_reconstruct) > 0:
+        if blocks_to_reconstruct:
             coder = CoderClient()
             reconstructed_blocks = coder.reconstruct(path, blocks_to_reconstruct)
             index_format_length = len(str(len(metablocks)))
@@ -466,23 +484,8 @@ class Dispatcher(object):
         all_metablocks = self.__get_flat_list_of_data_metablocks()
         random_metablocks = self.__select_randomly(blocks_desired, all_metablocks)
 
-        fetchers = []
-        block_queue = {}
-        metablocks = {}
-        providers_to_use = set([metablock.provider for metablock in random_metablocks])
-        for provider_key in providers_to_use:
-            blocks_stored_at_provider = [metablock for metablock in random_metablocks if metablock.provider == provider_key]
-            provider = self.providers[provider_key]
-            block_keys = []
-            for metablock in blocks_stored_at_provider:
-                block_key = metablock.key
-                block_keys.append(metablock)
-                metablocks[block_key] = metablock
-            fetcher = BlockFetcher(provider, block_keys, block_queue)
-            fetcher.start()
-            fetchers.append(fetcher)
-        for fetcher in fetchers:
-            fetcher.join()
+        block_queue = self.__get_blocks(random_metablocks)
+
         random_blocks = []
         for key, block in block_queue.iteritems():
             if  isinstance(block, (BlockNotFoundException, \
