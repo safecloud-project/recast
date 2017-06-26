@@ -8,7 +8,6 @@ import logging.config
 import random
 import re
 import threading
-import uuid
 
 from redis import ConnectionError
 
@@ -420,6 +419,39 @@ class Dispatcher(object):
         data_blocks = [block_queue[key] for key in sorted(block_queue.keys())]
         return data_blocks
 
+    def __get_flat_list_of_data_metablocks(self):
+        """
+        Returns a flat list of the metablocks pointing to data type blocks
+        Returns:
+            list(MetaBlock): A list of all the metablocks in the system
+        """
+        data_metablocks = []
+        for filename in self.files:
+            for block in self.files[filename].blocks:
+                if block.block_type == BlockType.DATA:
+                    data_metablocks.append(block)
+        return data_metablocks
+
+    @staticmethod
+    def __select_randomly(k, elements):
+        """
+        Returns up to k items from elements.
+        Args:
+            k(int): The number of elements to select
+            elements(list): A list of elements
+        Returns:
+            list: The list of elements to select
+        """
+        k_needed = min(k, len(elements))
+        if k_needed == len(elements):
+            return elements[:]
+        selected = []
+        while len(selected) < k_needed:
+            chosen = random.choice(elements)
+            if chosen not in selected:
+                selected.append(chosen)
+        return selected
+
     def get_random_blocks(self, blocks_desired):
         """
         Tries to randomly select a number blocks from the storage providers.
@@ -431,11 +463,9 @@ class Dispatcher(object):
             A list of tuples where the first element is a metablock and the
             second one is the block data itself
         """
-        all_metablocks = [block for filename in self.files.keys() for block in self.files.get(filename).blocks]
-        number_of_blocks_to_fetch = min(len(all_metablocks), blocks_desired)
-        data_metablocks = [m for m in all_metablocks if m.block_type == BlockType.DATA]
-        random.shuffle(data_metablocks)
-        random_metablocks = data_metablocks[:number_of_blocks_to_fetch]
+        all_metablocks = self.__get_flat_list_of_data_metablocks()
+        random_metablocks = self.__select_randomly(blocks_desired, all_metablocks)
+
         fetchers = []
         block_queue = {}
         metablocks = {}
