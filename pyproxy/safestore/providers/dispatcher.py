@@ -291,6 +291,7 @@ class Dispatcher(object):
         for name, configuration in providers_configuration.items():
             self.providers[name] = factory.get_provider(configuration)
         self.files = {}
+        self.replication_factor = 3
 
     def list(self):
         """
@@ -312,35 +313,37 @@ class Dispatcher(object):
         """
         metadata = Metadata(path, original_size=long(encoded_file.original_size))
         provider_keys = self.providers.keys()
-        blocks = [s.data for s in encoded_file.strips]
-        blocks_to_store = blocks
-        arrangement = arrange_elements(len(blocks_to_store), len(provider_keys))
+        blocks = [strip.data for _ in xrange(self.replication_factor) for strip in encoded_file.strips]
+        arrangement = arrange_elements(len(blocks), len(provider_keys))
         metablock_queue = {}
-        block_pushers = []
+        pushers = []
         index_format_length = len(str(len(blocks)))
+        metablocks = {}
         for i, provider_key in enumerate(provider_keys):
             provider = self.providers[provider_key]
             blocks_for_provider = {}
             for index in arrangement[i]:
+                index = index % len(encoded_file.strips)
                 strip = encoded_file.strips[index]
                 key = compute_block_key(path, index, index_format_length)
-                block_type = None
+                block_type = BlockType.PARITY
                 if  strip.type == Strip.DATA:
                     block_type = BlockType.DATA
-                else:
-                    block_type = BlockType.PARITY
-                metablock = MetaBlock(key,
-                                      providers=[provider_key],
-                                      checksum=strip.checksum,
-                                      block_type=block_type)
+                metablock = metablocks.get(index,
+                                           MetaBlock(key,
+                                                     providers=[],
+                                                     checksum=strip.checksum,
+                                                     block_type=block_type))
+                metablock.providers.append(provider_key)
+                metablocks[index] = metablock
                 blocks_for_provider[metablock] = strip.data
             pusher = BlockPusher(provider, blocks_for_provider, metablock_queue)
             pusher.start()
-            block_pushers.append(pusher)
-        for pusher in block_pushers:
+            pushers.append(pusher)
+        for pusher in pushers:
             pusher.join()
-        for index in sorted(metablock_queue.keys()):
-            metadata.blocks.append(metablock_queue[index])
+        for index, metablock in metablocks.items():
+            metadata.blocks.append(metablock)
         self.files[path] = metadata
         return metadata
 
@@ -387,9 +390,11 @@ class Dispatcher(object):
         """
         blocks_per_provider = {}
         for metablock in metablocks:
-            blocks_to_fetch = blocks_per_provider.get(metablock.providers[0], [])
+            random_index = random.randint(0, len(metablock.providers) - 1)
+            random_provider = metablock.providers[random_index]
+            blocks_to_fetch = blocks_per_provider.get(random_provider, [])
             blocks_to_fetch.append(metablock)
-            blocks_per_provider[metablock.providers[0]] = blocks_to_fetch
+            blocks_per_provider[random_provider] = blocks_to_fetch
         fetchers = []
         blocks = {}
         for provider_key in blocks_per_provider:
