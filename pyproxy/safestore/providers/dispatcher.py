@@ -357,7 +357,8 @@ class Dispatcher(object):
             LookupError: if the path does not match any file or the index does not
                          match an existing block
         """
-        if len(path.strip()) == 0:
+        path = path.strip()
+        if not path:
             raise ValueError("argument path cannot be empty")
         if index < 0:
             raise ValueError("argument index cannot be negative")
