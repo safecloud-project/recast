@@ -145,8 +145,7 @@ def store(key=None, data=None):
         metadata = DISPATCHER.put(key, encoded_file)
         LOGGER.debug("Stored {:2d} blocks with key {:s}".format(number_of_blocks, key))
 
-        keys_and_providers = [[b.key, b.provider] for b in metadata.blocks]
-        providers = [b.provider for b in metadata.blocks]
+        keys_and_providers = [[b.key, b.providers[0]] for b in metadata.blocks]
 
         #TODO Build entanglement dictionnary
         for s in encoded_file.strips:

@@ -77,19 +77,19 @@ class MetaBlock(object):
     """
     A class that represents a data block
     """
-    def __init__(self, key, provider=None, creation_date=None, block_type=BlockType.DATA, checksum=None):
+    def __init__(self, key, providers=None, creation_date=None, block_type=BlockType.DATA, checksum=None):
         """
         MetaBlock constructor
         Args:
             key (str): Key under which the block is stored
-            provider (str, optional): Id of the provider
+            providers (list(str), optional): Ids of the providers
             creation_date (datetime.datetime, optional): Time of creation of the
                 block, defaults to current time
             block_type (BlockType, optional): Type of the block
             checksum (str, optional): SHA256 digest of the data
         """
         self.key = key
-        self.provider = provider
+        self.providers = providers
         if creation_date is None:
             self.creation_date = datetime.datetime.now()
         else:
@@ -330,7 +330,7 @@ class Dispatcher(object):
                 else:
                     block_type = BlockType.PARITY
                 metablock = MetaBlock(key,
-                                      provider=provider_key,
+                                      providers=[provider_key],
                                       checksum=strip.checksum,
                                       block_type=block_type)
                 blocks_for_provider[metablock] = strip.data
@@ -370,7 +370,7 @@ class Dispatcher(object):
 
         #TODO get block using self.__get_blocks
         block = metadata.blocks[index]
-        provider = self.providers[block.provider]
+        provider = self.providers[block.providers[0]]
         data = provider.get(block.key)
         if data is None:
             coder_client = CoderClient()
@@ -387,9 +387,9 @@ class Dispatcher(object):
         """
         blocks_per_provider = {}
         for metablock in metablocks:
-            blocks_to_fetch = blocks_per_provider.get(metablock.provider, [])
+            blocks_to_fetch = blocks_per_provider.get(metablock.providers[0], [])
             blocks_to_fetch.append(metablock)
-            blocks_per_provider[metablock.provider] = blocks_to_fetch
+            blocks_per_provider[metablock.providers[0]] = blocks_to_fetch
         fetchers = []
         blocks = {}
         for provider_key in blocks_per_provider:
