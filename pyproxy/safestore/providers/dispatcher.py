@@ -450,7 +450,7 @@ class Dispatcher(object):
             list(MetaBlock): A list of all the metablocks in the system
         """
         data_metablocks = []
-        for filename in self.files:
+        for filename in self.files.keys():
             for block in self.files[filename].blocks:
                 if block.block_type == BlockType.DATA:
                     data_metablocks.append(block)
