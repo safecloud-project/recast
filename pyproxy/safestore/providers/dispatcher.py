@@ -3,6 +3,7 @@ A component that distributes blocks for storage keeps track of their location
 """
 import datetime
 import hashlib
+import json
 import logging
 import logging.config
 import random
@@ -286,12 +287,12 @@ class Dispatcher(object):
         if configuration is None:
             configuration = {}
         self.providers = {}
-        providers_configuration = configuration.get('providers', {})
+        providers_configuration = configuration.get("providers", {})
         factory = ProviderFactory()
-        for name, configuration in providers_configuration.items():
-            self.providers[name] = factory.get_provider(configuration)
+        for name, config in providers_configuration.items():
+            self.providers[name] = factory.get_provider(config)
         self.files = {}
-        self.replication_factor = 3
+        self.replication_factor = configuration.get("replication_factor", 3)
 
     def list(self):
         """

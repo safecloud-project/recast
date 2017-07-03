@@ -1,5 +1,6 @@
 {
   "storage": {
-    "nodes": 10
+    "nodes": 30,
+    "replication_factor": 3
   }
 }
