@@ -65,6 +65,8 @@ def create_dispatcher_configuration(configuration):
             "port": 6379,
         }
         dispatcher_configuration["providers"][name] = provider
+    replication_factor = int(configuration["storage"].get("replication_factor", 3))
+    dispatcher_configuration["replication_factor"] = replication_factor
     return dispatcher_configuration
 
 def write_dispatcher_file(dispatcher_configuration):
