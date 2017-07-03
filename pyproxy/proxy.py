@@ -55,6 +55,7 @@ APP = bottle.app()
 
 # Setup kazoo
 KAZOO = KazooClient("zoo1:2181")
+HOSTNAME = os.uname()[1]
 KAZOO.start()
 
 # Inizialize the dictionary for keeping track of blocks used in encoding
@@ -70,7 +71,7 @@ def get(key):
     key -- Key under which the data should have been stored
     """
     LOGGER.debug("Received get request for key {}".format(key))
-    lock = KAZOO.ReadLock(key, "my-identifier")
+    lock = KAZOO.ReadLock(os.path.join("/", key), HOSTNAME)
     with lock:
         blocks = DISPATCHER.get(key)
         if blocks is None:
@@ -131,7 +132,7 @@ def store(key=None, data=None):
     """
     if key is None:
         key = str(uuid.uuid4())
-    lock = KAZOO.WriteLock(key, "my-identifier")
+    lock = KAZOO.WriteLock(os.path.join("/", key), HOSTNAME)
     with lock:
         encode_request = EncodeRequest()
         encode_request.payload = data
