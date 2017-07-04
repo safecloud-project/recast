@@ -11,8 +11,6 @@ from pyeclib.ec_iface import ECDriverError
 
 import numpy
 
-from proxy_client import ProxyClient
-
 class Dagster(object):
     """
     An implementation of entanglement based on Dagster
@@ -416,20 +414,18 @@ class EntanglementDriver(object):
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
     HEADER_DELIMITER = chr(29)
 
-    def __init__(self, block_source, k=5, entanglement=Dagster, pointers=5, replicas=3):
+    def __init__(self, block_source, k=5, entanglement=Dagster, pointers=5):
         """
         Args:
             block_source(object): An entity that can return random blocks
             k(int): The number of blocks to split the data in (defaults to 5)
             entanglement(Entangler): A type of entanglement to use (defaults to Dagster)
             pointers(int): The number of old blocks to entangle with (defaults to 5)
-            replicas(int): The number of replicas of the entangled blocks (defaults to 3)
         """
         self.source = block_source
         self.k = k
         self.entangler = entanglement()
         self.pointers = pointers
-        self.replicas = replicas
 
     @staticmethod
     def __split_data(data, k):
@@ -460,25 +456,6 @@ class EntanglementDriver(object):
     def __parse_entanglement_header(header):
         return json.loads(header)
 
-    @staticmethod
-    def make_replicas(blocks, replicas):
-        """
-        Copy blocks to make replicas
-        f([data_0  , data_1  , ..., data_n ], r) ->
-          [data_0_1, data_1_1, ..., data_n_1,
-           ...,
-           data_0_r, data_1_r, ..., data_n_r]
-        Args:
-            blocks(list(bytes)): Original blocks of data
-            replicas(int): The number of replicas to return
-        """
-        copies = []
-        for _ in xrange(replicas):
-            for block in blocks:
-                copy = block[:]
-                copies.append(copy)
-        return copies
-
     def encode(self, data):
         """
         Encodes data into a series of strips after entangling them
@@ -498,8 +475,7 @@ class EntanglementDriver(object):
             encoded_block, random_blocks = self.entangler.entangle(block, random_blocks)
             encoded_block = block_header + self.HEADER_DELIMITER + encoded_block
             encoded_blocks.append(encoded_block)
-        # Create replicas
-        return self.make_replicas(encoded_blocks, self.replicas)
+        return encoded_blocks
 
 
     @staticmethod
@@ -551,37 +527,21 @@ class EntanglementDriver(object):
 
     def fragments_needed(self, missing_fragment_indexes):
         """
-        Returns the ids of the fragments needed to reconstruct the missing fragments
+        Returns the ids of the fragments needed to decode the document
         Args:
             missing_fragment_indexes(list(int)): Indices of the missing fragments
         Returns:
             list(int): The indices of the fragments needed for reconstruction
         """
-        data_indexes = [index for index in xrange(self.k) if index not in missing_fragment_indexes]
-        reconstruction_indexes = []
-        blocks = self.k * self.replicas
-        missing_data_indexes = [index for index in missing_fragment_indexes if index < self.k]
-        for missing_index in missing_data_indexes:
-            copies = []
-            for replica_index in xrange(missing_index + self.k, blocks, self.k):
-                if replica_index not in missing_fragment_indexes:
-                    copies.append(replica_index)
-            if not copies:
-                raise ECDriverError("Cannot find available replica for block " + str(missing_index))
-            reconstruction_indexes.append(copies[0])
-        return sorted(data_indexes + reconstruction_indexes, key=lambda index: (index % self.k))
+        if missing_fragment_indexes:
+            raise ECDriverError("Cannot reconstruct using Dagster")
+        return [index for index in xrange(self.k)]
+
 
     @staticmethod
     def reconstruct(available_fragment_payloads, missing_fragment_indexes):
         """
-        Returns copies of the original blocks from the replicas
-        Args:
-            available_fragment_payloads(list(bytes)): Available blocks of data
-            missing_data_indexes(list(int)): Indexes of the missing blocks
-        Returns:
-            list(bytes): The reconstructed blocks
+        Raises an ECDriverError because a lost block produced by Dagster can only
+        be reconstructed from a copy of the original block (handled by the proxy).
         """
-        reconstructed_blocks = []
-        for i in missing_fragment_indexes:
-            reconstructed_blocks.append(available_fragment_payloads[i])
-        return reconstructed_blocks
+        raise ECDriverError("Cannot reconstruct using Dagster")
