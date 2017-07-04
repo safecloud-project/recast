@@ -499,7 +499,7 @@ class EntanglementDriver(object):
         Returns:
             bytes: The data part of the strip
         """
-        pos = strip.rfind(EntanglementDriver.HEADER_DELIMITER) + \
+        pos = strip.find(EntanglementDriver.HEADER_DELIMITER) + \
               len(EntanglementDriver.HEADER_DELIMITER)
         return strip[pos:]
 
