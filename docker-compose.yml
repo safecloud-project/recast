@@ -1,16 +1,15 @@
-version: "2"
+version: "3"
 services:
   proxy:
     build: ./pyproxy
     ports:
-    - "3000:8000"
+      - "3000:8000"
     env_file:
       - ./erasure.env
-    # volumes:
-    #  - ./pyproxy:/usr/local/src/pyproxy
-
-  redis:
-    image: redis:3.2.8
+    deploy:
+      mode: replicated
+      placement:
+        constraints: [node.role == manager]
 
   coder:
     build: ./pycoder
@@ -18,8 +17,11 @@ services:
       - sec_measure=confd
     env_file:
       - ./erasure.env
-    # volumes:
-    #  - ./pycoder:/usr/local/src/app
+    deploy:
+      mode: replicated
+      placement:
+        constraints: [node.role == manager]
+
   zoo1:
     image: zookeeper
     restart: always
@@ -27,3 +29,14 @@ services:
       - 2181:2181
     environment:
       - ZOO_MY_ID=1
+    deploy:
+      mode: replicated
+      placement:
+        constraints: [node.role == manager]
+
+  redis:
+    image: redis:3.2.8
+    deploy:
+      mode: replicated
+      placement:
+        constraints: [node.role == worker]
