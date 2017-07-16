@@ -18,6 +18,7 @@ from dbox import DBox
 from gdrive import GDrive
 from one import ODrive
 from playcloud_pb2 import Strip
+from pyproxy.files import BlockType, Files, MetaBlock, Metadata
 from redis_provider import RedisProvider
 
 logger = logging.getLogger("dispatcher")
@@ -66,38 +67,6 @@ class ProviderFactory(object):
             return initializer(configuration)
         return initializer()
 
-class BlockType(Enum):
-    """
-    Informs on the type of block and its use where DATA blocks are needed for
-    decoding while PARITY blocks are needed for reconstruction
-    """
-    DATA = 0
-    PARITY = 1
-
-class MetaBlock(object):
-    """
-    A class that represents a data block
-    """
-    def __init__(self, key, providers=None, creation_date=None, block_type=BlockType.DATA, checksum=None):
-        """
-        MetaBlock constructor
-        Args:
-            key (str): Key under which the block is stored
-            providers (list(str), optional): Ids of the providers
-            creation_date (datetime.datetime, optional): Time of creation of the
-                block, defaults to current time
-            block_type (BlockType, optional): Type of the block
-            checksum (str, optional): SHA256 digest of the data
-        """
-        self.key = key
-        self.providers = providers
-        if creation_date is None:
-            self.creation_date = datetime.datetime.now()
-        else:
-            self.creation_date = creation_date
-        self.block_type = block_type
-        self.checksum = checksum
-
 def compute_block_key(path, index, length=2):
     """
     Computes a block key from a file path and an index.
@@ -131,24 +100,6 @@ def extract_index_from_key(key):
     """
     index_pattern = re.compile(r"\-\d+$")
     return int(index_pattern.findall(key)[0].replace("-", ""))
-
-class Metadata(object):
-    """
-    A class describing how a file has been stored in the system
-    """
-
-    def __init__(self, path, original_size=0):
-        """
-        Constructor for Metadata objects
-        Args:
-            path(string): Path to the file in the system
-            original_size(int): Original size of the file in bytes
-        """
-        self.path = path
-        self.creation_date = datetime.datetime.now()
-        self.blocks = []
-        self.entangling_blocks = []
-        self.original_size = original_size
 
 class BlockPusher(threading.Thread):
     """
@@ -248,7 +199,7 @@ class Dispatcher(object):
         factory = ProviderFactory()
         for name, config in providers_configuration.items():
             self.providers[name] = factory.get_provider(config)
-        self.files = {}
+        self.files = Files(host="metadata", port=6379)
         self.replication_factor = configuration.get("replication_factor", 3)
 
     def list(self):
@@ -302,7 +253,7 @@ class Dispatcher(object):
             pusher.join()
         for index, metablock in metablocks.items():
             metadata.blocks.append(metablock)
-        self.files[path] = metadata
+        self.files.put(path, metadata)
         return metadata
 
     def __get_block(self, metablock, queue):
@@ -432,7 +383,8 @@ class Dispatcher(object):
         """
         data_metablocks = []
         for filename in self.files.keys():
-            for block in self.files[filename].blocks:
+            logger.info("[__get_flat_list_of_data_metablocks] filename = {}".format(filename))
+            for block in self.files.get(filename).blocks:
                 if block.block_type == BlockType.DATA:
                     data_metablocks.append(block)
         return data_metablocks
