@@ -1,7 +1,6 @@
 """
 A component that distributes blocks for storage keeps track of their location
 """
-import datetime
 import hashlib
 import logging
 import logging.config
@@ -375,39 +374,6 @@ class Dispatcher(object):
                 block_queue[key] = strip.data
         return [block_queue[key] for key in sorted(block_queue.keys())]
 
-    def __get_flat_list_of_data_metablocks(self):
-        """
-        Returns a flat list of the metablocks pointing to data type blocks
-        Returns:
-            list(MetaBlock): A list of all the metablocks in the system
-        """
-        data_metablocks = []
-        for filename in self.files.keys():
-            logger.info("[__get_flat_list_of_data_metablocks] filename = {}".format(filename))
-            for block in self.files.get(filename).blocks:
-                if block.block_type == BlockType.DATA:
-                    data_metablocks.append(block)
-        return data_metablocks
-
-    @staticmethod
-    def __select_randomly(k, elements):
-        """
-        Returns up to k items from elements.
-        Args:
-            k(int): The number of elements to select
-            elements(list): A list of elements
-        Returns:
-            list: The list of elements to select
-        """
-        k_needed = min(k, len(elements))
-        if k_needed == len(elements):
-            return elements[:]
-        selected = []
-        while len(selected) < k_needed:
-            chosen = random.choice(elements)
-            if chosen not in selected:
-                selected.append(chosen)
-        return selected
 
     def get_random_blocks(self, blocks_desired):
         """
@@ -420,11 +386,8 @@ class Dispatcher(object):
             A list of tuples where the first element is a metablock and the
             second one is the block data itself
         """
-        all_metablocks = self.__get_flat_list_of_data_metablocks()
-        random_metablocks = self.__select_randomly(blocks_desired, all_metablocks)
-
+        random_metablocks = self.files.select_random_blocks(blocks_desired)
         block_queue = self.__get_blocks(random_metablocks)
-
         random_blocks = []
         for key in block_queue.keys():
             block = block_queue.get(key)
