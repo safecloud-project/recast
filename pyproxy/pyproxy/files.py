@@ -2,6 +2,7 @@
 Metadata for the plaucloud files
 """
 import datetime
+import random
 
 import enum
 import redis
@@ -64,6 +65,10 @@ class Files(object):
     """
     Represents metadata stored in the cluster
     """
+    FILE_PREFIX = "files:"
+    BLOCK_PREFIX = "blocks:"
+
+    #TODO maintain (in redis or not) an index of the blocks to get_random_blocks
     def __init__(self, host="127.0.0.1", port=6379):
         self.redis = redis.StrictRedis(host=host, port=port)
 
@@ -82,11 +87,20 @@ class Files(object):
             raise KeyError("path {} not found".format(path))
         metadata = Files.parse_metadata(record)
         block_keys = record.get("blocks").strip().split(",")
-        for key in block_keys:
-            mb_record = self.redis.hgetall(key)
-            metablock = Files.parse_metablock(mb_record)
-            metadata.blocks.append(metablock)
+        metadata.blocks = [self.get_block(key) for key in block_keys]
         return metadata
+
+    def get_block(self, key):
+        """
+        Returns a block from the database
+        Returns:
+            key(str): The key under which a block is stored
+        Returns:
+            MetaBlock: The MetaBlock that was retrieved
+        """
+        block_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, key)
+        record = self.redis.hgetall(block_key)
+        return Files.parse_metablock(record)
 
     def put(self, path, metadata):
         """
@@ -118,7 +132,8 @@ class Files(object):
             blocks[block.key] = block_hash
         self.redis.hmset("files:{:s}".format(path), meta_hash)
         for key, block_hash in blocks.iteritems():
-            self.redis.hmset(key, block_hash)
+            metablock_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, key)
+            self.redis.hmset(metablock_key, block_hash)
         return path
 
     @staticmethod
@@ -130,6 +145,7 @@ class Files(object):
         Returns:
             MetaBlock: The parsed MetaBlock
         """
+        print "keys: {:s}".format(", ".join(record.keys()))
         key = record.get("key")
         creation_date = datetime.datetime.strptime(record.get("creation_date"),
                                                    "%Y-%m-%d %H:%M:%S.%f")
@@ -183,3 +199,27 @@ class Files(object):
         records = self.redis.mget(filenames)
         values = [Files.parse_metadata(record) for record in records]
         return values
+
+    def select_random_blocks(self, blocks_desired):
+        """
+        Returns up to blocks_desired randomly selected metablocks from the index
+        Args:
+            blocks_desired(int): The number of random blocks to select
+        Returns:
+            list(MetaBlock): randomly selected blocks
+        """
+        key_pattern = "{:s}*".format(Files.BLOCK_PREFIX)
+        block_keys = [key.replace(Files.BLOCK_PREFIX, "") for key in self.redis.keys(key_pattern)]
+        needed = min(blocks_desired, len(block_keys))
+        selected_keys = None
+        if needed == len(block_keys):
+            return [self.get_block(key) for key in block_keys]
+
+        selected_keys = []
+        while len(selected_keys) < needed:
+            chosen = random.choice(block_keys)
+            if chosen not in selected_keys:
+                selected_keys.append(chosen)
+
+        return [self.get_block(key) for key in selected_keys]
+    
