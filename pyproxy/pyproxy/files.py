@@ -202,23 +202,22 @@ class Files(object):
         values = [Files.parse_metadata(record) for record in records]
         return values
 
-    def select_random_blocks(self, blocks_desired):
+    def select_random_blocks(self, requested):
         """
         Returns up to blocks_desired randomly selected metablocks from the index
         Args:
-            blocks_desired(int): The number of random blocks to select
+            requested(int): The number of random blocks to select
         Returns:
             list(MetaBlock): randomly selected blocks
         """
-        key_pattern = "{:s}*".format(Files.BLOCK_PREFIX)
-        block_keys = [key.replace(Files.BLOCK_PREFIX, "") for key in self.redis.keys(key_pattern)]
-        needed = min(blocks_desired, len(block_keys))
-        selected_keys = None
-        if needed == len(block_keys):
+        blocks_desired = requested
+        block_keys = self.redis.lrange("block_index", 0, -1)
+
+        if len(block_keys) <= blocks_desired:
             return [self.get_block(key) for key in block_keys]
 
         selected_keys = []
-        while len(selected_keys) < needed:
+        while len(selected_keys) < blocks_desired:
             chosen = random.choice(block_keys)
             if chosen not in selected_keys:
                 selected_keys.append(chosen)
