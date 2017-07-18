@@ -1,5 +1,5 @@
 """
-Metadata for the plaucloud files
+Metadata management for the files and blocks stored in playcloud
 """
 import datetime
 import random
@@ -120,7 +120,8 @@ class Files(object):
             "original_size": metadata.original_size,
             "blocks": ",".join([block.key for block in metadata.blocks])
         }
-        blocks = {}
+        pipeline = self.redis.pipeline(transaction=True)
+        block_keys = []
         for block in metadata.blocks:
             block_hash = {
                 "key": block.key,
@@ -129,11 +130,13 @@ class Files(object):
                 "block_type": block.block_type.name,
                 "checksum": block.checksum
             }
-            blocks[block.key] = block_hash
-        self.redis.hmset("files:{:s}".format(path), meta_hash)
-        for key, block_hash in blocks.iteritems():
-            metablock_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, key)
-            self.redis.hmset(metablock_key, block_hash)
+            metablock_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, block.key)
+            block_keys.append(block.key)
+            pipeline.hmset(metablock_key, block_hash)
+        pipeline.rpush("block_index", *block_keys)
+        pipeline.hmset("files:{:s}".format(path), meta_hash)
+        pipeline.rpush("file_index", *[path])
+        pipeline.execute()
         return path
 
     @staticmethod
@@ -145,7 +148,6 @@ class Files(object):
         Returns:
             MetaBlock: The parsed MetaBlock
         """
-        print "keys: {:s}".format(", ".join(record.keys()))
         key = record.get("key")
         creation_date = datetime.datetime.strptime(record.get("creation_date"),
                                                    "%Y-%m-%d %H:%M:%S.%f")
@@ -222,4 +224,3 @@ class Files(object):
                 selected_keys.append(chosen)
 
         return [self.get_block(key) for key in selected_keys]
-    
