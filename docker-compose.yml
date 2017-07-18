@@ -34,6 +34,13 @@ services:
       placement:
         constraints: [node.role == manager]
 
+  metadata:
+    image: redis:3.2.8
+    deploy:
+      mode: replicated
+      placement:
+        constraints: [node.role == manager]
+
   redis:
     image: redis:3.2.8
     deploy:
