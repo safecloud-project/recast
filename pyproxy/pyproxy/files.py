@@ -211,15 +211,21 @@ class Files(object):
             list(MetaBlock): randomly selected blocks
         """
         blocks_desired = requested
-        block_keys = self.redis.lrange("block_index", 0, -1)
+        blocks_available = self.redis.llen("block_index")
 
-        if len(block_keys) <= blocks_desired:
+        if blocks_available <= blocks_desired:
+            block_keys = self.redis.lrange("block_index", 0, blocks_available)
             return [self.get_block(key) for key in block_keys]
 
+        selected_indexes = []
+        while len(selected_indexes) < blocks_desired:
+            chosen_index = random.randint(0, blocks_available - 1)
+            if chosen_index not in selected_indexes:
+                selected_indexes.append(chosen_index)
+
         selected_keys = []
-        while len(selected_keys) < blocks_desired:
-            chosen = random.choice(block_keys)
-            if chosen not in selected_keys:
-                selected_keys.append(chosen)
+        for index in selected_indexes:
+            selected_key = self.redis.lrange("block_index", index, index + 1)[0]
+            selected_keys.append(selected_key)
 
         return [self.get_block(key) for key in selected_keys]
