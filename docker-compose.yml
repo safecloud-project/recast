@@ -36,14 +36,20 @@ services:
 
   metadata:
     image: redis:3.2.8
+    command: redis-server --appendonly yes
     deploy:
       mode: replicated
       placement:
         constraints: [node.role == manager]
+    volumes:
+      - ./volumes/metadata/:/data/
 
   redis:
     image: redis:3.2.8
+    command: redis-server --appendonly yes
     deploy:
       mode: replicated
       placement:
         constraints: [node.role == worker]
+    volumes:
+      - ./volumes/redis/:/data/
