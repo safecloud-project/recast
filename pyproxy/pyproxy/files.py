@@ -2,6 +2,7 @@
 Metadata management for the files and blocks stored in playcloud
 """
 import datetime
+import json
 import random
 
 import enum
@@ -61,6 +62,22 @@ class Metadata(object):
         self.entangling_blocks = []
         self.original_size = original_size
 
+def extract_entanglement_data(block_data):
+    """
+    Extract and list the entangling information from the blocks header
+    Args:
+        block_data(str): A data block with an entanglement header
+    Returns:
+        list((str, int)): A list of the blocks used for entanglement
+    """
+    header_delimiter = chr(29)
+    pos = block_data.find(header_delimiter)
+    if pos >= 0:
+        return ""
+    raw_header = block_data[:pos]
+    formatted_header = json.loads(raw_header)
+    return formatted_header
+
 class Files(object):
     """
     Represents metadata stored in the cluster
@@ -68,8 +85,7 @@ class Files(object):
     FILE_PREFIX = "files:"
     BLOCK_PREFIX = "blocks:"
 
-    #TODO maintain (in redis or not) an index of the blocks to get_random_blocks
-    def __init__(self, host="127.0.0.1", port=6379):
+    def __init__(self, host="metadata", port=6379):
         self.redis = redis.StrictRedis(host=host, port=port)
 
     def get(self, path):
@@ -118,7 +134,8 @@ class Files(object):
             "path": metadata.path,
             "creation_date": str(metadata.creation_date),
             "original_size": metadata.original_size,
-            "blocks": ",".join([block.key for block in metadata.blocks])
+            "blocks": ",".join([block.key for block in metadata.blocks]),
+            "entangling_blocks": json.dumps(metadata.entangling_blocks)
         }
         pipeline = self.redis.pipeline(transaction=True)
         block_keys = []
@@ -180,6 +197,7 @@ class Files(object):
                                                    "%Y-%m-%d %H:%M:%S.%f")
         metadata = Metadata(path, original_size=original_size)
         metadata.creation_date = creation_date
+        metadata.entangling_blocks = json.loads(record.get("entangling_blocks"))
         return metadata
 
     def keys(self):
@@ -229,3 +247,23 @@ class Files(object):
             selected_keys.append(selected_key)
 
         return [self.get_block(key) for key in selected_keys]
+
+    def get_entanglement_graph(self):
+        """
+        Scan the database to return the entanglement graph
+        Returns:
+            dict(str, list): The entanglement graph
+        """
+        graph = {}
+        filenames = self.keys()
+        for filename in filenames:
+            metadata = self.get(filename)
+            creation_date = str(metadata.creation_date)
+            entangling_blocks = json.dumps(metadata.entangling_blocks)
+            blocks = str([[block.key, block.providers[0]] for block in metadata.blocks])
+            graph[filename] = [
+                creation_date,
+                entangling_blocks,
+                blocks
+            ]
+        return graph

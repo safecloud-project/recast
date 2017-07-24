@@ -252,7 +252,6 @@ class Dispatcher(object):
             pusher.join()
         for index, metablock in metablocks.items():
             metadata.blocks.append(metablock)
-        self.files.put(path, metadata)
         return metadata
 
     def __get_block(self, metablock, queue):

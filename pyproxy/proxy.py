@@ -20,6 +20,7 @@ import playcloud_pb2_grpc
 from pyproxy_globals import get_dispatcher_instance
 from playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
 from proxy_service import ProxyService
+from pyproxy.files import extract_entanglement_data, Files
 
 
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
@@ -49,6 +50,9 @@ CLIENT_STUB = playcloud_pb2_grpc.EncoderDecoderStub(GRPC_CHANNEL)
 # Loading dispatcher
 DISPATCHER = get_dispatcher_instance()
 
+# Loading the Files metadata structure
+FILES = Files()
+
 # Bottle webapp configuration
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
 APP = bottle.app()
@@ -60,7 +64,6 @@ KAZOO.start()
 
 # Inizialize the dictionary for keeping track of blocks used in encoding
 HEADER_DICTIONARY = {}
-HEADER_DELIMITER = chr(29) # The header delimiter used in entangled_driver
 
 
 @APP.route("/<key:path>", method="GET")
@@ -117,7 +120,7 @@ def get_file_metadata(key):
     Returns:
         (string): A listing of the files serialized as JSON
     """
-    meta = DISPATCHER.files.get(key)
+    meta = FILES.get(key)
     if meta is None:
         response.status = 404
         return ""
@@ -146,14 +149,14 @@ def store(key=None, data=None):
         metadata = DISPATCHER.put(key, encoded_file)
         LOGGER.debug("Stored {:2d} blocks with key {:s}".format(number_of_blocks, key))
 
-        keys_and_providers = [[b.key, b.providers[0]] for b in metadata.blocks]
+        creation_date = str(metadata.creation_date)
+        metadata.entangling_blocks = extract_entanglement_data(encoded_file.strips[0].data)
+        formatted_entangling_blocks = json.dumps(metadata.entangling_blocks)
+        keys_and_providers = str([[b.key, b.providers[0]] for b in metadata.blocks])
+        HEADER_DICTIONARY[key] = [creation_date, formatted_entangling_blocks, keys_and_providers]
 
-        #TODO Build entanglement dictionnary
-        for s in encoded_file.strips:
-            s = str(s.data)
-            pos = s.find(HEADER_DELIMITER)
-            # Dictionary: timestamp, pointers, current blocks keys and hosting nodes
-            HEADER_DICTIONARY[key] = [str(metadata.creation_date), s[:pos], str(keys_and_providers)]
+        FILES.put(key, metadata)
+
         return key
 
 
@@ -198,7 +201,7 @@ def dictionary():
     """
     Show the dictionary used by the proxy to the trace blocks used in encoding.
     """
-    return json.dumps(HEADER_DICTIONARY, indent=4, separators=(',', ': '))
+    return json.dumps(FILES.get_entanglement_graph(), indent=4, separators=(',', ': '))
 
 
 if __name__ == "__main__":
