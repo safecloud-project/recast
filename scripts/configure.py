@@ -112,15 +112,17 @@ def create_docker_compose_configuration(configuration):
     for key in redis_keys:
         del compose_configuration["services"][key]
     for i in range(1, nodes + 1):
-        container_name = "redis" + str(i)
+        container_name = "redis{:d}".format(i)
         compose_configuration["services"][container_name] = {
             "container_name": container_name,
             "image": "redis:3.2.8",
+            "command": "redis-server --appendonly yes",
             "deploy": {
                 "placement": {
                     "constraints": ["node.role == worker"]
                 }
-            }
+            },
+            "volumes": ["./volumes/{:s}/:/data/".format(container_name)]
         }
     return compose_configuration
 
