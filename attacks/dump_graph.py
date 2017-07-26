@@ -9,6 +9,11 @@ import os
 
 def fetch_entanglement_graph(host="127.0.0.1", port=3000, path="/dict"):
     """
+    Fetches the entanglement graph from a running instance of playcloud.
+    Args:
+        host(str, optional): Host of the playcloud instance
+        port(int, optional): Port number of the listening playcloud instance
+        path(str, optional): Path of the endpoint on the playcloud server that dumps the graph
     Returns:
         dict: The entanglement graph
     """
