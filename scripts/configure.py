@@ -13,6 +13,7 @@ import ruamel.yaml
 PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "..", "pyproxy", "dispatcher.json")
 PATH_TO_DOCKER_COMPOSE_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose.yml")
 PATH_TO_DOCKER_COMPOSE_PRODUCTION_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose-production.yml")
+PATH_TO_VOLUMES_DIRECTORY = os.path.join(os.path.dirname(__file__), "..", "volumes")
 
 BASIC_COMPOSE_CONFIGURATION = {
     "version": "\"3\"",
@@ -124,6 +125,8 @@ def create_docker_compose_configuration(configuration):
             },
             "volumes": ["./volumes/{:s}/:/data/".format(container_name)]
         }
+        create_volume_directory(container_name)
+    create_volume_directory("metadata")
     return compose_configuration
 
 def create_docker_compose_configuration_for_production(configuration):
@@ -165,6 +168,33 @@ def write_docker_compose_file_for_production(compose_configuration):
     Writes to the given docker-compose content to PATH_TO_DOCKER_COMPOSE_PRODUCTION_FILE
     """
     write_docker_compose_file(compose_configuration, PATH_TO_DOCKER_COMPOSE_PRODUCTION_FILE)
+
+def create_volume_directory(name):
+    """
+    Create a volume directory.
+    Args:
+        name(str): Name of the container and name of the volume directory
+    Returns:
+        str: Path of the directory
+    Raises:
+        EnvironmentError: If the volume directory cannot be created
+    """
+    if not os.path.exists(PATH_TO_VOLUMES_DIRECTORY):
+        os.makedirs(PATH_TO_VOLUMES_DIRECTORY, mode=0775)
+    if not os.path.isdir(PATH_TO_VOLUMES_DIRECTORY):
+        raise EnvironmentError("{:s} is not a directory"
+                               .format(PATH_TO_VOLUMES_DIRECTORY))
+
+    volume_directory = os.path.join(PATH_TO_VOLUMES_DIRECTORY, name)
+
+    if os.path.isdir(volume_directory):
+        return volume_directory
+    os.makedirs(volume_directory, mode=0775)
+    if not os.path.exists(volume_directory):
+        raise EnvironmentError("{:s} could not be created"
+                               .format(volume_directory))
+    return volume_directory
+
 
 if __name__ == "__main__":
     PATH_TO_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "..", "configuration.json")
