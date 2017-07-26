@@ -46,7 +46,7 @@ heuristic = sys.argv[6]
 #import dictionary1103n30000 as dictionary
 #Dict = dictionary.dictionary
 #save_obj(Dict, 'dictionaries/dictionary1103n30000')
-Dict = load_obj('dictionaries/dictionary1103n30000')
+Dict = load_obj('dictionaries/dict')
 
 NUM_DOCS = int(sys.argv[2]) # For NUM_DOCS < len(Dict.keys())) we select a subset
 if (NUM_DOCS > len(Dict.keys())):
