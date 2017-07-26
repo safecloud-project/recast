@@ -114,6 +114,12 @@ if (sys.argv[7] != "draw"):
         B = ap.kill_random(NUM_DOCS, percentage, num_parity)
     else:
         sys.exit("censor.py: unknown heuristic (*)")
+
+    filea = open("blocks-to-erase.txt", "a")
+    for i in range(len(B)):
+        filea.write("%s\n"% B[i])
+    filea.close()
+    
 else:
 
     CANVAS_SIZE = 1000 # Canvas size
