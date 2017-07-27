@@ -86,6 +86,7 @@ class Files(object):
     BLOCK_PREFIX = "blocks:"
 
     def __init__(self, host="metadata", port=6379):
+        #TODO replace file_index and block_index lists with ordered sets
         self.redis = redis.StrictRedis(host=host, port=port)
 
     def get(self, path):
@@ -206,8 +207,7 @@ class Files(object):
         Returns:
             list(str): The list of files in the system
         """
-        keys = [key.replace(r"files:", "") for key in self.redis.keys("files:*")]
-        return keys
+        return self.redis.lrange("file_index", 0, -1)
 
     def values(self):
         """
@@ -216,9 +216,9 @@ class Files(object):
             list(Metadata): All the metadata object stored in the system
         """
         filenames = self.keys()
-        records = self.redis.mget(filenames)
-        values = [Files.parse_metadata(record) for record in records]
-        return values
+        if not filenames:
+            return []
+        return [self.get(f) for f in filenames]
 
     def select_random_blocks(self, requested):
         """
