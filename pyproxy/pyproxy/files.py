@@ -72,7 +72,7 @@ def extract_entanglement_data(block_data):
     """
     header_delimiter = chr(29)
     pos = block_data.find(header_delimiter)
-    if pos >= 0:
+    if pos <= 0:
         return ""
     raw_header = block_data[:pos]
     formatted_header = json.loads(raw_header)
