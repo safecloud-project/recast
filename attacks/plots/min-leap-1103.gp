@@ -2,42 +2,22 @@ set term postscript color eps enhanced 22
 set output "min-leap-1103.eps"
 #load "../styles.inc"
 
-NX=1
-NY=1
-# Size of graphs
-SX=0.72
-SY=0.5
 
-# Margins
-MX=0.2
-MY=0.1
-# Space between graphs
-IX=-0.14
-IY=0.11
-# Space for legends
-LX=0.05
-LY=0.02
+set size 1,0.8
 
-set size 1,0.7
+set lmargin 8
+set rmargin 3
 
-set lmargin MX+0
-set rmargin MX+13
-
-set tmargin MY+0.2
-set bmargin MY+0
+set tmargin 2.2
+set bmargin 3.2
 
 set multiplot
 
-set origin MX+LX+0*(IX+SX),MY+0*(IY+SY)+LY
-set size SX,SY
 set grid noxtics ytics
-
-
-
 
 set title "Leaping attack"
 
-set xlabel ""
+set xlabel "# archived documents"
 set ylabel "Fraction of destroyed docs"
 set key left bottom horizontal sample 1
 
