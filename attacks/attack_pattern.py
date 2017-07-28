@@ -194,7 +194,7 @@ def TailoredAttack(C, B, b, POINTERDICT, t, e, p, K, KEYS):
     for c in C1:
         inter = set(B1).intersection(blocks(c, p, POINTERDICT))
         yettoerase = max( [0 , e + 1 - len(inter)] )
-        ci = KEYS.index(c)
+        ci = KEYS.index(c) + 1 # Indices of docs start from 1
         cost = cost + 1 + yettoerase*t*math.log( 1+ (K-ci)/ci )
 
     return cost
