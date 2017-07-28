@@ -44,6 +44,25 @@ class MetaBlock(object):
         self.block_type = block_type
         self.checksum = checksum
 
+    def __json__(self):
+        """
+        Returns a representation of a MetaBlock as a serializable dictionary
+        Returns:
+            dict: Returns a representation of a MetaBlock as a serializable dictionary
+        """
+        return {
+            "key": self.key,
+            "providers": [provider for provider in self.providers],
+            "creation_date": self.creation_date.isoformat(),
+            "block_type": self.block_type.name,
+            "checksum": self.checksum
+        }
+
+    def __str__(self):
+        """
+        """
+        return json.dumps(self.__json__())
+
 class Metadata(object):
     """
     A class describing how a file has been stored in the system
@@ -61,6 +80,25 @@ class Metadata(object):
         self.blocks = []
         self.entangling_blocks = []
         self.original_size = original_size
+
+    def __json__(self):
+        """
+        Returns a representation of a MetaBlock as a serializable dictionary
+        Returns:
+            dict: Returns a representation of a MetaBlock as a serializable dictionary
+        """
+        return {
+            "path": self.path,
+            "creation_date": self.creation_date.isoformat(),
+            "blocks": [block.__json__() for block in self.blocks],
+            "entangling_blocks": self.entangling_blocks,
+            "original_size": self.original_size
+        }
+
+    def __str__(self):
+        """
+        """
+        return json.dumps(self.__json__())
 
 def extract_entanglement_data(block_data):
     """
