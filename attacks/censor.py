@@ -1,5 +1,6 @@
 import sys
 import attack_pattern as ap
+import Tkinter as tk
 
 NDIGIT = 2 # Number of digits for the block index in files names
 

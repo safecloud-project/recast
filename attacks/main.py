@@ -1,4 +1,3 @@
-import Tkinter as tk
 import pickle
 import sys
 import time
