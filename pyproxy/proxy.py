@@ -6,6 +6,7 @@ import json
 import logging
 import logging.config
 import os
+import time
 import uuid
 
 from bottle import abort, request, response, run
@@ -13,6 +14,7 @@ import bottle
 import concurrent.futures
 import grpc
 from kazoo.client import KazooClient
+from kazoo.handlers.threading import KazooTimeoutError
 
 import playcloud_pb2
 import playcloud_pb2_grpc
@@ -28,7 +30,7 @@ logging.config.fileConfig(log_config)
 
 LOGGER = logging.getLogger("proxy")
 
-con_log = "Going to connect to {} in {}:{}"
+con_log = "Going to connect to {:s} in {:s}:{:d}"
 
 # GRPC setup
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
@@ -58,9 +60,8 @@ bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
 APP = bottle.app()
 
 # Setup kazoo
-KAZOO = KazooClient("zoo1:2181")
+KAZOO = None
 HOSTNAME = os.uname()[1]
-KAZOO.start()
 
 # Inizialize the dictionary for keeping track of blocks used in encoding
 HEADER_DICTIONARY = {}
@@ -193,7 +194,7 @@ def list():
     Returns:
         (string): A listing of the files serialized as JSON
     """
-    entries = [convert_metadata_to_dictionary(meta) for meta in DISPATCHER.list()]
+    entries = [meta.__json__() for meta in FILES.values()]
     return json.dumps({"files": entries})
 
 @APP.route("/dict", method="GET")
@@ -203,6 +204,41 @@ def dictionary():
     """
     return json.dumps(FILES.get_entanglement_graph(), indent=4, separators=(',', ': '))
 
+def init_zookeeper_client(host="zoo1", port=2181, max_retries=5):
+    """
+    Tries to initialize the connection to zookeeper.
+    Args:
+        host(str, optional): zookeeper host
+        port(int, optional): zookeeper port
+        max_retries(int, optional): How many times should the connection
+                                    establishment be retried
+    Returns:
+        kazoo.client.KazooClient: An initialized zookeeper client
+    Raises:
+        EnvironmentError: If the client cannot connect to zookeeper
+    """
+    zk_logger = logging.getLogger("zookeeper")
+    zk_logger.info("initializing connection to zookeeper")
+    hosts = "{:s}:{:d}".format(host, port)
+    client = KazooClient(hosts=hosts)
+    backoff_in_seconds = 1
+    tries = 0
+    while tries < max_retries:
+        try:
+            zk_logger.info("Trying to connect to {:s}".format(hosts))
+            client.start()
+            if client.connected:
+                zk_logger.info("Connected to zookeeper")
+                return client
+        except KazooTimeoutError:
+            tries += 1
+            backoff_in_seconds *= 2
+            zk_logger.warn("Failed to connect to {:s}".format(hosts))
+            zk_logger.warn("Waiting {:d} seconds to reconnect to {:s}"
+                           .format(backoff_in_seconds, hosts))
+            time.sleep(backoff_in_seconds)
+    zk_logger.error("Could not connect to {:s}".format(hosts))
+    raise EnvironmentError("Could not connect to {:s}".format(hosts))
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(prog="proxy",
@@ -220,4 +256,6 @@ if __name__ == "__main__":
     playcloud_pb2.add_ProxyServicer_to_server(ProxyService(), GRPC_SERVER)
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
+    KAZOO = init_zookeeper_client()
     run(server="paste", app=APP, host="0.0.0.0", port=8000)
+    KAZOO.stop()
