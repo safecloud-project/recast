@@ -55,13 +55,26 @@ class MetaBlock(object):
             "providers": [provider for provider in self.providers],
             "creation_date": self.creation_date.isoformat(),
             "block_type": self.block_type.name,
-            "checksum": self.checksum
+            "checksum": convert_binary_to_hex_digest(self.checksum)
         }
 
     def __str__(self):
         """
+        Returns a string representation of a Metadata object
+        Return:
+            str: a string representation of a Metadata object
         """
         return json.dumps(self.__json__())
+
+def convert_binary_to_hex_digest(binary_digest):
+    """
+    Converts a binary digest from hashlib.sha256.digest
+    Args:
+        binary_digest(str): Binary digest from hashlib.sha256.digest()
+    Returns:
+        str: Equivalent of the hexdigest for the same input
+    """
+    return "".join(["{:02x}".format(ord(c)) for c in binary_digest])
 
 class Metadata(object):
     """
