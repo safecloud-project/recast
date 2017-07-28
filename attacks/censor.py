@@ -27,7 +27,7 @@ def censor(heuristic, TDP, Dict, KEYS, NUM_DOCS, POINTERDICT, num_source, num_po
         else:
             sys.exit("censor.py: unknown heuristic (*)")
 
-        filea = open("blocks-to-erase-%s.txt"%heuristic, "a")
+        filea = open("blocks-to-erase/bte-%s-%s.txt"%(heuristic,TDP), "a")
         for i in range(len(B)):
             filea.write("%s\n"% B[i])
         filea.close()

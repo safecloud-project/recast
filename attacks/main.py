@@ -33,10 +33,10 @@ if len(sys.argv) < 8:
     sys.exit(0)
 
 # Choose dictionary
-import dictio as dictionary
-Dict = dictionary.dictionary
+#import dictio as dictionary
+#Dict = dictionary.dictionary
 #save_obj(Dict, 'dictionaries/dictionary1103n30000')
-#Dict = load_obj('dictionaries/dict')
+Dict = load_obj('dictionaries/dict')
 
 # Set parameters
 num_source  = int(sys.argv[2]) #2#1
