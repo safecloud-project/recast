@@ -155,7 +155,7 @@ class Files(object):
             raise KeyError("path {} not found".format(path))
         metadata = Files.parse_metadata(record)
         block_keys = record.get("blocks").strip().split(",")
-        metadata.blocks = [self.get_block(key) for key in block_keys]
+        metadata.blocks = self.get_blocks(block_keys)
         return metadata
 
     def get_block(self, key):
@@ -166,9 +166,22 @@ class Files(object):
         Returns:
             MetaBlock: The MetaBlock that was retrieved
         """
-        block_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, key)
-        record = self.redis.hgetall(block_key)
-        return Files.parse_metablock(record)
+        return self.get_blocks([key])[0]
+
+    def get_blocks(self, keys):
+        """
+        Returns multiple blocks from the database
+        Args:
+            keys(list(str)): A list of keys under witch the blocks to fetch are stored
+        Returns:
+            list(MetaBlock): The MetaBlocks that were retrieved
+        """
+        pipeline = self.redis.pipeline()
+        for key in keys:
+            block_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, key)
+            pipeline.hgetall(block_key)
+        blocks = [Files.parse_metablock(hsh) for hsh in pipeline.execute()]
+        return sorted(blocks, key=lambda block: block.key)
 
     def put(self, path, metadata):
         """
@@ -296,8 +309,7 @@ class Files(object):
         for index in selected_indexes:
             selected_key = self.redis.lrange("block_index", index, index + 1)[0]
             selected_keys.append(selected_key)
-
-        return [self.get_block(key) for key in selected_keys]
+        return self.get_blocks(selected_keys)
 
     def get_entanglement_graph(self):
         """
