@@ -147,16 +147,47 @@ class Files(object):
             path(str): The key the Metadata object was stored under
         Returns:
             Metadata: The Metadata object stored under the key
+        Raises:
+            ValueError: If path is an empty string
         """
         if not path:
             raise ValueError("path argument must be a valid non-empty string")
-        record = self.redis.hgetall("files:{:s}".format(path))
-        if not record:
-            raise KeyError("path {} not found".format(path))
-        metadata = Files.parse_metadata(record)
-        block_keys = record.get("blocks").strip().split(",")
-        metadata.blocks = self.get_blocks(block_keys)
-        return metadata
+        return self.get_files([path])[0]
+
+    def get_files(self, paths):
+        """
+        Returns a Metadata object stored under a given path.
+        Args:
+            paths(list(str)): The key the Metadata object was stored under
+        Returns:
+            Metadata: The Metadata object stored under the key
+        Raises:
+            ValueError: If the paths argument is an empty list or if one of the
+                        paths is an empty string
+            KeyError: If one of the paths requested does not exist
+        """
+        if not paths:
+            raise ValueError("path argument must be a valid list of string")
+        pipeline = self.redis.pipeline()
+        for path in paths:
+            if not path:
+                raise ValueError("path in paths list must be a valid non-empty string")
+            file_key = "{:s}{:s}".format(Files.FILE_PREFIX, path)
+            if not self.redis.exists(file_key):
+                raise KeyError("path {:s} not found".format(path))
+            pipeline.hgetall(file_key)
+        hashes = pipeline.execute()
+        metadata = []
+        keys = []
+        for hsh in hashes:
+            mtdt = Files.parse_metadata(hsh)
+            keys += hsh.get("blocks").strip().split(",")
+            metadata.append(mtdt)
+        blocks = self.get_blocks(keys)
+        step = len(blocks) / len(metadata)
+        for index in xrange(0, len(metadata)):
+            metadata[index].blocks = blocks[index * step:(index * step) + step]
+        return sorted(metadata, key=lambda mtdt: mtdt.path)
 
     def get_block(self, key):
         """
@@ -282,7 +313,7 @@ class Files(object):
         filenames = self.keys()
         if not filenames:
             return []
-        return [self.get(f) for f in filenames]
+        return self.get_files(filenames)
 
     def select_random_blocks(self, requested):
         """
