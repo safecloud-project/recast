@@ -1,6 +1,8 @@
 NUMFILES=200
 
-rm blocks-to-erase/*
+mkdir --parents blocks-to-erase/
+rm --force blocks-to-erase/*
+mkdir --parents dictionaries
 python dump_graph.py
 
 array=(1 50 150) # 500 1000)
