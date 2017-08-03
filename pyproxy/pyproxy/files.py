@@ -168,14 +168,22 @@ class Files(object):
         """
         if not paths:
             raise ValueError("path argument must be a valid list of string")
+
         pipeline = self.redis.pipeline()
+        translated_paths = []
+        # Pipeline command to check that all paths exist
         for path in paths:
             if not path:
                 raise ValueError("path in paths list must be a valid non-empty string")
             file_key = "{:s}{:s}".format(Files.FILE_PREFIX, path)
-            if not self.redis.exists(file_key):
-                raise KeyError("path {:s} not found".format(path))
-            pipeline.hgetall(file_key)
+            translated_paths.append(file_key)
+            pipeline.exists(file_key)
+        # Check result from pipelined exists requests to make sure that all the
+        # paths exist and pipeline command to get file hashes
+        for index, in_database in enumerate(pipeline.execute()):
+            if not in_database:
+                raise KeyError("path {:s} not found".format(paths[index]))
+            pipeline.hgetall(translated_paths[index])
         hashes = pipeline.execute()
         metadata = []
         keys = []
