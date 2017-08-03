@@ -3,7 +3,6 @@ A component that distributes blocks for storage keeps track of their location
 """
 import hashlib
 import logging
-import logging.config
 import random
 import re
 import threading
@@ -14,6 +13,7 @@ from redis import ConnectionError
 from coder_client import CoderClient
 from enum import Enum
 from dbox import DBox
+from disk import Disk
 from gdrive import GDrive
 from one import ODrive
 from playcloud_pb2 import Strip
@@ -31,6 +31,7 @@ class Providers(Enum):
     gdrive = 1
     dropbox = 2
     onedrive = 3
+    disk = 4
 
 class ProviderFactory(object):
     """
@@ -41,7 +42,8 @@ class ProviderFactory(object):
             Providers.dropbox.name: DBox,
             Providers.gdrive.name: GDrive,
             Providers.redis.name: RedisProvider,
-            Providers.onedrive.name: ODrive
+            Providers.onedrive.name: ODrive,
+            Providers.disk.name: Disk
         }
 
     def get_provider(self, configuration={}):
@@ -64,6 +66,8 @@ class ProviderFactory(object):
             raise Exception("configuration type is not supported by the factory")
         if provider_type == Providers.redis.name:
             return initializer(configuration)
+        if provider_type == Providers.disk.name:
+            return initializer(folder=configuration.get("folder", "/data"))
         return initializer()
 
 def compute_block_key(path, index, length=2):
