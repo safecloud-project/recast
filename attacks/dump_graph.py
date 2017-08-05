@@ -7,7 +7,7 @@ import pickle
 import requests
 import os
 
-def fetch_entanglement_graph(host="127.0.0.1", port=3000, path="/dict"):
+def fetch_entanglement_graph(host="proxy", port=8000, path="/dict"):
     """
     Fetches the entanglement graph from a running instance of playcloud.
     Args:

@@ -1,5 +1,7 @@
 NUMFILES=200
 
+./sequential_put.sh "${NUMFILES}"
+
 mkdir --parents blocks-to-erase/
 rm --force blocks-to-erase/*
 mkdir --parents dictionaries
@@ -19,5 +21,5 @@ do
 	python main.py $NUMFILES 1 10 3 ndraw KillNodes $i KillRand $i KillDocs $i
 done
 
-
+./execute.py
 
