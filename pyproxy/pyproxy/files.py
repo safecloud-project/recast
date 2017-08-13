@@ -21,16 +21,19 @@ class MetaBlock(object):
     A class that represents a data block
     """
     def __init__(self, key, providers=None, creation_date=None,
-                 block_type=BlockType.DATA, checksum=None):
+                 block_type=BlockType.DATA, checksum=None, entangled_with=None):
         """
         MetaBlock constructor
         Args:
             key (str): Key under which the block is stored
             providers (list(str), optional): Ids of the providers
             creation_date (datetime.datetime, optional): Time of creation of the
-                block, defaults to current time
+                                                         block, defaults to
+                                                         current time
             block_type (BlockType, optional): Type of the block
-            checksum (str, optional): SHA256 digest of the data
+            checksum (bytes, optional): SHA256 digest of the data
+            entangled_with(list(str), optional): List of documents the block is
+                                                 entangled with
         """
         self.key = key
         if providers:
@@ -43,6 +46,10 @@ class MetaBlock(object):
             self.creation_date = creation_date
         self.block_type = block_type
         self.checksum = checksum
+        if entangled_with:
+            self.entangled_with = entangled_with
+        else:
+            self.entangled_with = []
 
     def __json__(self):
         """
@@ -55,7 +62,8 @@ class MetaBlock(object):
             "providers": [provider for provider in self.providers],
             "creation_date": self.creation_date.isoformat(),
             "block_type": self.block_type.name,
-            "checksum": convert_binary_to_hex_digest(self.checksum)
+            "checksum": convert_binary_to_hex_digest(self.checksum),
+            "entangled_with": self.entangled_with
         }
 
     def __str__(self):
@@ -214,11 +222,17 @@ class Files(object):
             keys(list(str)): A list of keys under witch the blocks to fetch are stored
         Returns:
             list(MetaBlock): The MetaBlocks that were retrieved
+        Raises:
+            KeyError: If one of the keys does not exist
         """
         pipeline = self.redis.pipeline()
-        for key in keys:
-            block_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, key)
-            pipeline.hgetall(block_key)
+        translated_keys = ["{:s}{:s}".format(Files.BLOCK_PREFIX, key) for key in keys]
+        for key in translated_keys:
+            pipeline.exists(key)
+        for index, is_in_database in enumerate(pipeline.execute()):
+            if not is_in_database:
+                raise KeyError("key {:s} not found".format(keys[index]))
+            pipeline.hgetall(translated_keys[index])
         blocks = [Files.parse_metablock(hsh) for hsh in pipeline.execute()]
         return sorted(blocks, key=lambda block: block.key)
 
@@ -234,6 +248,16 @@ class Files(object):
             raise ValueError("path argument must be a valid non-empty string")
         if not metadata:
             raise ValueError("metadata argument must be a valid Metadata object")
+
+        entangling_block_keys = ["{:s}-{:d}".format(eb[0], eb[1]) for eb in metadata.entangling_blocks]
+        entangling_blocks = self.get_blocks(entangling_block_keys)
+
+        pipeline = self.redis.pipeline(transaction=True)
+        for block in entangling_blocks:
+            block.entangled_with.append(path)
+            pipeline.hset("{:s}{:s}".format(Files.BLOCK_PREFIX, block.key),
+                          "entangled_with",
+                          ",".join(sorted(block.entangled_with)))
         meta_hash = {
             "path": metadata.path,
             "creation_date": str(metadata.creation_date),
@@ -241,7 +265,6 @@ class Files(object):
             "blocks": ",".join([block.key for block in metadata.blocks]),
             "entangling_blocks": json.dumps(metadata.entangling_blocks)
         }
-        pipeline = self.redis.pipeline(transaction=True)
         block_keys = []
         for block in metadata.blocks:
             block_hash = {
@@ -249,7 +272,8 @@ class Files(object):
                 "creation_date": str(block.creation_date),
                 "providers": ",".join(sorted(block.providers)),
                 "block_type": block.block_type.name,
-                "checksum": block.checksum
+                "checksum": block.checksum,
+                "entangled_with": ",".join(sorted(block.entangled_with))
             }
             metablock_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, block.key)
             block_keys.append(block.key)
@@ -277,13 +301,21 @@ class Files(object):
             providers = providers.split(",")
         else:
             providers = []
+
+        entangled_with = record.get("entangled_with", "").strip()
+        if entangled_with:
+            entangled_with = entangled_with.split(",")
+        else:
+            entangled_with = []
+
         block_type = BlockType[record.get("block_type")]
         checksum = record.get("checksum")
         metablock = MetaBlock(key,
                               creation_date=creation_date,
                               providers=providers,
                               block_type=block_type,
-                              checksum=checksum)
+                              checksum=checksum,
+                              entangled_with=entangled_with)
         return metablock
 
     @staticmethod
@@ -311,6 +343,14 @@ class Files(object):
             list(str): The list of files in the system
         """
         return self.redis.lrange("file_index", 0, -1)
+
+    def list_blocks(self):
+        """
+        Returns a list of the blocks in the system
+        Returns:
+            list(str): A list of all the blocks in the system
+        """
+        return self.redis.lrange("block_index", 0, -1)
 
     def values(self):
         """
@@ -369,3 +409,27 @@ class Files(object):
                 blocks
             ]
         return graph
+
+    def has_been_entangled_enough(self, block_key, pointers):
+        """
+        Tests whether a block can have its replicas deleted due to a high enough
+        number of pointers directed at it.
+        Returns True if it is entangled with enough documents to have its replicas
+        deleted, False otherwise.
+        Args:
+            block_key(str): Path of the block
+            pointers(int): The number of documents that use the block as part of
+                           their entanglement
+        Returns:
+            bool: Whether the replicas of the block can be erased
+        Raises:
+            ValueError:
+                * if path is not of type `str` or empty
+                * if pointers is not of type `int` or is lower than 0
+        """
+        if not block_key or not isinstance(block_key, str):
+            raise ValueError("path argument must be a valid non-empty string")
+        if not isinstance(pointers, int) or pointers < 0:
+            raise ValueError("pointers argument must be a valid integer greater or equal to 0")
+        metablock = self.get_block(block_key)
+        return len(metablock.entangled_with) >= pointers
