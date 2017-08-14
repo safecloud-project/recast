@@ -3,14 +3,14 @@
 A script that scans the database for blocks that have passed a given threshold
 in order to delete their replicas.
 """
-# TODO: Actually delete the replicas data from the providers
 import argparse
+import json
 import logging
 import os
 import sys
 import time
 
-from safestore.providers.dispatcher import extract_path_from_key
+from safestore.providers.dispatcher import Dispatcher, extract_path_from_key
 from proxy import init_zookeeper_client
 from pyproxy.files import Files, MetaBlock
 
@@ -64,6 +64,9 @@ def delete_block(block, host="metadata", port=6379):
     LOGGER.debug("delete_block: block={:s}, host={:s}, port={:d}".format(block.key, host, port))
     files = Files(host=host, port=port)
     filename = extract_path_from_key(block.key)
+    with open("./dispatcher.json", "r") as handle:
+        dispatcher_configuration = json.load(handle)
+    dispatcher = Dispatcher(configuration=dispatcher_configuration)
     hostname = os.uname()[1]
     kazoo_resource = os.path.join("/", filename)
     kazoo_identifier = "repair-{:s}".format(hostname)
@@ -72,6 +75,9 @@ def delete_block(block, host="metadata", port=6379):
         for metablock in metadata.blocks:
             if metablock.key == block.key:
                 metablock.providers = metablock.providers[:1]
+                for provider_name in metablock.providers[1:]:
+                    dispatcher.providers[provider_name].delete(metablock.key)
+                    LOGGER.debug("delete_block: Removed replica of {:s} from {:s}".format(metablock.key, provider_name))
                 break
         files.put(metadata.path, metadata)
         return len(files.get_block(block.key).providers) == 1
