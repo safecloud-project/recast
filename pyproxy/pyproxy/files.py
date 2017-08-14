@@ -145,7 +145,6 @@ class Files(object):
     BLOCK_PREFIX = "blocks:"
 
     def __init__(self, host="metadata", port=6379):
-        #TODO replace file_index and block_index lists with ordered sets
         self.redis = redis.StrictRedis(host=host, port=port)
 
     def get(self, path):
@@ -276,11 +275,14 @@ class Files(object):
                 "entangled_with": ",".join(sorted(block.entangled_with))
             }
             metablock_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, block.key)
+            timestamp = (block.creation_date - datetime.datetime(1970, 1, 1)).total_seconds()
+            block_keys.append(timestamp)
             block_keys.append(block.key)
             pipeline.hmset(metablock_key, block_hash)
-        pipeline.rpush("block_index", *block_keys)
+        pipeline.zadd("block_index", *block_keys)
         pipeline.hmset("files:{:s}".format(path), meta_hash)
-        pipeline.rpush("file_index", *[path])
+        timestamp = (metadata.creation_date - datetime.datetime(1970, 1, 1)).total_seconds()
+        pipeline.zadd("file_index", timestamp, path)
         pipeline.execute()
         return path
 
@@ -342,7 +344,7 @@ class Files(object):
         Returns:
             list(str): The list of files in the system
         """
-        return self.redis.lrange("file_index", 0, -1)
+        return self.redis.zrange("file_index", 0, -1)
 
     def list_blocks(self):
         """
@@ -350,7 +352,7 @@ class Files(object):
         Returns:
             list(str): A list of all the blocks in the system
         """
-        return self.redis.lrange("block_index", 0, -1)
+        return self.redis.zrange("block_index", 0, -1)
 
     def values(self):
         """
@@ -372,10 +374,10 @@ class Files(object):
             list(MetaBlock): randomly selected blocks
         """
         blocks_desired = requested
-        blocks_available = self.redis.llen("block_index")
+        blocks_available = self.redis.zcard("block_index")
 
         if blocks_available <= blocks_desired:
-            block_keys = self.redis.lrange("block_index", 0, blocks_available)
+            block_keys = self.redis.zrange("block_index", 0, blocks_available)
             return [self.get_block(key) for key in block_keys]
 
         selected_indexes = []
@@ -386,7 +388,7 @@ class Files(object):
 
         selected_keys = []
         for index in selected_indexes:
-            selected_key = self.redis.lrange("block_index", index, index + 1)[0]
+            selected_key = self.redis.zrange("block_index", index, index + 1)[0]
             selected_keys.append(selected_key)
         return self.get_blocks(selected_keys)
 
