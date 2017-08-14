@@ -353,8 +353,9 @@ class Dispatcher(object):
         Returns:
             A list of blocks if the file was stored in the system, None otherwise
         """
-        metadata = self.files.get(path)
-        if metadata is None:
+        try:
+            metadata = self.files.get(path)
+        except KeyError:
             return None
         metablocks = [b for b in metadata.blocks if b.block_type == BlockType.DATA]
 
