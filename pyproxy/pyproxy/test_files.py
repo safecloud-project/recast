@@ -129,7 +129,7 @@ def test_files_list_blocks(monkeypatch):
     files = Files()
     def get_block_range(my_range, start, end):
         return ["block1", "block2", "block3"]
-    monkeypatch.setattr(files.redis, "lrange", get_block_range)
+    monkeypatch.setattr(files.redis, "zrange", get_block_range)
     blocks = files.list_blocks()
     assert type(blocks) is list
     assert len(blocks) == 3
