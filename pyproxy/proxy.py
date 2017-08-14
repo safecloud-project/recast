@@ -57,6 +57,22 @@ HOSTNAME = os.uname()[1]
 # Inizialize the dictionary for keeping track of blocks used in encoding
 HEADER_DICTIONARY = {}
 
+@APP.route("/<key:path>/__meta", method="GET")
+def get_file_metadata(key):
+    """
+    Returns Metadata about a file stored in the system.
+    Args:
+        key(string): Key under which the data is supposed to be stored
+    Returns:
+        (string): A listing of the files serialized as JSON
+    """
+    try:
+        meta = FILES.get(key)
+    except KeyError as e:
+        LOGGER.warn(e)
+        response.status = 404
+        return ""
+    return json.dumps(meta.__json__())
 
 @APP.route("/<key:path>", method="GET")
 def get(key):
@@ -65,7 +81,7 @@ def get(key):
 
     key -- Key under which the data should have been stored
     """
-    LOGGER.debug("Received get request for key {}".format(key))
+    LOGGER.debug("Received get request for key {:s}".format(key))
     lock = KAZOO.ReadLock(os.path.join("/", key), HOSTNAME)
     with lock:
         blocks = DISPATCHER.get(key)
@@ -88,36 +104,6 @@ def get(key):
         data = CODER_CLIENT_STUB.Decode(
             decode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).dec_block
         return data
-
-def convert_metadata_to_dictionary(meta):
-    """
-    Converts a Metadata object to a dictionary that can be JSON serialized
-    Args:
-        meta(Metadata): Metadata object to convert
-    Returns:
-        (dict): A dictionary with keys matching the Metadata's attributes
-    """
-    return {
-        "path": meta.path,
-        "creation_date": meta.creation_date.isoformat(),
-        "original_size": meta.original_size
-    }
-
-@APP.route("/<key>/__meta", method="GET")
-def get_file_metadata(key):
-    """
-    Returns Metadata about a file stored in the system.
-    Args:
-        key(string): Key under which the data is supposed to be stored
-    Returns:
-        (string): A listing of the files serialized as JSON
-    """
-    meta = FILES.get(key)
-    if meta is None:
-        response.status = 404
-        return ""
-    return json.dumps(convert_metadata_to_dictionary(meta))
-
 
 def store(key=None, data=None):
     """
@@ -179,7 +165,7 @@ def put_keyless():
     return store(key=None, data=request.body.getvalue())
 
 @APP.route("/", method="GET")
-def list():
+def list_files():
     """
     List the files stored in the system.
     Returns:
