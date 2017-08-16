@@ -110,6 +110,13 @@ class FragmentHeader(object):
         ", metadata_checksum=" + str(self.metadata_checksum) +\
         ")"
 
+    def __eq__(self, other):
+        return isinstance(other, FragmentHeader) and \
+               self.metadata == other.metadata and \
+               self.magic == other.magic and \
+               self.libec_version == other.libec_version and \
+               self.metadata_checksum == other.metadata_checksum
+
 class FragmentMetadata(object):
     """
     Native python representation of a fragment_metadata_t struct used by liberasurecode
@@ -158,12 +165,25 @@ class FragmentMetadata(object):
         ", fbmds=" + str(self.fragment_backend_metadata_size) +\
         ", orig_data_size=" + str(self.orig_data_size) + \
         ", checksum_type=" + str(self.checksum_type) + \
-        ", checksum_type=" + str(self.checksum_type) + \
         ", checksum=" + str(len(self.checksum)) + \
         ", checksum_mismatch=" + str(self.checksum_mismatch) + \
         ", backend_id=" + str(self.backend_id) + \
         ", backend_version=" + str(self.backend_version) + \
         ")"
+
+    def __eq__(self, other):
+        """
+        Checks the equality of two FragmentMetadata objects
+        """
+        return isinstance(other, FragmentMetadata) and \
+               self.index == other.index and \
+               self.size == other.size and \
+               self.fragment_backend_metadata_size == other.fragment_backend_metadata_size and \
+               self.orig_data_size == other.orig_data_size and \
+               self.checksum_type == other.checksum_type and \
+               self.checksum_mismatch == other.checksum_mismatch and \
+               self.backend_id == other.backend_id and \
+               self.backend_version == other.backend_version
 
 class StepEntangler(object):
     """
@@ -174,7 +194,7 @@ class StepEntangler(object):
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
     HEADER_DELIMITER = chr(29)
 
-    def __init__(self, source, s, t, p):
+    def __init__(self, source, s, t, p, ec_type="isa_l_rs_vand"):
         """
         StepEntangler constructor
         Args:
@@ -185,12 +205,16 @@ class StepEntangler(object):
             t(int): Number of old blocks to entangle with
             p(int): Number of parity blocks to produce using Reed-Solomon
         """
+        if not source or \
+           not callable(getattr(source, "get_block", None)) or \
+           not callable(getattr(source, "get_random_blocks", None)):
+            raise ValueError("source argument must implement a get_random_blocks and a get_block method")
         if s <= 0:
-            raise ValueError("s({}) must be greater or equal to 1")
+            raise ValueError("s({:d}) must be greater or equal to 1".format(s))
         if t < 0:
-            raise ValueError("t({}) must be greater or equal to 0")
+            raise ValueError("t({:d}) must be greater or equal to 0".format(t))
         if p < s:
-            raise ValueError("p({}) must be greater or equal to s({})".format(p, s))
+            raise ValueError("p({:d}) must be greater or equal to s({:d})".format(p, s))
         self.s = s
         self.t = t
         self.p = p
@@ -198,7 +222,7 @@ class StepEntangler(object):
         self.k = s + t
 
         self.source = source
-        self.driver = ECDriver(k=self.k, m=self.p, ec_type="isa_l_rs_vand")
+        self.driver = ECDriver(k=self.k, m=self.p, ec_type=ec_type)
 
     @staticmethod
     def __serialize_entanglement_header(strips):
@@ -294,6 +318,33 @@ class StepEntangler(object):
         """
         return self.driver.encode(data + "".join(blocks))
 
+    def fetch_and_prep_pointer_blocks(self, pointers, fragment_size, original_data_size):
+        """
+        Fetches the pointer blocks and rewrites their liberasurecode header so
+        that they can be reused for reconstruction or decoding
+        Args:
+            pointer_blocks(list(list)): A list of 2 elements list namely the
+                                        filename and the index of each pointer
+                                        block
+            fragment_size(int): Size of each fragment
+            original_data_size(int): Size of the original piece of data
+        Returns:
+            list(bytes): A list of cleaned up liberasurecode fragments formatted
+                         and padded to fit the code
+        """
+        original_pointer_blocks = [self.source.get_block(b[0], b[1]).data for b in pointers]
+        prepared_pointer_blocks = []
+        for index, block in enumerate(original_pointer_blocks):
+            pointer_block = self.__get_data_from_strip(block)
+            fragment_header = FragmentHeader(pointer_block[:80])
+            fragment_header.metadata.index = self.s + index
+            fragment_header.metadata.size = fragment_size
+            fragment_header.metadata.orig_data_size = original_data_size
+            modified_block = fragment_header.pack() + pad(pointer_block[80:],
+                                                          fragment_size)
+            prepared_pointer_blocks.append(modified_block)
+        return prepared_pointer_blocks
+
     def decode(self, strips):
         """
         Decodes data using the entangled blocks and Reed-Solomon.
@@ -302,24 +353,16 @@ class StepEntangler(object):
         Returns:
             bytes: The decoded data
         """
-        pointer_blocks = []
         model_fragment_header = FragmentHeader(self.__get_data_from_strip(strips[0])[:80])
         fragment_size = model_fragment_header.metadata.size
         orig_data_size = model_fragment_header.metadata.orig_data_size
-
+        modified_pointer_blocks = []
         if self.t > 0:
             block_header_text = self.__get_header_from_strip(strips[0])
             block_header = self.__parse_entanglement_header(block_header_text)
-            pointer_blocks = [self.source.get_block(block[0], block[1]).data for block in block_header]
-            modified_pointer_blocks = []
-            for index, pb in enumerate(pointer_blocks):
-                pointer_block = self.__get_data_from_strip(pb)
-                fragment_header = FragmentHeader(pointer_block[:80])
-                fragment_header.metadata.index = self.s + index
-                fragment_header.metadata.size = fragment_size
-                fragment_header.metadata.orig_data_size = orig_data_size
-                modified_block = fragment_header.pack() + "" + pad(pointer_block[80:], fragment_size)
-                modified_pointer_blocks.append(modified_block)
+            modified_pointer_blocks = self.fetch_and_prep_pointer_blocks(block_header,
+                                                                         fragment_size,
+                                                                         orig_data_size)
 
         original_data_size = self.__get_original_size_from_strip(strips[0])
         strips = [self.__get_data_from_strip(strip) for strip in strips]
@@ -359,7 +402,6 @@ class StepEntangler(object):
 
         required_indices = [index for index in xrange(self.s) if index not in missing_fragment_indexes]
         required_indices += [self.s + index for index in xrange(len(missing_fragment_indexes))]
-
         return required_indices
 
     def reconstruct(self, available_fragment_payloads, missing_fragment_indexes):
@@ -375,28 +417,22 @@ class StepEntangler(object):
         list_of_pointer_blocks = self.__parse_entanglement_header(header_text)
 
         parity_header = FragmentHeader(self.__get_data_from_strip(available_fragment_payloads[0])[:80])
-        original_data_size = self.__get_original_size_from_strip(available_fragment_payloads[0])
-
-        pointer_blocks = []
-        for index in xrange(self.t):
-            pointer_block = list_of_pointer_blocks[index]
-            original_pointer_block = self.source.get_block(pointer_block[0], int(pointer_block[1])).data
-            prepared_header = FragmentHeader(parity_header.pack())
-            prepared_header.metadata.index = self.s + index
-            prepared_data = pad(self.__get_data_from_strip(original_pointer_block)[80:],
-                                prepared_header.metadata.size)
-            prepared_block = prepared_header.pack() + "" + prepared_data
-            pointer_blocks.append(prepared_block)
+        data_size = self.__get_original_size_from_strip(available_fragment_payloads[0])
 
         parity_blocks = [self.__get_data_from_strip(block) for block in available_fragment_payloads]
 
+        modified_pointer_blocks = self.fetch_and_prep_pointer_blocks(list_of_pointer_blocks,
+                                                                     parity_header.metadata.size,
+                                                                     parity_header.metadata.orig_data_size)
+
+
         missing_source_indexes = [index for index in xrange(self.s)]
-        reconstructed = self.driver.reconstruct(pointer_blocks + parity_blocks,
+        reconstructed = self.driver.reconstruct(modified_pointer_blocks + parity_blocks,
                                                 missing_source_indexes + missing_fragment_indexes)
 
         requested_blocks = []
-        for block in reconstructed[self.s:]:
-            requested_block = header_text + self.HEADER_DELIMITER + str(original_data_size) + self.HEADER_DELIMITER + block
+        for index, block in enumerate(reconstructed[self.s:]):
+            requested_block = header_text + self.HEADER_DELIMITER + str(data_size) + self.HEADER_DELIMITER + block
             requested_blocks.append(requested_block)
 
         return requested_blocks
