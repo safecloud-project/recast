@@ -139,7 +139,7 @@ def test_reconstruct():
     driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
     data = "".join(["0xCAFEBABE" for _ in xrange(128)])
     encoded = driver.encode(data)
-    reconstructed = driver.reconstruct(encoded[1:], [11])
+    reconstructed = driver.reconstruct(encoded[1:], [0])
     assert len(reconstructed) == 1
     reconstructed_block = reconstructed[0]
     expected_block = encoded[0]

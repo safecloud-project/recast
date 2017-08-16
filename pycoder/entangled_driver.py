@@ -426,6 +426,7 @@ class StepEntangler(object):
                                                                      parity_header.metadata.orig_data_size)
 
 
+        missing_fragment_indexes =  [index + self.s + self.t for index in missing_fragment_indexes]
         missing_source_indexes = [index for index in xrange(self.s)]
         reconstructed = self.driver.reconstruct(modified_pointer_blocks + parity_blocks,
                                                 missing_source_indexes + missing_fragment_indexes)
