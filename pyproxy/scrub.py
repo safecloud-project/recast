@@ -124,25 +124,41 @@ if __name__ == "__main__":
                         "--interval",
                         help="The time between two scrubbings in seconds",
                         type=int,
-                        default=180)
+                        default=0)
     ARGS = PARSER.parse_args()
     LOGGER = init_logger()
     KAZOO_CLIENT = init_zookeeper_client()
-    LOGGER.info("Going to start scrubbing with {:d} seconds interval".format(ARGS.interval))
-    while True:
-        try:
-            time.sleep(ARGS.interval)
-            LOGGER.info("Scrubbing database...")
-            BLOCKS = list_replicas_to_delete(ARGS.pointers)
-            LOGGER.info("Found {:d} blocks to scrub".format(len(BLOCKS)))
-            for BLOCK in BLOCKS:
-                LOGGER.debug("Looking at {:s}".format(BLOCK.key))
-                if delete_block(BLOCK):
-                    LOGGER.info("Removed replicas of {:s}".format(BLOCK.key))
-                else:
-                    LOGGER.error("Could not delete replicas of {:s}".format(BLOCK.key))
-            LOGGER.info("Scrubbing finished")
-        except (KeyboardInterrupt, SystemExit):
-            LOGGER.info("Exiting")
-            KAZOO_CLIENT.stop()
-            sys.exit(0)
+    if ARGS.interval:
+        LOGGER.info("Going to start scrubbing with {:d} seconds interval".format(ARGS.interval))
+        while True:
+            try:
+                time.sleep(ARGS.interval)
+                LOGGER.info("Scrubbing database...")
+                BLOCKS = list_replicas_to_delete(ARGS.pointers)
+                LOGGER.info("Found {:d} blocks to scrub".format(len(BLOCKS)))
+                for BLOCK in BLOCKS:
+                    LOGGER.debug("Looking at {:s}".format(BLOCK.key))
+                    if delete_block(BLOCK):
+                        LOGGER.info("Removed replicas of {:s}".format(BLOCK.key))
+                    else:
+                        LOGGER.error("Could not delete replicas of {:s}".format(BLOCK.key))
+                LOGGER.info("Scrubbing finished")
+            except (KeyboardInterrupt, SystemExit):
+                LOGGER.info("Exiting")
+                KAZOO_CLIENT.stop()
+                sys.exit(0)
+    else:
+        LOGGER.info("Going to start scrubbing with {:d} seconds interval".format(ARGS.interval))
+        LOGGER.info("Scrubbing database...")
+        BLOCKS = list_replicas_to_delete(ARGS.pointers)
+        LOGGER.info("Found {:d} blocks to scrub".format(len(BLOCKS)))
+        for BLOCK in BLOCKS:
+            LOGGER.debug("Looking at {:s}".format(BLOCK.key))
+            if delete_block(BLOCK):
+                LOGGER.info("Removed replicas of {:s}".format(BLOCK.key))
+            else:
+                LOGGER.error("Could not delete replicas of {:s}".format(BLOCK.key))
+        LOGGER.info("Scrubbing finished")
+        LOGGER.info("Exiting")
+        KAZOO_CLIENT.stop()
+        sys.exit(0)
