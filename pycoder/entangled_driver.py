@@ -189,6 +189,9 @@ class StepEntangler(object):
     """
     Basic implementation of STeP based entanglement
     """
+    # TODO: Refactor decode and reconstruct methods to use the same reconstruction
+    #       code
+    # TODO: Parallelize block fetching from the proxy
     # Use the Group Separator from the ASCII table as the delimiter between the
     # entanglement header and the data itself
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
@@ -427,12 +430,11 @@ class StepEntangler(object):
 
 
         missing_fragment_indexes =  [index + self.s + self.t for index in missing_fragment_indexes]
-        missing_source_indexes = [index for index in xrange(self.s)]
         reconstructed = self.driver.reconstruct(modified_pointer_blocks + parity_blocks,
-                                                missing_source_indexes + missing_fragment_indexes)
+                                                missing_fragment_indexes)
 
         requested_blocks = []
-        for index, block in enumerate(reconstructed[self.s:]):
+        for index, block in enumerate(reconstructed):
             requested_block = header_text + self.HEADER_DELIMITER + str(data_size) + self.HEADER_DELIMITER + block
             requested_blocks.append(requested_block)
 
