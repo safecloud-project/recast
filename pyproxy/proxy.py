@@ -82,6 +82,7 @@ def get(key):
     key -- Key under which the data should have been stored
     """
     LOGGER.debug("Received get request for key {:s}".format(key))
+    key = unicode(key, errors="ignore").encode("utf-8")
     lock = KAZOO.ReadLock(os.path.join("/", key), HOSTNAME)
     with lock:
         blocks = DISPATCHER.get(key)
@@ -113,6 +114,7 @@ def store(key=None, data=None):
     """
     if key is None:
         key = str(uuid.uuid4())
+    key = unicode(key, errors="ignore").encode("utf-8")
     lock = KAZOO.WriteLock(os.path.join("/", key), HOSTNAME)
     with lock:
         encode_request = EncodeRequest()
