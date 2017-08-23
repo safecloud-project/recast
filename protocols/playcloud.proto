@@ -66,6 +66,7 @@ message BlockReply {
 message NamedBlockRequest {
 	string path = 1;
 	uint32 index = 2;
+	bool reconstruct_if_missing=3;
 }
 
 message ReconstructRequest {
