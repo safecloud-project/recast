@@ -314,12 +314,17 @@ class Dispatcher(object):
             process.join()
         return blocks
 
-    def get_block(self, path, index):
+    def get_block(self, path, index, reconstruct_if_missing=True):
         """
         Returns a single block for the data store.
         Args:
             path(str): Key under which the file is stored
             index(int): Index of the block
+            reconstruct_if_missing(bool, optional): If the dispatcher should try
+                                                    to reconstruct the block if
+                                                    it cannot be fetched from
+                                                    the storage nodes. Defaults
+                                                    to True
         Returns:
             str: A block of data
         Raises:
@@ -334,13 +339,13 @@ class Dispatcher(object):
             raise ValueError("argument index cannot be negative")
         metadata = self.files.get(path)
         if metadata is None:
-            raise LookupError("could not find a file for path " + path)
+            raise LookupError("could not find a file for path {:s}".format(path))
         if index >= len(metadata.blocks):
-            raise LookupError("could not find block for index " + str(index))
+            raise LookupError("could not find block for index {:d}".format(index))
 
         metablock = metadata.blocks[index]
         data = self.__get_blocks([metablock])[metablock.key]
-        if isinstance(data, NoReplicaException):
+        if isinstance(data, NoReplicaException) and reconstruct_if_missing:
             coder_client = CoderClient()
             data = coder_client.reconstruct(path, [index])[index].data
         return data

@@ -3,7 +3,6 @@ A GRPC service that provides clients with blocks from the active data stores
 """
 import logging
 
-import grpc
 
 from playcloud_pb2_grpc import ProxyServicer
 from playcloud_pb2 import BlockReply
@@ -43,16 +42,18 @@ class ProxyService(ProxyServicer):
         Returns:
             Strip: A reply with the requested block
         """
-        self.logger.info("Received GetBlock request")
         dispatcher = get_dispatcher_instance()
         path = request.path
         index = request.index
-        self.logger.info("Start request to get " + path + "[" + str(index) + "]")
-        data = dispatcher.get_block(path, index)
-        self.logger.info("End request to get " + path + "[" + str(index) + "]")
+        reconstruct_if_missing = request.reconstruct_if_missing
+        call_signature = "GetBlock({:s}, {:3d}, reconstruct_if_missing={})".format(path, index, reconstruct_if_missing)
+        self.logger.debug("Start {:s}".format(call_signature))
+        data = dispatcher.get_block(path,
+                                    index,
+                                    reconstruct_if_missing=reconstruct_if_missing)
         reply = Strip()
         reply.data = data
-        self.logger.info("Replying to GetBlock request")
+        self.logger.debug("End   {:s}".format(call_signature))
         return reply
 
 def get_random_blocks(blocks):

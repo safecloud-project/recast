@@ -42,22 +42,28 @@ class ProxyClient(object):
         strips = [strip for strip in reply.strips]
         return strips
 
-    def get_block(self, path, index):
+    def get_block(self, path, index, reconstruct_if_missing=True):
         """
         Returns a single block from the data stores.
         Args:
             path(str): Name of the file
             index(int): Index of the block
+            reconstruct_if_missing(bool, optional): If the dispatcher should try
+                                                    to reconstruct the block if
+                                                    it cannot be fetched from
+                                                    the storage nodes. Defaults
+                                                    to True
         Returns:
             Strip: The data requested
         Raises:
             ValueError: if the path is empty or the index is negative
         """
-        if len(path.strip()) == 0:
+        if not path or not path.strip():
             raise ValueError("path argument cannot empty")
         if index < 0:
             raise ValueError("index argument cannot be negative")
         request = NamedBlockRequest()
         request.path = path
         request.index = index
+        request.reconstruct_if_missing = reconstruct_if_missing
         return self.stub.GetBlock(request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS)
