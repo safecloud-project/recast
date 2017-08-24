@@ -326,7 +326,7 @@ class StepEntangler(object):
         Fetches the pointer blocks and rewrites their liberasurecode header so
         that they can be reused for reconstruction or decoding
         Args:
-            pointer_blocks(list(list)): A list of 2 elements list namely the
+            pointer_blocks(list(list)): A list of 2 elements lists namely the
                                         filename and the index of each pointer
                                         block
             fragment_size(int): Size of each fragment
@@ -334,10 +334,27 @@ class StepEntangler(object):
         Returns:
             list(bytes): A list of cleaned up liberasurecode fragments formatted
                          and padded to fit the code
+        Raises:
+            ValueError: If the pointers argument is not of type list,
+                        The fragment_size argument is not an int or is lower or
+                        equal to 0,
+                        The original_data_size argument is not an int or is lower
+                        or equal to 0
         """
-        original_pointer_blocks = [self.source.get_block(b[0], b[1]).data for b in pointers]
+        if not isinstance(pointers, list):
+            raise ValueError("pointers argument must be of type list")
+        if not isinstance(fragment_size, int) or fragment_size <= 0:
+            raise ValueError("fragment_size argument must be an integer greater than 0")
+        if not isinstance(original_data_size, int) or original_data_size <= 0:
+            raise ValueError("original_data_size argument must be an integer greater than 0")
+        if original_data_size < fragment_size:
+            raise ValueError("original_data_size must be greater or equal to fragment_size")
+        original_pointer_blocks = [self.source.get_block(b[0], b[1], reconstruct_if_missing=False).data for b in pointers]
         prepared_pointer_blocks = []
         for index, block in enumerate(original_pointer_blocks):
+            if not block:
+                prepared_pointer_blocks.append(None)
+                continue
             pointer_block = self.__get_data_from_strip(block)
             fragment_header = FragmentHeader(pointer_block[:80])
             fragment_header.metadata.index = self.s + index
@@ -429,7 +446,7 @@ class StepEntangler(object):
                                                                      parity_header.metadata.orig_data_size)
 
 
-        missing_fragment_indexes =  [index + self.s + self.t for index in missing_fragment_indexes]
+        missing_fragment_indexes = [index + self.s + self.t for index in missing_fragment_indexes]
         reconstructed = self.driver.reconstruct(modified_pointer_blocks + parity_blocks,
                                                 missing_fragment_indexes)
 

@@ -39,7 +39,7 @@ class MockSource(object):
         return strips
 
     @staticmethod
-    def get_block(path, index):
+    def get_block(path, index, reconstruct_if_missing=True):
         strip = Strip()
         strip.id = "{:s}-{:d}".format(path, index)
         strip.data = FAKE_BLOCK[:]
@@ -161,3 +161,116 @@ def test_reconstruct():
     expected_ec_header = FragmentHeader(expected_block[second_pos:second_pos + 80])
     assert ec_header == expected_ec_header
     assert reconstructed[0] == encoded[0]
+
+
+def test_fetch_and_prep_pointer_blocks_raises_ValueError_if_pointers_not_list():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks(None, 42, 1000)
+    assert str(excinfo.value) == "pointers argument must be of type list"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks(1, 42, 1000)
+    assert str(excinfo.value) == "pointers argument must be of type list"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks("hello world", 42, 1000)
+    assert str(excinfo.value) == "pointers argument must be of type list"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks({}, 42, 1000)
+    assert str(excinfo.value) == "pointers argument must be of type list"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks(MockSource(), 42, 1000)
+    assert str(excinfo.value) == "pointers argument must be of type list"
+
+
+def test_fetch_and_prep_pointer_blocks_raises_ValueError_if_fragment_size_not_an_int():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], None, 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42.42, 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], "hello world", 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], {}, 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], [], 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], [], 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+
+
+def test_fetch_and_prep_pointer_blocks_raises_ValueError_if_fragment_size_lower_or_equal_to_0():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], -1, 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 0, 1000)
+    assert str(excinfo.value) == "fragment_size argument must be an integer greater than 0"
+
+
+def test_fetch_and_prep_pointer_blocks_raises_ValueError_if_original_data_size_not_an_int():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42, None)
+    assert str(excinfo.value) == "original_data_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42, 42.42)
+    assert str(excinfo.value) == "original_data_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42, "Hello, World!")
+    assert str(excinfo.value) == "original_data_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42, {})
+    assert str(excinfo.value) == "original_data_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42, [])
+    assert str(excinfo.value) == "original_data_size argument must be an integer greater than 0"
+
+
+def test_fetch_and_prep_pointer_blocks_raises_ValueError_if_original_data_size_not_lower_or_equal_to_0():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42, -1)
+    assert str(excinfo.value) == "original_data_size argument must be an integer greater than 0"
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 42, 0)
+    assert str(excinfo.value) == "original_data_size argument must be an integer greater than 0"
+
+
+def test_fetch_and_prep_pointer_blocks_raises_ValueError_if_original_data_size_is_lower_than_frangment_size():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    with pytest.raises(ValueError) as excinfo:
+        driver.fetch_and_prep_pointer_blocks([], 43, 42)
+    assert str(excinfo.value) == "original_data_size must be greater or equal to fragment_size"
+
+
+def test_fetch_and_prep_pointer_blocks_returns_empty_list_for_empty_pointers():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    prepped_pointers = driver.fetch_and_prep_pointer_blocks([], 42, 42)
+    assert isinstance(prepped_pointers, list)
+    assert len(prepped_pointers) == 0
+
+
+class FailingSource(object):
+    @staticmethod
+    def get_random_blocks(elements):
+        return [None for _ in xrange(elements)]
+
+    @staticmethod
+    def get_block(path, index, reconstruct_if_missing=True):
+        return Strip()
+
+
+def test_fetch_and_prep_pointer_blocks_returns_None_for_blocks_that_cannot_fetch():
+    source = FailingSource()
+    driver = StepEntangler(source, 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    prepped_pointers = driver.fetch_and_prep_pointer_blocks([["non-existing", 42]], 42, 42)
+    assert isinstance(prepped_pointers, list)
+    assert len(prepped_pointers) == 1
+    assert prepped_pointers[0] is None
