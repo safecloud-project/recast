@@ -34,4 +34,4 @@ if [[ "${#}" -ne 0 ]]; then
 fi
 
 protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pycoder/" --grpc_out="${REPO_DIRECTORY}/pycoder/" --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/playcloud.proto"
-protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pyproxy/" --grpc_out="${REPO_DIRECTORY}/pyproxy/" --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/playcloud.proto"
+protoc -I "${DATA_DIRECTORY}" --python_out="${REPO_DIRECTORY}/pyproxy/pyproxy" --grpc_out="${REPO_DIRECTORY}/pyproxy/pyproxy" --plugin=protoc-gen-grpc="${GRPC_ROOT}"/bins/opt/grpc_python_plugin "${DATA_DIRECTORY}/playcloud.proto"

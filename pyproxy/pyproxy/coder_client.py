@@ -4,8 +4,9 @@ Client implementation and util functions to interact with EncoderDecoder service
 #TODO: Move encode and decode calls to the CoderClient class
 import grpc
 
-import playcloud_pb2_grpc
-from playcloud_pb2 import ReconstructRequest
+
+from pyproxy.playcloud_pb2 import ReconstructRequest
+import pyproxy.playcloud_pb2_grpc as playcloud_pb2_grpc
 
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
 

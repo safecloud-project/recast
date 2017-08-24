@@ -3,11 +3,10 @@ A GRPC service that provides clients with blocks from the active data stores
 """
 import logging
 
-
-from playcloud_pb2_grpc import ProxyServicer
-from playcloud_pb2 import BlockReply
-from playcloud_pb2 import Strip
-from pyproxy_globals import get_dispatcher_instance
+from pyproxy.playcloud_pb2_grpc import ProxyServicer
+from pyproxy.playcloud_pb2 import BlockReply, Strip
+from pyproxy.pyproxy_globals import get_dispatcher_instance
+from pyproxy.safestore.providers.dispatcher import NoReplicaException
 
 class ProxyService(ProxyServicer):
     """
@@ -52,7 +51,8 @@ class ProxyService(ProxyServicer):
                                     index,
                                     reconstruct_if_missing=reconstruct_if_missing)
         reply = Strip()
-        reply.data = data
+        if not isinstance(data, NoReplicaException):
+            reply.data = data
         self.logger.debug("End   {:s}".format(call_signature))
         return reply
 

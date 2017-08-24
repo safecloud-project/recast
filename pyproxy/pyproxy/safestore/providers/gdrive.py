@@ -4,8 +4,8 @@
 import httplib2
 import os
 import uuid
-import safestore.db.db_provider as dbprovider
-import safestore.handler.defines as defines
+import pyproxy.safestore.db.db_provider as dbprovider
+import pyproxy.safestore.handler.defines as defines
 
 
 from apiclient.errors import HttpError

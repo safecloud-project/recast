@@ -3,7 +3,7 @@
 
 import logging
 import os
-import safestore.db.db_provider as dbprovider
+import pyproxy.safestore.db.db_provider as dbprovider
 import sys
 
 from dropbox import client, rest

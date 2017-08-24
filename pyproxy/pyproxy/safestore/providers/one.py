@@ -5,8 +5,8 @@ import logging
 import os
 import sys
 import uuid
-import safestore.handler.defines as defines
-import safestore.db.db_provider as dbprovider
+import pyproxy.safestore.handler.defines as defines
+import pyproxy.safestore.db.db_provider as dbprovider
 from onedrive import api_v5
 from onedrive.api_v5 import DoesNotExists, ProtocolError
 from httplib import BadStatusLine, ResponseNotReady

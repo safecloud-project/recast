@@ -16,13 +16,13 @@ import grpc
 from kazoo.client import KazooClient
 from kazoo.handlers.threading import KazooTimeoutError
 
-import playcloud_pb2
-import playcloud_pb2_grpc
+import pyproxy.playcloud_pb2 as playcloud_pb2
+import pyproxy.playcloud_pb2_grpc as playcloud_pb2_grpc
 
-from pyproxy_globals import get_dispatcher_instance
-from playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
-from proxy_service import ProxyService
 from pyproxy.files import extract_entanglement_data, Files
+from pyproxy.pyproxy_globals import get_dispatcher_instance
+from pyproxy.playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
+from pyproxy.proxy_service import ProxyService
 
 
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
