@@ -6,7 +6,7 @@ Gets the amount of free space in at the providers in use by the pyproxy
 import json
 import os
 
-from safestore.providers.dispatcher import ProviderFactory
+from pyproxy.safestore.providers.dispatcher import ProviderFactory
 
 
 CONFIGURATION_PATH = os.path.join(os.path.dirname(__file__), "./dispatcher.json")

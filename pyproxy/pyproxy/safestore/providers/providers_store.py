@@ -4,11 +4,11 @@ import logging
 
 from enum import Enum
 
-import safestore.handler.defines as defines
+import pyproxy.safestore.handler.defines as defines
 
-import safestore.providers.dbox as dbox
-import safestore.providers.gdrive as gdrive
-import safestore.providers.one as one
+import pyproxy.safestore.providers.dbox as dbox
+import pyproxy.safestore.providers.gdrive as gdrive
+import pyproxy.safestore.providers.one as one
 
 
 class Providers(Enum):

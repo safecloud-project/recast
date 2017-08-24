@@ -6,11 +6,11 @@ RUN apt-get update && \
     apt-get autoclean    --assume-yes --quiet && \
     apt-get install      --assume-yes --quiet python-all-dev python-numpy python-pip
 COPY requirements.txt  /usr/local/src/pyproxy/requirements.txt
-COPY safestore/requirements.txt  /usr/local/src/pyproxy/safestore/requirements.txt
-COPY safestore/data.db /root/data.db
+COPY pyproxy/safestore/requirements.txt  /usr/local/src/pyproxy/pyproxy/safestore/requirements.txt
+COPY pyproxy/safestore/data.db /root/data.db
 WORKDIR /usr/local/src/pyproxy
 RUN pip install --upgrade --requirement requirements.txt && \
-    pip install --upgrade --requirement safestore/requirements.txt
+    pip install --upgrade --requirement pyproxy/safestore/requirements.txt
 COPY . /usr/local/src/pyproxy
 EXPOSE 8000
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src/pyproxy"

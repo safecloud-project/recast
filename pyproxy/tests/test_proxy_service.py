@@ -4,8 +4,8 @@ Tests for the proxy_service module
 import mock
 import pytest
 
-from safestore.providers.dispatcher import MetaBlock
-from proxy_service import get_random_blocks
+from pyproxy.files import BlockType, Files, MetaBlock, Metadata
+from pyproxy.proxy_service import get_random_blocks
 
 class MockDispatcher(object):
     def __init__(self):

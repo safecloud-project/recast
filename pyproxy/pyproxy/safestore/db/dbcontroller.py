@@ -6,7 +6,7 @@ import datetime
 import hashlib
 import logging
 import threading
-import safestore.handler.defines as defines
+import pyproxy.safestore.handler.defines as defines
 
 
 FILE_SYSTEM_TABLE_CREATION='''CREATE TABLE FILE_SYSTEM(path TEXT PRIMARY KEY, type integer NOT NULL, timestamp timestamp NOT NULL, size integer NOT NULL)'''

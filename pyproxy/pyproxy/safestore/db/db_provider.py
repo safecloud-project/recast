@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import logging
 from dbcontroller import DBController
-import safestore.handler.defines as defines
+import pyproxy.safestore.handler.defines as defines
 
 class DB:
     dbcontroller = None

@@ -7,9 +7,9 @@ import json
 import hashlib
 import sys
 
-from coder_client import CoderClient
+from pyproxy.coder_client import CoderClient
 from pyproxy.files import convert_binary_to_hex_digest, Files
-from safestore.providers.dispatcher import Dispatcher, extract_index_from_key, extract_path_from_key
+from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_index_from_key, extract_path_from_key
 
 
 if __name__ == "__main__":

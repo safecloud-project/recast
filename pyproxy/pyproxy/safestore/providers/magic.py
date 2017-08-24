@@ -9,7 +9,7 @@ from Crypto import Random
 
 from concurrent import futures
 
-import safestore.handler.defines as defines
+import pyproxy.safestore.handler.defines as defines
 
 
 import numpy

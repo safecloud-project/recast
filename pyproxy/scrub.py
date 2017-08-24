@@ -10,7 +10,7 @@ import os
 import sys
 import time
 
-from safestore.providers.dispatcher import Dispatcher, extract_path_from_key
+from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_path_from_key
 from proxy import init_zookeeper_client
 from pyproxy.files import Files, MetaBlock
 
