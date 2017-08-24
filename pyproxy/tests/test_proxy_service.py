@@ -4,7 +4,6 @@ Tests for the proxy_service module
 import mock
 import pytest
 
-from pyproxy.files import BlockType, Files, MetaBlock, Metadata
 from pyproxy.proxy_service import get_random_blocks
 
 class MockDispatcher(object):
@@ -12,7 +11,7 @@ class MockDispatcher(object):
         pass
 
     def get_random_blocks(self, blocks):
-        return [(MetaBlock, "0xCAFE") for i in range(blocks)]
+        return [("0xCAFE-{:d}".format(index), "0xCAFE") for index in range(blocks)]
 
 @mock.patch("pyproxy.proxy_service.get_dispatcher_instance")
 def test_get_random_blocks_lower_than_zero(mock_get_dispatcher_instance):
