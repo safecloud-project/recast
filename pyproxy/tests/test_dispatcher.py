@@ -3,8 +3,8 @@ import os
 
 import pytest
 
-from ..safestore.providers.dispatcher import arrange_elements, Dispatcher, Metadata, ProviderFactory
-from ..safestore.providers.redis_provider import RedisProvider
+from pyproxy.safestore.providers.dispatcher import arrange_elements, Dispatcher, Metadata, ProviderFactory
+from pyproxy.safestore.providers.redis_provider import RedisProvider
 
 DEFAULT_PATH = "hello"
 LENGTH = 128

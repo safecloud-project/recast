@@ -14,7 +14,7 @@ class MockDispatcher(object):
     def get_random_blocks(self, blocks):
         return [(MetaBlock, "0xCAFE") for i in range(blocks)]
 
-@mock.patch("proxy_service.get_dispatcher_instance")
+@mock.patch("pyproxy.proxy_service.get_dispatcher_instance")
 def test_get_random_blocks_lower_than_zero(mock_get_dispatcher_instance):
     """
     Test if the function expectedly raises an error of the number of blocks is below 0
@@ -24,7 +24,7 @@ def test_get_random_blocks_lower_than_zero(mock_get_dispatcher_instance):
     mock_get_dispatcher_instance.assert_not_called()
     assert "argument blocks cannot be lower or equal to 0" in error.value
 
-@mock.patch("proxy_service.get_dispatcher_instance")
+@mock.patch("pyproxy.proxy_service.get_dispatcher_instance")
 def test_get_random_blocks_equal_to_zero(mock_get_dispatcher_instance):
     """
     Test if the function expectedly raises an error of the number of blocks is equal to 0
@@ -34,7 +34,7 @@ def test_get_random_blocks_equal_to_zero(mock_get_dispatcher_instance):
     mock_get_dispatcher_instance.assert_not_called()
     assert "argument blocks cannot be lower or equal to 0" in error.value
 
-@mock.patch("proxy_service.get_dispatcher_instance")
+@mock.patch("pyproxy.proxy_service.get_dispatcher_instance")
 def test_get_random_blocks_returns_a_list_of_length_blocks(mock_get_dispatcher_instance):
     """
     Test if the function expectedly returns the appropriate number of blocks
