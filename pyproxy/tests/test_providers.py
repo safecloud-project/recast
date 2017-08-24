@@ -1,5 +1,5 @@
-from ..safestore.providers.dispatcher import ProviderFactory
-from ..safestore.providers.redis_provider import RedisProvider
+from pyproxy.safestore.providers.dispatcher import ProviderFactory
+from pyproxy.safestore.providers.redis_provider import RedisProvider
 
 def test_ProdiverFactory_get_factory_raises_execption_if_no_type_in_configuration():
     configuration_without_type = {}
