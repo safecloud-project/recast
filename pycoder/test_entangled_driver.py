@@ -91,17 +91,17 @@ def test_constructor():
 
 def test_fragments_needed_all_available():
     driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
-    assert driver.fragments_needed([]) == [0]
+    assert driver.fragments_needed([]) == [11]
 
 
 def test_fragments_needed_one_parity_missing():
     driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
-    assert driver.fragments_needed([11]) == [0, 1]
+    assert driver.fragments_needed([11]) == [12]
 
 
 def test_fragments_needed_two_parities_missing():
     driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
-    assert driver.fragments_needed([11, 12]) == [0, 1, 2]
+    assert driver.fragments_needed([11, 12]) == [13]
 
 
 def test_fragments_needed_all_parities_missing():
@@ -110,6 +110,15 @@ def test_fragments_needed_all_parities_missing():
         driver.fragments_needed([10, 11, 12])
     assert str(excinfo.value) == "Configuration of Step (s=1, t=10, e=2, p=3) does not allow for reconstruction of 3 missing blocks"
 
+def test_fragments_needed_raises_ValueError_when_index_out_of_scope():
+    driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
+    with pytest.raises(ValueError) as excinfo:
+        driver.fragments_needed([-1])
+    assert str(excinfo.value) == "Index -1 is out of range"
+
+    with pytest.raises(ValueError) as excinfo:
+        driver.fragments_needed([14])
+    assert str(excinfo.value) == "Index 14 is out of range"
 
 def test_encode():
     driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")

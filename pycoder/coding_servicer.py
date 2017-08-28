@@ -360,6 +360,8 @@ class CodingService(BetaEncoderDecoderServicer):
             logger.debug(log_temp.format(len(raw_strips)))
 
             fragments_needed = self.driver.fragments_needed([])
+            if isinstance(self.driver, StepEntangler):
+                fragments_needed = [index - self.driver.k for index in fragments_needed]
 
             strips = []
             for index, raw_strip in enumerate(raw_strips):
@@ -433,17 +435,16 @@ class CodingService(BetaEncoderDecoderServicer):
             reply.reconstructed[missing_index].data = reconstructed_data[i]
         logger.info("Replying reconstruct request")
         return reply
-    
+
     def FragmentsNeeded(self, request, context):
         """
         Given a set of missing block indices what are the indices of the blocks
         needed to reconstruct the decode the data
         """
         logger.debug("FragmentsNeeded: start")
-        print context
-        missing_indices = [index for index in request.missing]
-        logger.info("FragmentsNeeded: [{:s}]".format(", ".join([str(index) for index in missing_indices])))
-        indices_needed = self.driver.fragments_needed(missing_indices)
+        missing_indices = [self.driver.k + index for index in request.missing]
+        logger.info("FragmentsNeeded: [{:s}]".format(", ".join([str(i) for i in missing_indices])))
+        indices_needed = [i - self.driver.k for i in self.driver.fragments_needed(missing_indices)]
         reply = FragmentsNeededReply()
         reply.needed.extend(indices_needed)
         logger.debug("FragmentsNeeded: end")
