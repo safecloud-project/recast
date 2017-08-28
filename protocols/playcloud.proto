@@ -8,6 +8,7 @@ service EncoderDecoder {
 	rpc Encode (EncodeRequest) returns (EncodeReply) {}
 	rpc Decode (DecodeRequest) returns (DecodeReply) {}
 	rpc Reconstruct (ReconstructRequest) returns (ReconstructReply) {}
+	rpc FragmentsNeeded (FragmentsNeededRequest) returns (FragmentsNeededReply) {}
 }
 
 //the proxy service
@@ -76,4 +77,12 @@ message ReconstructRequest {
 
 message ReconstructReply {
 	map<uint32, Strip> reconstructed = 1;
+}
+
+message FragmentsNeededRequest {
+	repeated uint32 missing = 1;
+}
+
+message FragmentsNeededReply {
+	repeated uint32 needed = 1;
 }

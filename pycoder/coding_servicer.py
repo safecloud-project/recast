@@ -19,6 +19,7 @@ from entangled_driver import StepEntangler
 from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
+from playcloud_pb2 import FragmentsNeededReply
 from playcloud_pb2 import ReconstructReply
 from playcloud_pb2 import Strip
 
@@ -431,4 +432,19 @@ class CodingService(BetaEncoderDecoderServicer):
         for i, missing_index in enumerate(missing_indices):
             reply.reconstructed[missing_index].data = reconstructed_data[i]
         logger.info("Replying reconstruct request")
+        return reply
+    
+    def FragmentsNeeded(self, request, context):
+        """
+        Given a set of missing block indices what are the indices of the blocks
+        needed to reconstruct the decode the data
+        """
+        logger.debug("FragmentsNeeded: start")
+        print context
+        missing_indices = [index for index in request.missing]
+        logger.info("FragmentsNeeded: [{:s}]".format(", ".join([str(index) for index in missing_indices])))
+        indices_needed = self.driver.fragments_needed(missing_indices)
+        reply = FragmentsNeededReply()
+        reply.needed.extend(indices_needed)
+        logger.debug("FragmentsNeeded: end")
         return reply
