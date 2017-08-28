@@ -412,16 +412,27 @@ class StepEntangler(object):
             missing_fragment_indexes(list(int)): The list of missing fragments
         Returns:
             list(int): The list of fragments required for decoding/reconstruction
+        Raises:
+            ECDriverError: If the number of missing indexes to  work around is
+                           greater than self.p - self.s
+            ValueError: if one of the missing indexes is out of scope
+                           (index < 0 || (self.s + self.s + self.p) <= index)
         """
-        if not missing_fragment_indexes:
-            return [index for index in xrange(self.s)]
         if self.e == 0:
-            raise ECDriverError("Configuration of Step (s={}, t={}, e={}, p={}) does not allow for reconstruction".format(self.s, self.t, self.e, self.p))
+            message = ("Configuration of Step (s={:d}, t={:d}, e={:d}, p={:d}) does not allow for reconstruction".format(self.s, self.t, self.e, self.p))
+            raise ECDriverError(message)
         if self.e < len(missing_fragment_indexes):
-            raise ECDriverError("Configuration of Step (s={}, t={}, e={}, p={}) does not allow for reconstruction of {} missing blocks".format(self.s, self.t, self.e, self.p, len(missing_fragment_indexes)))
-
-        required_indices = [index for index in xrange(self.s) if index not in missing_fragment_indexes]
-        required_indices += [self.s + index for index in xrange(len(missing_fragment_indexes))]
+            message = ("Configuration of Step (s={:d}, t={:d}, e={:d}, p={:d}) does not allow for reconstruction of {:d} missing blocks".format(self.s, self.t, self.e, self.p, len(missing_fragment_indexes)))
+            raise ECDriverError(message)
+        for index in missing_fragment_indexes:
+            if index <= 0 or (self.s + self.t + self.p) <= index:
+                raise ValueError("Index {:d} is out of range".format(index))
+        required_indices = []
+        for index in xrange(self.k, self.k + self.p):
+            if not index in missing_fragment_indexes:
+                required_indices.append(index)
+                if len(required_indices) == self.s:
+                    break
         return required_indices
 
     def reconstruct(self, available_fragment_payloads, missing_fragment_indexes):
