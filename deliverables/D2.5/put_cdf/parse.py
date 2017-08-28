@@ -24,7 +24,7 @@ def read_numbers(file_path):
 def read_for_config(config_path):
     stats = {index: [] for index in xrange(100)}
     for experiment in xrange(1, 6, 1):
-        numbers = read_numbers("{:s}/{:d}/completion-1000-4-1.csv".format(config_path, experiment))
+        numbers = read_numbers("{:s}/{:d}/completion-500-4-1.csv".format(config_path, experiment))
         for index, number in enumerate(numbers):
             stats[index].append(number)
     return [compute_stats(stats[key]) for key in sorted(stats.keys())]
