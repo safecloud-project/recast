@@ -31,6 +31,11 @@ class EncoderDecoderStub(object):
         request_serializer=playcloud__pb2.ReconstructRequest.SerializeToString,
         response_deserializer=playcloud__pb2.ReconstructReply.FromString,
         )
+    self.FragmentsNeeded = channel.unary_unary(
+        '/EncoderDecoder/FragmentsNeeded',
+        request_serializer=playcloud__pb2.FragmentsNeededRequest.SerializeToString,
+        response_deserializer=playcloud__pb2.FragmentsNeededReply.FromString,
+        )
 
 
 class EncoderDecoderServicer(object):
@@ -52,6 +57,11 @@ class EncoderDecoderServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def FragmentsNeeded(self, request, context):
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_EncoderDecoderServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -69,6 +79,11 @@ def add_EncoderDecoderServicer_to_server(servicer, server):
           servicer.Reconstruct,
           request_deserializer=playcloud__pb2.ReconstructRequest.FromString,
           response_serializer=playcloud__pb2.ReconstructReply.SerializeToString,
+      ),
+      'FragmentsNeeded': grpc.unary_unary_rpc_method_handler(
+          servicer.FragmentsNeeded,
+          request_deserializer=playcloud__pb2.FragmentsNeededRequest.FromString,
+          response_serializer=playcloud__pb2.FragmentsNeededReply.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

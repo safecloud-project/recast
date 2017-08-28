@@ -5,7 +5,7 @@ Client implementation and util functions to interact with EncoderDecoder service
 import grpc
 
 
-from pyproxy.playcloud_pb2 import ReconstructRequest
+from pyproxy.playcloud_pb2 import FragmentsNeededRequest, ReconstructRequest
 import pyproxy.playcloud_pb2_grpc as playcloud_pb2_grpc
 
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
@@ -47,3 +47,20 @@ class CoderClient(object):
         for index, value in reply.reconstructed.iteritems():
             reconstructed[int(index)] = value
         return reconstructed
+
+    def fragments_needed(self, missing_indices):
+        """
+        Returns the block indices to compensate for the missing block indices
+        Args:
+            missing_indices(list(int)): Missing block indices
+        Returns:
+            list(int): List of the block indices to use when compensating for the missing ones
+        Raises:
+            ValueError: If he missing_indices argument is not of type list
+        """
+        if not isinstance(missing_indices, list):
+            raise ValueError("missing_indices argument must be of type list")
+        request = FragmentsNeededRequest()
+        request.missing.extend(missing_indices)
+        reply = self.stub.FragmentsNeeded(request)
+        return [index for index in reply.needed]
