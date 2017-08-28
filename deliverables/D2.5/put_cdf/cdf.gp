@@ -4,26 +4,27 @@ set term pdfcairo enh size 5.00in, 2.00in
 set output "cdf.pdf"
 set title "500 PUT requests (4 concurrent) to store 1MB documents"
 set key bottom
-set pointsize 0.5
 
-# Percentage served
+# Percentage served (y-axis)
 set ylabel "percentage served (%)"
 set grid y
 
-# Time
+# Time (x-axis)
 set xlabel "time (ms)"
 set grid x
 
+# Plot lines style
+set pointsize 0.5
+set pointinterval 10 # Draw every 10 points
+set style line 1 linetype 1 pointtype 13 pointinterval 10 linecolor rgb "#DC143C"# Dagster with replication
+set style line 2 linetype 2 pointtype 13 pointinterval 10 linecolor rgb "#E9967A" # Dagster
+set style line 3 linetype 3 pointtype 26 pointinterval 10 linecolor rgb "#00008B" # STeP with replication
+set style line 4 linetype 4 pointtype 26 pointinterval 10 linecolor rgb "#00BFFF" # STeP
+
 # Data
 set datafile separator ","
-plot "cdf.csv" using 4:1 with lines linetype 1 linecolor 1 title "RS(10, 4)", \
-     "cdf.csv" using 4:1 every 10 with points pointtype 12 linecolor 1 notitle, \
-     "cdf.csv" using 2:1 with lines linecolor 2 title "Dagster(1, 10) 3-replication", \
-     "cdf.csv" using 2:1 every 10 with points pointtype 13 linecolor 2 notitle, \
-     "cdf.csv" using 3:1 with lines linecolor 3 title "Dagster(1, 10)", \
-     "cdf.csv" using 3:1 every 10 with points pointtype 13 linecolor 3 notitle, \
-     "cdf.csv" using 5:1 with lines linecolor 4 title "STeP(1, 10, 3) 3-replication", \
-     "cdf.csv" using 5:1 every 10 with points pointtype 26 linecolor 4 notitle, \
-     "cdf.csv" using 6:1 with lines linecolor 5 title "STeP(1, 10, 3)", \
-     "cdf.csv" using 6:1 every 10 with points pointtype 26 linecolor 5 notitle
+plot "cdf.csv" using 3:1 with linespoints linestyle 2 title "Dagster(1, 10)", \
+     "cdf.csv" using 2:1 with linespoints linestyle 1 title "Dagster(1, 10) 3-replication", \
+     "cdf.csv" using 6:1 with linespoints linestyle 4 title "STeP(1, 10, 3)", \
+     "cdf.csv" using 5:1 with linespoints linestyle 3 title "STeP(1, 10, 3) 3-replication"
 exit
