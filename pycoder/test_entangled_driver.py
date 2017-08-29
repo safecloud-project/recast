@@ -114,11 +114,14 @@ def test_fragments_needed_raises_ValueError_when_index_out_of_scope():
     driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")
     with pytest.raises(ValueError) as excinfo:
         driver.fragments_needed([-1])
-    assert str(excinfo.value) == "Index -1 is out of range"
+    assert str(excinfo.value) == "Index -1 is out of range(0 <= index < 14)"
+    
+    assert driver.fragments_needed([0]) == [11]
+    assert driver.fragments_needed([13]) == [11]
 
     with pytest.raises(ValueError) as excinfo:
         driver.fragments_needed([14])
-    assert str(excinfo.value) == "Index 14 is out of range"
+    assert str(excinfo.value) == "Index 14 is out of range(0 <= index < 14)"
 
 def test_encode():
     driver = StepEntangler(MockSource(), 1, 10, 3, ec_type="liberasurecode_rs_vand")

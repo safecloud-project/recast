@@ -425,8 +425,8 @@ class StepEntangler(object):
             message = ("Configuration of Step (s={:d}, t={:d}, e={:d}, p={:d}) does not allow for reconstruction of {:d} missing blocks".format(self.s, self.t, self.e, self.p, len(missing_fragment_indexes)))
             raise ECDriverError(message)
         for index in missing_fragment_indexes:
-            if index <= 0 or (self.s + self.t + self.p) <= index:
-                raise ValueError("Index {:d} is out of range".format(index))
+            if index < 0 or (self.s + self.t + self.p) <= index:
+                raise ValueError("Index {:d} is out of range(0 <= index < {:d})".format(index, self.s + self.t + self.p))
         required_indices = []
         for index in xrange(self.k, self.k + self.p):
             if not index in missing_fragment_indexes:
