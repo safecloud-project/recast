@@ -442,9 +442,11 @@ class CodingService(BetaEncoderDecoderServicer):
         needed to reconstruct the decode the data
         """
         logger.debug("FragmentsNeeded: start")
-        missing_indices = [self.driver.k + index for index in request.missing]
-        logger.info("FragmentsNeeded: [{:s}]".format(", ".join([str(i) for i in missing_indices])))
-        indices_needed = [i - self.driver.k for i in self.driver.fragments_needed(missing_indices)]
+        if isinstance(self.driver, StepEntangler):
+            missing_indices = [self.driver.k + index for index in request.missing]
+        logger.info("FragmentsNeeded: {:s}".format([str(i) for i in missing_indices]))
+        if isinstance(self.driver, StepEntangler):
+            indices_needed = [i - self.driver.k for i in self.driver.fragments_needed(missing_indices)]
         reply = FragmentsNeededReply()
         reply.needed.extend(indices_needed)
         logger.debug("FragmentsNeeded: end")
