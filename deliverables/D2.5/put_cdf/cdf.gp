@@ -1,6 +1,6 @@
 #! /usr/bin/env gnuplot
 # Set terminal
-set term pdfcairo enh size 5.00in, 2.00in
+set terminal pdfcairo enhanced size 5.00in,2.00in
 set output "cdf.pdf"
 set title "500 PUT requests (4 concurrent) to store 1MB documents"
 set key bottom

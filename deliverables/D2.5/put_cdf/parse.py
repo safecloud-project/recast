@@ -36,7 +36,7 @@ def parse(rootdir):
 def format_output():
     data = parse(".")
     configurations = sorted(data.keys())
-    print "percentage" +  ",".join(configurations)
+    print ",".join(["percentage"] + configurations)
     for index in xrange(100):
         line = [str(index)]
         for conf in configurations:
