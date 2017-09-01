@@ -416,20 +416,25 @@ class CodingService(BetaEncoderDecoderServicer):
         """
         logger.info("Received reconstruct request")
         path = request.path
-        missing_indices = [int(index) for index in request.missing_indices]
-        logger.info("Retrieved path " + path + " and missing indices (" + ",".join([str(i) for i in missing_indices]) + ")")
+        missing_indices = [index for index in request.missing_indices]
+        if isinstance(self.driver, StepEntangler):
+            missing_indices = [index + self.driver.k for index in  missing_indices]
+        logger.info("Retrieved path {:s} and missing indices ({:s})".format(path, ", ".join([str(i) for i in missing_indices])))
         fragments_needed = self.driver.fragments_needed(missing_indices)
-        logger.debug("Retrieved the list of indices to retrieve (" + "".join([str(i) for i in fragments_needed]) + ")")
+        if isinstance(self.driver, StepEntangler):
+            fragments_needed = [index - self.driver.k for index in fragments_needed]
+        logger.debug("Retrieved the list of indices to retrieve ({:s})".format(", ".join([str(i) for i in fragments_needed])))
         client = ProxyClient()
         available_payload_fragments = []
         for index in fragments_needed:
-            logger.debug("Fetching block " + path + "[" + str(index) + "]")
+            logger.debug("Fetching block {:s}[{:d}]".format(path, index))
             data = client.get_block(path, index).data
             available_payload_fragments.append(data)
-            logger.debug("Retrieved block " + path + "[" + str(index) + "]")
-        logger.debug("Reconstructing missing fragments [" + ",".join([str(i) for i in missing_indices])  + "]")
+            logger.debug("Retrieved block {:s}[{:d}]".format(path, index))
+        logger.debug("Reconstructing missing fragments [{:s}]".format(",".join([str(i) for i in missing_indices])))
+        if isinstance(self.driver, StepEntangler):
+            missing_indices = [index - self.driver.k for index in  missing_indices]
         reconstructed_data = self.driver.reconstruct(available_payload_fragments, missing_indices)
-        logger.debug("Reconstructed missing fragments [" + ",".join([str(i) for i in missing_indices])  + "]")
         reply = ReconstructReply()
         for i, missing_index in enumerate(missing_indices):
             reply.reconstructed[missing_index].data = reconstructed_data[i]
