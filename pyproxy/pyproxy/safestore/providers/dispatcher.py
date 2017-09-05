@@ -365,22 +365,33 @@ class Dispatcher(object):
         metablocks = [b for b in metadata.blocks if b.block_type == BlockType.DATA]
 
         block_queue = self.__get_blocks(metablocks)
-        blocks_to_reconstruct = []
+        missing_indices = []
         for key in sorted(block_queue.keys()):
             block = block_queue[key]
             if isinstance(block, NoReplicaException):
                 missing_index = extract_index_from_key(key)
+                missing_indices.append(missing_index)
                 del block_queue[key]
-                blocks_to_reconstruct.append(missing_index)
+                continue
 
-        if blocks_to_reconstruct:
+        while len(block_queue) < len(metablocks):
             coder = CoderClient()
-            reconstructed_blocks = coder.reconstruct(path, blocks_to_reconstruct)
-            index_format_length = len(str(len(metablocks)))
-            for index in sorted(reconstructed_blocks.keys()):
-                key = compute_block_key(path, index, index_format_length)
-                strip = reconstructed_blocks[index]
-                block_queue[key] = strip.data
+            indices_needed = coder.fragments_needed(missing_indices)
+            indices_secured = [extract_index_from_key(m) for m in block_queue.keys()]
+            indices_to_compensate = list(set(indices_needed).difference(set(indices_secured)))
+            metablocks_to_compensate = [m for m in metadata.blocks if extract_index_from_key(m.key) in indices_to_compensate]
+            blocks_to_compensate = self.__get_blocks(metablocks_to_compensate)
+            for key in sorted(blocks_to_compensate.keys()):
+                block = blocks_to_compensate[key]
+                index = extract_index_from_key(key)
+                if isinstance(block, NoReplicaException):
+                    missing_indices.append(index)
+                    continue
+                if index in missing_indices:
+                    missing_indices.remove(index)
+                block_queue[key] = block
+            missing_indices = list(set(missing_indices))
+
         return [block_queue[key] for key in sorted(block_queue.keys())]
 
 
