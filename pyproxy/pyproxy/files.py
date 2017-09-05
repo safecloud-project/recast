@@ -8,6 +8,18 @@ import random
 import enum
 import redis
 
+def compute_block_key(path, index, length=2):
+    """
+    Computes a block key from a file path and an index.
+    Args:
+        path(str): Path to the file related to the block
+        index(int): index of the block
+        length(int, optional): Length of the index part of the key for zero filling (Defaults to 2)
+    Returns:
+        str: Block key
+    """
+    return path + "-" + str(index).zfill(length)
+
 class BlockType(enum.Enum):
     """
     Informs on the type of block and its use where DATA blocks are needed for
@@ -230,7 +242,7 @@ class Files(object):
             pipeline.exists(key)
         for index, is_in_database in enumerate(pipeline.execute()):
             if not is_in_database:
-                raise KeyError("key {:s} not found".format(keys[index]))
+                raise KeyError("key {:s} not found ({:d} = {:s})".format(keys[index], index, translated_keys[index]))
             pipeline.hgetall(translated_keys[index])
         blocks = [Files.parse_metablock(hsh) for hsh in pipeline.execute()]
         return sorted(blocks, key=lambda block: block.key)
@@ -247,8 +259,7 @@ class Files(object):
             raise ValueError("path argument must be a valid non-empty string")
         if not metadata:
             raise ValueError("metadata argument must be a valid Metadata object")
-
-        entangling_block_keys = ["{:s}-{:d}".format(eb[0], eb[1]) for eb in metadata.entangling_blocks]
+        entangling_block_keys = [compute_block_key(eb[0], eb[1]) for eb in metadata.entangling_blocks]
         entangling_blocks = self.get_blocks(entangling_block_keys)
 
         pipeline = self.redis.pipeline(transaction=True)

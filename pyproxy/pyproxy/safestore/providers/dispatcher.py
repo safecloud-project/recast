@@ -8,17 +8,17 @@ import re
 import threading
 from multiprocessing import Manager, Process
 
+from enum import Enum
 from redis import ConnectionError
 
 from pyproxy.coder_client import CoderClient
-from enum import Enum
-from dbox import DBox
-from disk import Disk
-from gdrive import GDrive
-from one import ODrive
+from pyproxy.files import BlockType, compute_block_key, Files, MetaBlock, Metadata
+from pyproxy.safestore.providers.dbox import DBox
+from pyproxy.safestore.providers.disk import Disk
+from pyproxy.safestore.providers.gdrive import GDrive
+from pyproxy.safestore.providers.one import ODrive
+from pyproxy.safestore.providers.redis_provider import RedisProvider
 from pyproxy.playcloud_pb2 import Strip
-from pyproxy.files import BlockType, Files, MetaBlock, Metadata
-from redis_provider import RedisProvider
 
 logger = logging.getLogger("dispatcher")
 
@@ -70,18 +70,6 @@ class ProviderFactory(object):
             return initializer(folder=configuration.get("folder", "/data"))
         return initializer()
 
-def compute_block_key(path, index, length=2):
-    """
-    Computes a block key from a file path and an index.
-    Args:
-        path(str): Path to the file related to the block
-        index(int): index of the block
-        length(int, optional): Length of the index part of the key for zero filling (Defaults to 2)
-    Returns:
-        str: Block key
-    """
-    return path + "-" + str(index).zfill(length)
-
 def extract_path_from_key(key):
     """
     Extracts the path from a block key.
@@ -128,7 +116,7 @@ class BlockPusher(threading.Thread):
         Loop through self.blocks, selecting those stored at indices
         listed in self.indices and feeding them to self.provider for storage
         """
-        loop_temp = "Going to put block with key {} in provider {}"
+        loop_temp = "Going to put block with key {:s} in provider {:s}"
         for metablock, data in self.blocks.iteritems():
             logger.debug(loop_temp.format(metablock.key, str(type(self.provider))))
             self.provider.put(data, metablock.key)
