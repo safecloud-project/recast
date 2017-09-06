@@ -225,7 +225,7 @@ class Dispatcher(object):
             for index in arrangement[i]:
                 index = index % len(encoded_file.strips)
                 strip = encoded_file.strips[index]
-                key = compute_block_key(path, index, index_format_length)
+                key = compute_block_key(path, index)
                 block_type = BlockType.PARITY
                 if  strip.type == Strip.DATA:
                     block_type = BlockType.DATA
