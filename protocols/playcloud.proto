@@ -48,7 +48,8 @@ message EncodeReply {
 
 message DecodeRequest {
 	repeated Strip strips = 1;
-	map<string, string> parameters = 2;
+	string path = 2;
+	map<string, string> parameters = 3;
 }
 
 message DecodeReply {

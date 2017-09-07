@@ -397,7 +397,11 @@ class CodingService(BetaEncoderDecoderServicer):
 
             reply = DecodeReply()
             strips = convert_strips_to_bytes_list(request.strips)
-            reply.dec_block = self.driver.decode(strips)
+            if isinstance(self.driver, StepEntangler):
+                logger.info("Going to craft call to decode to StepEntangler")
+                reply.dec_block = self.driver.decode(strips, path=request.path)
+            else:
+                reply.dec_block = self.driver.decode(strips)
             reply.parameters["splitter"] = os.environ.get("splitter", CONFIG.get("main", "splitter"))
             logger.info("Request decoded, returning reply")
             return reply

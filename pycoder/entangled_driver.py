@@ -2,6 +2,7 @@
 A module with entanglement utilities
 """
 import json
+import logging
 import math
 import re
 import struct
@@ -365,27 +366,47 @@ class StepEntangler(object):
             prepared_pointer_blocks.append(modified_block)
         return prepared_pointer_blocks
 
-    def decode(self, strips):
+    def decode(self, strips, path=None):
         """
         Decodes data using the entangled blocks and Reed-Solomon.
         Args:
             strips(list(bytes)): The encoded strips of data
         Returns:
             bytes: The decoded data
+        Raises:
+            ECDriverError: if the number of fragments is too low for Reed-Solomon
+                           decoding
         """
         model_fragment_header = FragmentHeader(self.__get_data_from_strip(strips[0])[:80])
         fragment_size = model_fragment_header.metadata.size
         orig_data_size = model_fragment_header.metadata.orig_data_size
         modified_pointer_blocks = []
+
+        original_data_size = self.__get_original_size_from_strip(strips[0])
+        block_header_text = self.__get_header_from_strip(strips[0])
+        strips = [self.__get_data_from_strip(strip) for strip in strips]
         if self.t > 0:
-            block_header_text = self.__get_header_from_strip(strips[0])
             block_header = self.__parse_entanglement_header(block_header_text)
             modified_pointer_blocks = self.fetch_and_prep_pointer_blocks(block_header,
                                                                          fragment_size,
                                                                          orig_data_size)
-
-        original_data_size = self.__get_original_size_from_strip(strips[0])
-        strips = [self.__get_data_from_strip(strip) for strip in strips]
+            # Filter to see what pointers we were able to fetch from the proxy
+            initial_length = len(modified_pointer_blocks)
+            modified_pointer_blocks = [mpb for mpb in modified_pointer_blocks if mpb]
+            filtered_length = len(modified_pointer_blocks)
+            if filtered_length != initial_length:
+                logger = logging.getLogger("entangled_driver")
+                logger.warn("Only found {:d} pointers out of {:d}".format(filtered_length, initial_length))
+                biggest_index = max([FragmentHeader(s[:80]).metadata.index for s in strips])
+                missing = initial_length - filtered_length
+                if missing > self.e:
+                    message = "Configuration of Step (s={:d}, t={:d}, e={:d}, p={:d}) " + \
+                              "does not allow for reconstruction with {:d} missing fragments"
+                    raise ECDriverError(message.format(self.s, self.t, self.e, self.p, missing))
+                extra_parities_needed = [index - self.k for index in xrange(biggest_index + 1, biggest_index + 1 + missing, 1)]
+                logger.info("We need blocks {} from {:s}".format(sorted(extra_parities_needed), path))
+                for index in extra_parities_needed:
+                    strips.append(self.__get_data_from_strip(self.source.get_block(path, index).data))
         decoded = self.disentangle(strips, modified_pointer_blocks)
         return decoded[:original_data_size]
 
@@ -400,10 +421,7 @@ class StepEntangler(object):
             bytes: The data is it was originally mixed with the pointer blocks before encoding
         """
         available_blocks = pointer_blocks + parity_blocks
-        missing_indexes = [index for index in xrange(self.s)]
-        source_blocks = self.driver.reconstruct(available_blocks, missing_indexes)
-        data_blocks = source_blocks + pointer_blocks
-        return self.driver.decode(data_blocks)
+        return self.driver.decode(available_blocks)
 
     def fragments_needed(self, missing_fragment_indexes):
         """
