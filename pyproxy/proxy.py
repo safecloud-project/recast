@@ -99,6 +99,7 @@ def get(key):
 
         decode_request = DecodeRequest()
         decode_request.strips.extend(strips)
+        decode_request.path = key
 
         LOGGER.debug("Going go to do decode request")
 
