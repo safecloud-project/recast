@@ -6,6 +6,7 @@ import json
 import random
 
 import enum
+import numpy
 import redis
 
 def compute_block_key(path, index, length=2):
@@ -19,6 +20,48 @@ def compute_block_key(path, index, length=2):
         str: Block key
     """
     return path + "-" + str(index).zfill(length)
+
+def uniform_random_selection(t, n):
+    """
+    Args:
+        t(int): Number of pointers
+        n(int): Number of blocks avaialable
+    Returns:
+        list(int): A list of indices that can be used for random selection of t
+                   elements in a list of n elements
+    """
+    if t >= n:
+        return [index for index in xrange(n)]
+    selected = []
+    while len(selected) < t:
+        index = random.randint(0, n - 1)
+        if index not in selected:
+            selected.append(index)
+    return selected
+
+def normal_selection(t, n, std=1000):
+    """
+    Select pointer indices using normal distribution
+    Args:
+        t(int): Number of pointers
+        n(int): Number of blocks
+        std(int, optional): Standard deviation (defaults to 1000)
+    Returns:
+        list(int): A list of unique indices ranging from 0 to (n - 1) selected
+                   using normal distribution
+    """
+    selected = []
+    if t >= n:
+        return [element for element in xrange(n)]
+    while len(selected) < t:
+        index = int(round(numpy.random.normal(n, std)))
+        if index < 0 or index >= n: # Checking that we are withtin bounds
+            continue
+        if index in selected:
+            continue
+        selected.append(index)
+    return selected
+
 
 class BlockType(enum.Enum):
     """
@@ -156,8 +199,9 @@ class Files(object):
     FILE_PREFIX = "files:"
     BLOCK_PREFIX = "blocks:"
 
-    def __init__(self, host="metadata", port=6379):
+    def __init__(self, host="metadata", port=6379, pointer_selector=normal_selection):
         self.redis = redis.StrictRedis(host=host, port=port)
+        self.select_pointers = pointer_selector
 
     def get(self, path):
         """
@@ -391,11 +435,7 @@ class Files(object):
             block_keys = self.redis.zrange("block_index", 0, blocks_available)
             return [self.get_block(key) for key in block_keys]
 
-        selected_indexes = []
-        while len(selected_indexes) < blocks_desired:
-            chosen_index = random.randint(0, blocks_available - 1)
-            if chosen_index not in selected_indexes:
-                selected_indexes.append(chosen_index)
+        selected_indexes = self.select_pointers(blocks_desired, blocks_available)
 
         selected_keys = []
         for index in selected_indexes:
