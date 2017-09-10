@@ -73,11 +73,11 @@ message NamedBlockRequest {
 
 message ReconstructRequest {
 	string path = 1;
-	repeated uint32 missing_indices = 2;
+	repeated int32 missing_indices = 2;
 }
 
 message ReconstructReply {
-	map<uint32, Strip> reconstructed = 1;
+	map<int32, Strip> reconstructed = 1;
 }
 
 message FragmentsNeededRequest {
