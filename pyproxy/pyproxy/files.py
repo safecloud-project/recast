@@ -76,7 +76,8 @@ class MetaBlock(object):
     A class that represents a data block
     """
     def __init__(self, key, providers=None, creation_date=None,
-                 block_type=BlockType.DATA, checksum=None, entangled_with=None):
+                 block_type=BlockType.DATA, checksum=None, entangled_with=None,
+                 size=0):
         """
         MetaBlock constructor
         Args:
@@ -105,6 +106,7 @@ class MetaBlock(object):
             self.entangled_with = entangled_with
         else:
             self.entangled_with = []
+        self.size = size
 
     def __json__(self):
         """
@@ -327,7 +329,8 @@ class Files(object):
                 "providers": ",".join(sorted(block.providers)),
                 "block_type": block.block_type.name,
                 "checksum": block.checksum,
-                "entangled_with": ",".join(sorted(block.entangled_with))
+                "entangled_with": ",".join(sorted(block.entangled_with)),
+                "size": block.size
             }
             metablock_key = "{:s}{:s}".format(Files.BLOCK_PREFIX, block.key)
             timestamp = (block.creation_date - datetime.datetime(1970, 1, 1)).total_seconds()
@@ -367,12 +370,14 @@ class Files(object):
 
         block_type = BlockType[record.get("block_type")]
         checksum = record.get("checksum")
+        size = int(record.get("size", "0"))
         metablock = MetaBlock(key,
                               creation_date=creation_date,
                               providers=providers,
                               block_type=block_type,
                               checksum=checksum,
-                              entangled_with=entangled_with)
+                              entangled_with=entangled_with,
+                              size=size)
         return metablock
 
     @staticmethod
