@@ -233,7 +233,8 @@ class Dispatcher(object):
                                            MetaBlock(key,
                                                      providers=[],
                                                      checksum=strip.checksum,
-                                                     block_type=block_type))
+                                                     block_type=block_type,
+                                                     size=len(strip.data)))
                 metablock.providers.append(provider_key)
                 metablocks[index] = metablock
                 blocks_for_provider[metablock] = strip.data
