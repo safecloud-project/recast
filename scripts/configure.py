@@ -8,12 +8,15 @@ import datetime
 import json
 import os
 
+from configparser import ConfigParser
+
 import ruamel.yaml
 
 PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "..", "pyproxy", "dispatcher.json")
 PATH_TO_DOCKER_COMPOSE_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose.yml")
 PATH_TO_DOCKER_COMPOSE_PRODUCTION_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose-production.yml")
 PATH_TO_VOLUMES_DIRECTORY = os.path.join(os.path.dirname(__file__), "..", "volumes")
+PATH_TO_CODER_CONFIGURATION = os.path.join(os.path.dirname(__file__), "..", "pycoder", "pycoder.cfg")
 
 BASIC_COMPOSE_CONFIGURATION = {
     "version": "\"3\"",
@@ -81,6 +84,7 @@ def create_dispatcher_configuration(configuration):
         dispatcher_configuration["providers"][name] = provider
     replication_factor = int(configuration["storage"].get("replication_factor", 3))
     dispatcher_configuration["replication_factor"] = replication_factor
+    dispatcher_configuration["entanglement"] = configuration.get("entanglement", {})
     return dispatcher_configuration
 
 def write_dispatcher_file(dispatcher_configuration):
@@ -196,6 +200,31 @@ def create_volume_directory(name):
     return volume_directory
 
 
+def set_coder_configuration(path_to_central_configuration):
+    """
+    Set the configuration of the coder based on the central configuration file.
+    Args:
+        path_to_central_configuration(str): Path to the central configuration file
+    Returns:
+        ConfigParser: The modified configuration
+    """
+    with open(path_to_central_configuration, "r") as handle:
+        configuration = json.load(handle)
+    parser = ConfigParser()
+    with open(PATH_TO_CODER_CONFIGURATION, "r") as handle:
+        parser.read_file(handle)
+    parser.set("main", "splitter", "entanglement")
+    entanglement_configuration = configuration.get("entanglement")
+    parser.set("entanglement", "type", entanglement_configuration.get("type", "step"))
+    code_configuration = entanglement_configuration.get("configuration", {"s": 1, "t": 10, "p": 3})
+    parser.set("step", "s", str(code_configuration.get("s", 1)))
+    parser.set("step", "t", str(code_configuration.get("t", 10)))
+    parser.set("step", "p", str(code_configuration.get("p", 3)))
+    rename_existing_file(PATH_TO_CODER_CONFIGURATION)
+    with open(PATH_TO_CODER_CONFIGURATION, "w") as handle:
+        parser.write(handle)
+    return parser
+
 if __name__ == "__main__":
     PATH_TO_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "..", "configuration.json")
     GLOBAL_CONFIGURATION = read_configuration_file(PATH_TO_CONFIGURATION_FILE)
@@ -205,3 +234,4 @@ if __name__ == "__main__":
     write_docker_compose_file_for_dev(COMPOSE_CONFIGURATION)
     COMPOSE_PRODUCTION_CONFIGURATION = create_docker_compose_configuration_for_production(GLOBAL_CONFIGURATION)
     write_docker_compose_file_for_production(COMPOSE_PRODUCTION_CONFIGURATION)
+    set_coder_configuration(PATH_TO_CONFIGURATION_FILE)

@@ -1,6 +1,14 @@
 {
   "storage": {
-    "nodes": 30,
+    "nodes": 1,
     "replication_factor": 3
+  },
+  "entanglement": {
+    "type": "step",
+    "configuration": {
+      "s": 1,
+      "t": 10,
+      "p": 3
+    }
   }
 }
