@@ -190,8 +190,6 @@ class StepEntangler(object):
     """
     Basic implementation of STeP based entanglement
     """
-    # TODO: Refactor decode and reconstruct methods to use the same reconstruction
-    #       code
     # TODO: Parallelize block fetching from the proxy
     # Use the Group Separator from the ASCII table as the delimiter between the
     # entanglement header and the data itself
@@ -470,22 +468,13 @@ class StepEntangler(object):
 
         parity_blocks = [self.__get_data_from_strip(block) for block in available_fragment_payloads]
         missing_fragment_indexes = [index + self.s + self.t for index in missing_fragment_indexes]
-        
-        compensation_needed = []
-        for index in missing_fragment_indexes:
-            if self.s <= index and index < (self.s + self.t):
-                compensation_needed.append(index)
-        print "[entangled_driver.reconstruct] Indices {:s} require compensation".format(compensation_needed)
+        # Get pointer blocks
         modified_pointer_blocks = self.fetch_and_prep_pointer_blocks(list_of_pointer_blocks,
                                                                      parity_header.metadata.size,
                                                                      parity_header.metadata.orig_data_size)
-
-
-
-        # Filter to remove blocks that may be missing
+        # Filter to remove responses for pointers that are missing
         modified_pointer_blocks = [mpb for mpb in modified_pointer_blocks if mpb]
         assembled = modified_pointer_blocks + parity_blocks
-        print "[entangled_driver.reconstruct] len(assembled) = {:d}".format(len(assembled))
         reconstructed = self.driver.reconstruct(assembled, missing_fragment_indexes)
 
         requested_blocks = []
