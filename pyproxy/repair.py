@@ -3,14 +3,25 @@
 A script that periodically scans the storage nodes and checks the integrity of
 the blocks they host
 """
+import logging
 import json
 import hashlib
 import sys
 
 from pyproxy.coder_client import CoderClient
-from pyproxy.files import convert_binary_to_hex_digest, Files
+from pyproxy.coding_utils import reconstruct_as_pointer
+from pyproxy.files import compute_block_key, convert_binary_to_hex_digest, Files
 from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_index_from_key, extract_path_from_key
 
+#FIXME Group blocks by path to reconstruct to minimize bandwidth consumption
+#FIXME Use a proper logger
+
+LOGGER = logging.getLogger("repair.py")
+LOGGER.setLevel(logging.INFO)
+CONSOLE_HANDLER = logging.StreamHandler()
+CONSOLE_HANDLER.setLevel(logging.ERROR)
+LOGGER.addHandler(CONSOLE_HANDLER)
+RECONSTRUCT_QUEUE = {}
 
 if __name__ == "__main__":
     with open("./dispatcher.json", "r") as handle:
@@ -20,10 +31,11 @@ if __name__ == "__main__":
     BLOCKS = FILES.get_blocks(FILES.list_blocks())
     # For each block
     for block in BLOCKS:
-        print "Looking at block {:s}".format(block.key)
+        LOGGER.debug("Looking at block {:s}".format(block.key))
     #   For each replica of the block
-        for index, provider_name in enumerate(block.providers):
-            print "Looking at replica of {:s} on {:s}".format(block.key, provider_name)
+        providers = list(set(block.providers))
+        for index, provider_name in enumerate(providers):
+            LOGGER.debug("Looking at replica of {:s} on {:s}".format(block.key, provider_name))
     #       Download replica
             replica = DISPATCHER.providers[provider_name].get(block.key)
             computed_checksum = None
@@ -33,11 +45,11 @@ if __name__ == "__main__":
             if not replica or computed_checksum != block.checksum:
                 repaired = False
                 if not replica:
-                    sys.stderr.write("Could not load replica of {:s} on {:s}\n".format(block.key, provider_name))
+                    LOGGER.warn("Could not load replica of {:s} on {:s}\n".format(block.key, provider_name))
                 if computed_checksum:
-                    sys.stderr.write("Replica of {:s} on {:s} does not match expected checksum (actual = {:s}, expected = {:s})\n".format(block.key, provider_name, convert_binary_to_hex_digest(computed_checksum), convert_binary_to_hex_digest(block.checksum)))
+                    LOGGER.warn("Replica of {:s} on {:s} does not match expected checksum (actual = {:s}, expected = {:s})\n".format(block.key, provider_name, convert_binary_to_hex_digest(computed_checksum), convert_binary_to_hex_digest(block.checksum)))
     #           Look for sane replicas
-                other_providers = list(set(block.providers).difference(set([provider_name])))
+                other_providers = list(set(providers).difference(set([provider_name])))
                 if other_providers:
                     for other_provider in other_providers:
                         candidate_replica = DISPATCHER.providers[other_provider].get(block.key)
@@ -51,12 +63,35 @@ if __name__ == "__main__":
                             break
     #           Otherwise
                 if not repaired:
-    #               Reconstruct the block
+    #               Queue the block for reconstruction
                     sys.stderr.write("Replica of {:s} on {:s} must be reconstructed\n".format(block.key, provider_name))
-                    client = CoderClient()
                     path = extract_path_from_key(block.key)
                     index = extract_index_from_key(block.key)
-                    reconstructed_block = client.reconstruct(path, [index])[index].data
-                    DISPATCHER.providers[provider_name].put(reconstructed_block, block.key)
+                    q = RECONSTRUCT_QUEUE.get(path, set())
+                    q.add(index)
+                    RECONSTRUCT_QUEUE[path] = set(q)
             else:
-                print "Replica of {:s} on {:s} is OK".format(block.key, provider_name)
+                LOGGER.debug("Replica of {:s} on {:s} is OK".format(block.key, provider_name))
+    CLIENT = CoderClient()
+    ERASURES_THRESHOLD = 2
+    #FIXME First fix everything that can be recovered using single level RS-repair
+    #FIXME Then
+    for path in RECONSTRUCT_QUEUE:
+        indices_to_reconstruct = list(RECONSTRUCT_QUEUE.get(path))
+        if len(indices_to_reconstruct) <= ERASURES_THRESHOLD:
+            LOGGER.info("Should repair {:s}".format(indices_to_reconstruct))
+            reconstructed_blocks = CLIENT.reconstruct(path, indices_to_reconstruct)
+            for index in reconstructed_blocks:
+                reconstructed_block = reconstructed_blocks[index].data
+                metablock = FILES.get_block(compute_block_key(path, index))
+                for provider_name in set(metablock.providers):
+                    DISPATCHER.providers[provider_name].put(reconstructed_block,
+                                                            metablock.key)
+        else:
+            #FIXME order of blocks to reach e erasures than do RS reconstuction
+            for index in indices_to_reconstruct:
+                reconstructed_block = reconstruct_as_pointer(path, index)
+                metablock = FILES.get_block(compute_block_key(path, index))
+                for provider_name in set(metablock.providers):
+                    DISPATCHER.providers[provider_name].put(reconstructed_block,
+                                                            metablock.key)

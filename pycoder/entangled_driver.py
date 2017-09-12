@@ -469,15 +469,24 @@ class StepEntangler(object):
         data_size = self.__get_original_size_from_strip(available_fragment_payloads[0])
 
         parity_blocks = [self.__get_data_from_strip(block) for block in available_fragment_payloads]
-
+        missing_fragment_indexes = [index + self.s + self.t for index in missing_fragment_indexes]
+        
+        compensation_needed = []
+        for index in missing_fragment_indexes:
+            if self.s <= index and index < (self.s + self.t):
+                compensation_needed.append(index)
+        print "[entangled_driver.reconstruct] Indices {:s} require compensation".format(compensation_needed)
         modified_pointer_blocks = self.fetch_and_prep_pointer_blocks(list_of_pointer_blocks,
                                                                      parity_header.metadata.size,
                                                                      parity_header.metadata.orig_data_size)
 
 
-        missing_fragment_indexes = [index + self.s + self.t for index in missing_fragment_indexes]
-        reconstructed = self.driver.reconstruct(modified_pointer_blocks + parity_blocks,
-                                                missing_fragment_indexes)
+
+        # Filter to remove blocks that may be missing
+        modified_pointer_blocks = [mpb for mpb in modified_pointer_blocks if mpb]
+        assembled = modified_pointer_blocks + parity_blocks
+        print "[entangled_driver.reconstruct] len(assembled) = {:d}".format(len(assembled))
+        reconstructed = self.driver.reconstruct(assembled, missing_fragment_indexes)
 
         requested_blocks = []
         for index, block in enumerate(reconstructed):
