@@ -3,9 +3,10 @@
 A script that periodically scans the storage nodes and checks the integrity of
 the blocks they host
 """
+import hashlib
 import logging
 import json
-import hashlib
+import os
 import sys
 
 from pyproxy.coder_client import CoderClient
@@ -13,8 +14,8 @@ from pyproxy.coding_utils import reconstruct_as_pointer
 from pyproxy.files import compute_block_key, convert_binary_to_hex_digest, Files
 from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_index_from_key, extract_path_from_key
 
-#FIXME Group blocks by path to reconstruct to minimize bandwidth consumption
-#FIXME Use a proper logger
+PATH_TO_DISPATCHER_CONFIGURATION = os.path.join(os.path.dirname(__file__),
+                                                "dispatcher.json")
 
 LOGGER = logging.getLogger("repair.py")
 LOGGER.setLevel(logging.INFO)
@@ -23,9 +24,31 @@ CONSOLE_HANDLER.setLevel(logging.ERROR)
 LOGGER.addHandler(CONSOLE_HANDLER)
 RECONSTRUCT_QUEUE = {}
 
+def get_dispatcher_configuration(path_to_configuration=PATH_TO_DISPATCHER_CONFIGURATION):
+    """
+    Reads the dispatcher's configuration
+    Args:
+        path(str): Path to the dispatcher's configuration file
+    Returns:
+        dict: The dispatcher's configuration
+    """
+    with open(path_to_configuration, "r") as handle:
+        dispatcher_configuration = json.load(handle)
+    return dispatcher_configuration
+
+def get_erasure_threshold():
+    """
+    Computes the erasure threshold of the STeP configuration
+    Returns:
+        int: The erasure threshold for STeP (P - S)
+    """
+    entanglement_configuration = get_dispatcher_configuration()["entanglement"]["configuration"]
+    source_blocks = entanglement_configuration["s"]
+    parities = entanglement_configuration["p"]
+    return parities - source_blocks
+
 if __name__ == "__main__":
-    with open("./dispatcher.json", "r") as handle:
-        DISPATCHER = Dispatcher(json.load(handle))
+    DISPATCHER = Dispatcher(get_dispatcher_configuration())
     FILES = Files(host="metadata")
     # List blocks
     BLOCKS = FILES.get_blocks(FILES.list_blocks())
@@ -72,10 +95,9 @@ if __name__ == "__main__":
                     RECONSTRUCT_QUEUE[path] = set(q)
             else:
                 LOGGER.debug("Replica of {:s} on {:s} is OK".format(block.key, provider_name))
+
+    ERASURES_THRESHOLD = get_erasure_threshold()
     CLIENT = CoderClient()
-    ERASURES_THRESHOLD = 2
-    #FIXME First fix everything that can be recovered using single level RS-repair
-    #FIXME Then
     for path in RECONSTRUCT_QUEUE:
         indices_to_reconstruct = list(RECONSTRUCT_QUEUE.get(path))
         if len(indices_to_reconstruct) <= ERASURES_THRESHOLD:
