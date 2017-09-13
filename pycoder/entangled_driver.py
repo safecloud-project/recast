@@ -6,6 +6,7 @@ import logging
 import math
 import re
 import struct
+import threading
 
 from pyeclib.ec_iface import ECDriver
 from pyeclib.ec_iface import ECDriverError
@@ -209,9 +210,12 @@ def fetch_and_prep_pointer_block(source, path, index, fragment_index, fragment_s
         source(ProxyClient): The source we can query for that block
         path(str): Path of the file the pointer belongs to
         index(int): Index of the block in the file it belongs to
+        fragment_index(int): Index of the pointer in the codeword to decode or
+                             reconstruct
         fragment_size(int): Size of the fragment the pointer should be
                             adapted to by trimming or padding
-        original_data_size(int): Size of the original piece of data to decode or reconstruct
+        original_data_size(int): Size of the original piece of data to decode or
+                                 reconstruct
     Returns:
         bytes: The pointer fitted to be used for decoding or reconstruction
     """
@@ -226,11 +230,55 @@ def fetch_and_prep_pointer_block(source, path, index, fragment_index, fragment_s
     modified_block = fragment_header.pack() + pad(pointer[80:], fragment_size)
     return modified_block
 
+class PointerHandler(threading.Thread):
+    """
+    Fetches a pointer block and rewrites its liberasurecode header so that
+    it can be reused for reconstruction or decoding
+    """
+
+    def __init__(self, source, path, index, fragment_index, fragment_size, original_data_size, pointer_collection):
+        """
+        Constructor
+        Args:
+            source(ProxyClient): The source we can query for that block
+            path(str): Path of the file the pointer belongs to
+            index(int): Index of the block in the file it belongs to
+            fragment_index(int): Index of the pointer in the codeword to decode or
+                                 reconstruct
+            fragment_size(int): Size of the fragment the pointer should be
+                                adapted to by trimming or padding
+            original_data_size(int): Size of the original piece of data to decode or
+                                     reconstruct
+            pointer_collection(dict(int, bytes)): Dictionary where the prepped pointer will
+                                           be placed under the key fragment_index
+        """
+        threading.Thread.__init__(self)
+        self.source = source
+        self.path = path
+        self.index = index
+        self.fragment_index = fragment_index
+        self.fragment_size = fragment_size
+        self.original_data_size = original_data_size
+        self.pointer_collection = pointer_collection
+
+    def run(self):
+        """
+        Runs the fetching and prepping of the pointer in a separate thread.
+        The result is then pushed to the pointer_collection dictionary under the
+        fragment_index key.
+        """
+        pointer = fetch_and_prep_pointer_block(self.source,
+                                               self.path,
+                                               self.index,
+                                               self.fragment_index,
+                                               self.fragment_size,
+                                               self.original_data_size)
+        self.pointer_collection[self.fragment_index] = pointer
+
 class StepEntangler(object):
     """
     Basic implementation of STeP based entanglement
     """
-    # TODO: Parallelize block fetching from the proxy
     # Use the Group Separator from the ASCII table as the delimiter between the
     # entanglement header and the data itself
     # https://www.lammertbies.nl/comm/info/ascii-characters.html
@@ -388,18 +436,24 @@ class StepEntangler(object):
             raise ValueError("original_data_size argument must be an integer greater than 0")
         if original_data_size < fragment_size:
             raise ValueError("original_data_size must be greater or equal to fragment_size")
-        prepared_pointer_blocks = []
-        for fragment_index, coordinates in enumerate(pointers):
+        pointer_collection = {}
+        fetchers = []
+        for pointer_index, coordinates in enumerate(pointers):
             path = coordinates[0]
             index = coordinates[1]
-            prepped_block = fetch_and_prep_pointer_block(self.source,
-                                                         path,
-                                                         index,
-                                                         fragment_index + self.s,
-                                                         fragment_size,
-                                                         original_data_size)
-            prepared_pointer_blocks.append(prepped_block)
-        return prepared_pointer_blocks
+            fragment_index = self.s + pointer_index
+            fetcher = PointerHandler(self.source,
+                                     path,
+                                     index,
+                                     fragment_index,
+                                     fragment_size,
+                                     original_data_size,
+                                     pointer_collection)
+            fetcher.start()
+            fetchers.append(fetcher)
+        for fetcher in fetchers:
+            fetcher.join()
+        return [pointer_collection[key] for key in sorted(pointer_collection.keys())]
 
     def decode(self, strips, path=None):
         """
