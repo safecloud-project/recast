@@ -16,12 +16,12 @@ from pyeclib.ec_iface import ECDriverError
 from entangled_driver import EntanglementDriver
 from entangled_driver import StepEntangler
 
-from playcloud_pb2 import BetaEncoderDecoderServicer
 from playcloud_pb2 import DecodeReply
 from playcloud_pb2 import EncodeReply
 from playcloud_pb2 import FragmentsNeededReply
 from playcloud_pb2 import ReconstructReply
 from playcloud_pb2 import Strip
+from playcloud_pb2_grpc import EncoderDecoderServicer
 
 from proxy_client import ProxyClient
 
@@ -339,7 +339,7 @@ class HashedDriver(object):
         return self.driver.decode(result)
 
 
-class CodingService(BetaEncoderDecoderServicer):
+class CodingService(EncoderDecoderServicer):
 
     """
     An Encoder/Decoder built on top of playcloud.proto that can be loaded by a
