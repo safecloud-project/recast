@@ -12,6 +12,8 @@ from pyeclib.ec_iface import ECDriverError
 
 import numpy
 
+HEADER_DELIMITER = chr(29)
+
 class Dagster(object):
     """
     An implementation of entanglement based on Dagster
@@ -186,6 +188,44 @@ class FragmentMetadata(object):
                self.backend_id == other.backend_id and \
                self.backend_version == other.backend_version
 
+def get_fragment_from_strip(strip_data):
+    """
+    Returns the pyeclib fragment (with its header) from the strip data
+    Args:
+        strip_data(bytes): The full strip returned by the proxy
+    Returns:
+        bytes: The pyeclib fragment
+    """
+    start = strip_data.find(HEADER_DELIMITER) + len(HEADER_DELIMITER)
+    end = strip_data.find(HEADER_DELIMITER, start) + len(HEADER_DELIMITER)
+    data = strip_data[end:]
+    return data
+
+def fetch_and_prep_pointer_block(source, path, index, fragment_index, fragment_size, original_data_size):
+    """
+    Fetches a pointer block and rewrites its liberasurecode header so that
+    it can be reused for reconstruction or decoding
+    Args:
+        source(ProxyClient): The source we can query for that block
+        path(str): Path of the file the pointer belongs to
+        index(int): Index of the block in the file it belongs to
+        fragment_size(int): Size of the fragment the pointer should be
+                            adapted to by trimming or padding
+        original_data_size(int): Size of the original piece of data to decode or reconstruct
+    Returns:
+        bytes: The pointer fitted to be used for decoding or reconstruction
+    """
+    strip_data = source.get_block(path, index, reconstruct_if_missing=False).data
+    if not strip_data:
+        return None
+    pointer = get_fragment_from_strip(strip_data)
+    fragment_header = FragmentHeader(pointer[:80])
+    fragment_header.metadata.index = fragment_index
+    fragment_header.metadata.size = fragment_size
+    fragment_header.metadata.orig_data_size = original_data_size
+    modified_block = fragment_header.pack() + pad(pointer[80:], fragment_size)
+    return modified_block
+
 class StepEntangler(object):
     """
     Basic implementation of STeP based entanglement
@@ -348,20 +388,17 @@ class StepEntangler(object):
             raise ValueError("original_data_size argument must be an integer greater than 0")
         if original_data_size < fragment_size:
             raise ValueError("original_data_size must be greater or equal to fragment_size")
-        original_pointer_blocks = [self.source.get_block(b[0], b[1], reconstruct_if_missing=False).data for b in pointers]
         prepared_pointer_blocks = []
-        for index, block in enumerate(original_pointer_blocks):
-            if not block:
-                prepared_pointer_blocks.append(None)
-                continue
-            pointer_block = self.__get_data_from_strip(block)
-            fragment_header = FragmentHeader(pointer_block[:80])
-            fragment_header.metadata.index = self.s + index
-            fragment_header.metadata.size = fragment_size
-            fragment_header.metadata.orig_data_size = original_data_size
-            modified_block = fragment_header.pack() + pad(pointer_block[80:],
-                                                          fragment_size)
-            prepared_pointer_blocks.append(modified_block)
+        for fragment_index, coordinates in enumerate(pointers):
+            path = coordinates[0]
+            index = coordinates[1]
+            prepped_block = fetch_and_prep_pointer_block(self.source,
+                                                         path,
+                                                         index,
+                                                         fragment_index + self.s,
+                                                         fragment_size,
+                                                         original_data_size)
+            prepared_pointer_blocks.append(prepped_block)
         return prepared_pointer_blocks
 
     def decode(self, strips, path=None):
@@ -375,6 +412,7 @@ class StepEntangler(object):
             ECDriverError: if the number of fragments is too low for Reed-Solomon
                            decoding
         """
+        logger = logging.getLogger("entangled_driver")
         model_fragment_header = FragmentHeader(self.__get_data_from_strip(strips[0])[:80])
         fragment_size = model_fragment_header.metadata.size
         orig_data_size = model_fragment_header.metadata.orig_data_size
@@ -393,7 +431,6 @@ class StepEntangler(object):
             modified_pointer_blocks = [mpb for mpb in modified_pointer_blocks if mpb]
             filtered_length = len(modified_pointer_blocks)
             if filtered_length != initial_length:
-                logger = logging.getLogger("entangled_driver")
                 logger.warn("Only found {:d} pointers out of {:d}".format(filtered_length, initial_length))
                 biggest_index = max([FragmentHeader(s[:80]).metadata.index for s in strips])
                 missing = initial_length - filtered_length
