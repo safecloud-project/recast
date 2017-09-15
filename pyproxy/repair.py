@@ -7,7 +7,6 @@ import hashlib
 import logging
 import json
 import os
-import sys
 
 from pyproxy.coder_client import CoderClient
 from pyproxy.coding_utils import reconstruct_as_pointer
@@ -22,7 +21,6 @@ LOGGER.setLevel(logging.INFO)
 CONSOLE_HANDLER = logging.StreamHandler()
 CONSOLE_HANDLER.setLevel(logging.ERROR)
 LOGGER.addHandler(CONSOLE_HANDLER)
-RECONSTRUCT_QUEUE = {}
 
 def get_dispatcher_configuration(path_to_configuration=PATH_TO_DISPATCHER_CONFIGURATION):
     """
@@ -47,20 +45,29 @@ def get_erasure_threshold():
     parities = entanglement_configuration["p"]
     return parities - source_blocks
 
-if __name__ == "__main__":
-    DISPATCHER = Dispatcher(get_dispatcher_configuration())
-    FILES = Files(host="metadata")
+def audit():
+    """
+    Downloads and checks the integrity of the blocks stored on the storage nodes.
+    Failing blocks that cannot be recovered by copying from a replica are grouped
+    by documents and added to a queue returned by the function.
+    Returns:
+        list(str, list(int)): Documents and the indices of the blocks that need
+                              to be reconstructed
+    """
+    reconstruction_needed = {}
+    dispatcher = Dispatcher(get_dispatcher_configuration())
+    files = Files(host="metadata")
     # List blocks
-    BLOCKS = FILES.get_blocks(FILES.list_blocks())
+    blocks = files.get_blocks(files.list_blocks())
     # For each block
-    for block in BLOCKS:
+    for block in blocks:
         LOGGER.debug("Looking at block {:s}".format(block.key))
     #   For each replica of the block
         providers = list(set(block.providers))
         for index, provider_name in enumerate(providers):
             LOGGER.debug("Looking at replica of {:s} on {:s}".format(block.key, provider_name))
     #       Download replica
-            replica = DISPATCHER.providers[provider_name].get(block.key)
+            replica = dispatcher.providers[provider_name].get(block.key)
             computed_checksum = None
             if replica:
                 computed_checksum = hashlib.sha256(replica).digest()
@@ -68,52 +75,77 @@ if __name__ == "__main__":
             if not replica or computed_checksum != block.checksum:
                 repaired = False
                 if not replica:
-                    LOGGER.warn("Could not load replica of {:s} on {:s}\n".format(block.key, provider_name))
+                    LOGGER.warn("Could not load replica of {:s} on {:s}".format(block.key, provider_name))
                 if computed_checksum:
-                    LOGGER.warn("Replica of {:s} on {:s} does not match expected checksum (actual = {:s}, expected = {:s})\n".format(block.key, provider_name, convert_binary_to_hex_digest(computed_checksum), convert_binary_to_hex_digest(block.checksum)))
+                    LOGGER.warn("Replica of {:s} on {:s} does not match expected checksum (actual = {:s}, expected = {:s})".format(block.key, provider_name, convert_binary_to_hex_digest(computed_checksum), convert_binary_to_hex_digest(block.checksum)))
     #           Look for sane replicas
                 other_providers = list(set(providers).difference(set([provider_name])))
                 if other_providers:
                     for other_provider in other_providers:
-                        candidate_replica = DISPATCHER.providers[other_provider].get(block.key)
+                        candidate_replica = dispatcher.providers[other_provider].get(block.key)
                         if not candidate_replica:
                             continue
                         candidate_checksum = hashlib.sha256(candidate_replica).digest()
                         if candidate_checksum == block.checksum:
     #                       Copy the new valid replica
-                            DISPATCHER.providers[provider_name].put(candidate_replica, block.key)
+                            dispatcher.providers[provider_name].put(candidate_replica, block.key)
                             repaired = True
                             break
     #           Otherwise
                 if not repaired:
     #               Queue the block for reconstruction
-                    sys.stderr.write("Replica of {:s} on {:s} must be reconstructed\n".format(block.key, provider_name))
+                    LOGGER.warn("Replica of {:s} on {:s} must be reconstructed".format(block.key, provider_name))
                     path = extract_path_from_key(block.key)
                     index = extract_index_from_key(block.key)
-                    q = RECONSTRUCT_QUEUE.get(path, set())
-                    q.add(index)
-                    RECONSTRUCT_QUEUE[path] = set(q)
+                    indices = reconstruction_needed.get(path, set())
+                    indices.add(index)
+                    reconstruction_needed[path] = indices
             else:
                 LOGGER.debug("Replica of {:s} on {:s} is OK".format(block.key, provider_name))
+    return reconstruction_needed
 
-    ERASURES_THRESHOLD = get_erasure_threshold()
-    CLIENT = CoderClient()
-    for path in RECONSTRUCT_QUEUE:
-        indices_to_reconstruct = list(RECONSTRUCT_QUEUE.get(path))
-        if len(indices_to_reconstruct) <= ERASURES_THRESHOLD:
-            LOGGER.info("Should repair {:s}".format(indices_to_reconstruct))
-            reconstructed_blocks = CLIENT.reconstruct(path, indices_to_reconstruct)
-            for index in reconstructed_blocks:
-                reconstructed_block = reconstructed_blocks[index].data
-                metablock = FILES.get_block(compute_block_key(path, index))
-                for provider_name in set(metablock.providers):
-                    DISPATCHER.providers[provider_name].put(reconstructed_block,
-                                                            metablock.key)
-        else:
-            #FIXME order of blocks to reach e erasures than do RS reconstuction
-            for index in indices_to_reconstruct:
-                reconstructed_block = reconstruct_as_pointer(path, index)
-                metablock = FILES.get_block(compute_block_key(path, index))
-                for provider_name in set(metablock.providers):
-                    DISPATCHER.providers[provider_name].put(reconstructed_block,
-                                                            metablock.key)
+def repair(path, indices):
+    """
+    Repairs one or multiple blocks of a document
+    Args:
+        path(str): Path to the document
+        indices(list(int)): Indices of the blocks to retrieve
+    """
+    if not isinstance(path, str) or not path:
+        raise ValueError("Argument path must be a non-empty string")
+    if not isinstance(indices, list):
+        raise ValueError("Argument indices must be list")
+    if not indices:
+        return
+    for index, index_to_reconstruct in enumerate(indices):
+        if not isinstance(index_to_reconstruct, int):
+            error_message = "indices[{:d}] is not an integer".format(index)
+            raise ValueError(error_message)
+    erasures_threshold = get_erasure_threshold()
+    dispatcher = Dispatcher(get_dispatcher_configuration())
+    files = Files()
+    if len(indices) <= erasures_threshold:
+        LOGGER.info("Should repair {:s}".format(indices))
+        client = CoderClient()
+        reconstructed_blocks = client.reconstruct(path, indices_to_reconstruct)
+        for index in reconstructed_blocks:
+            reconstructed_block = reconstructed_blocks[index].data
+            metablock = files.get_block(compute_block_key(path, index))
+            for provider_name in set(metablock.providers):
+                dispatcher.providers[provider_name].put(reconstructed_block,
+                                                        metablock.key)
+    else:
+        #FIXME order of blocks to reach e erasures than do RS reconstuction
+        for index in indices_to_reconstruct:
+            reconstructed_block = reconstruct_as_pointer(path, index)
+            metablock = files.get_block(compute_block_key(path, index))
+            for provider_name in set(metablock.providers):
+                dispatcher.providers[provider_name].put(reconstructed_block,
+                                                        metablock.key)
+
+
+if __name__ == "__main__":
+    RECONSTRUCION_QUEUE = audit()
+    for document_path in RECONSTRUCION_QUEUE:
+        indices_to_reconstruct = list(RECONSTRUCION_QUEUE.get(document_path))
+        repair(document_path, indices_to_reconstruct)
