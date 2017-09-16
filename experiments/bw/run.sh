@@ -120,7 +120,7 @@ delete_blocks() {
 }
 
 repair_blocks() {
-  docker-compose --file "${COMPOSE_FILE}" exec proxy ./repair.py
+  docker-compose --file "${COMPOSE_FILE}" exec proxy ./repair.py doc10-00
 }
 
 mkdir -p "${RESULTS_DIRECTORY}"
