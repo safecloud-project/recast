@@ -3,10 +3,12 @@
 A script that periodically scans the storage nodes and checks the integrity of
 the blocks they host
 """
+import argparse
 import hashlib
 import logging
 import json
 import os
+import time
 
 from pyproxy.coder_client import CoderClient
 from pyproxy.coding_utils import reconstruct_as_pointer
@@ -15,11 +17,12 @@ from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_index_fro
 
 PATH_TO_DISPATCHER_CONFIGURATION = os.path.join(os.path.dirname(__file__),
                                                 "dispatcher.json")
+DAEMON_INTERVAL_IN_SECONDS = 10 * 60
 
 LOGGER = logging.getLogger("repair.py")
 LOGGER.setLevel(logging.INFO)
 CONSOLE_HANDLER = logging.StreamHandler()
-CONSOLE_HANDLER.setLevel(logging.ERROR)
+CONSOLE_HANDLER.setLevel(logging.INFO)
 LOGGER.addHandler(CONSOLE_HANDLER)
 
 def get_dispatcher_configuration(path_to_configuration=PATH_TO_DISPATCHER_CONFIGURATION):
@@ -127,7 +130,7 @@ def repair(path, indices):
     if len(indices) <= erasures_threshold:
         LOGGER.info("Should repair {:s}".format(indices))
         client = CoderClient()
-        reconstructed_blocks = client.reconstruct(path, indices_to_reconstruct)
+        reconstructed_blocks = client.reconstruct(path, indices)
         for index in reconstructed_blocks:
             reconstructed_block = reconstructed_blocks[index].data
             metablock = files.get_block(compute_block_key(path, index))
@@ -136,16 +139,35 @@ def repair(path, indices):
                                                         metablock.key)
     else:
         #FIXME order of blocks to reach e erasures than do RS reconstuction
-        for index in indices_to_reconstruct:
+        for index in indices:
             reconstructed_block = reconstruct_as_pointer(path, index)
             metablock = files.get_block(compute_block_key(path, index))
             for provider_name in set(metablock.providers):
                 dispatcher.providers[provider_name].put(reconstructed_block,
                                                         metablock.key)
 
+def run_audit_and_repair():
+    """
+    Audits the data nodes and repairs the blocks if possible
+    """
+    LOGGER.info("Starting audit and repair")
+    reconstruction_queue = audit()
+    for document_path in reconstruction_queue:
+        indices_to_reconstruct = list(reconstruction_queue.get(document_path))
+        repair(document_path, indices_to_reconstruct)
+    LOGGER.info("Finishing audit and repair")
 
 if __name__ == "__main__":
-    RECONSTRUCION_QUEUE = audit()
-    for document_path in RECONSTRUCION_QUEUE:
-        indices_to_reconstruct = list(RECONSTRUCION_QUEUE.get(document_path))
-        repair(document_path, indices_to_reconstruct)
+    PARSER = argparse.ArgumentParser(__file__, description="A script that repairs lost or corrupted blocks")
+    PARSER.add_argument("-d",
+                        "--daemon",
+                        help="Start the script as a daemon",
+                        action="store_true")
+    ARGS = PARSER.parse_args()
+    if ARGS.daemon:
+        LOGGER.info("Starting the repair daemon auditing every {:d} seconds".format(DAEMON_INTERVAL_IN_SECONDS))
+        while True:
+            time.sleep(DAEMON_INTERVAL_IN_SECONDS)
+            run_audit_and_repair()
+    else:
+        run_audit_and_repair()
