@@ -20,7 +20,8 @@ readonly PROXY_HOST="127.0.0.1"
 readonly PROXY_PORT=3000
 
 # Experimental setup
-readonly RUNS=1
+readonly RESULTS_DIRECTORY="./results"
+readonly RUNS=30
 ################################################################################
 
 wait_for_proxy() {
@@ -122,14 +123,17 @@ repair_blocks() {
   docker-compose --file "${COMPOSE_FILE}" exec proxy ./repair.py
 }
 
+mkdir -p "${RESULTS_DIRECTORY}"
+
 for run in $(seq 1 "${RUNS}"); do
+  mkdir -p "${RESULTS_DIRECTORY}/${run}"
   start_playcloud
   # Delete blocks
   delete_blocks
-  take_network_snapshot "/tmp/bw-${run}-start-snapshot.json"
+  take_network_snapshot "${RESULTS_DIRECTORY}/${run}/bw-start-snapshot.json"
   # Repair block
   repair_blocks
-  take_network_snapshot "/tmp/bw-${run}-stop-snapshot.json"
+  take_network_snapshot "${RESULTS_DIRECTORY}/${run}/bw-stop-snapshot.json"
   stop_playcloud
 done
 
