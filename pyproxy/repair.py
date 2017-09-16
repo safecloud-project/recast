@@ -54,10 +54,10 @@ def audit():
     Failing blocks that cannot be recovered by copying from a replica are grouped
     by documents and added to a queue returned by the function.
     Returns:
-        list(str, list(int)): Documents and the indices of the blocks that need
+        dict(str, set(int)): Documents and the indices of the blocks that need
                               to be reconstructed
     """
-    reconstruction_needed = {}
+    reconstruction_needed = []
     dispatcher = Dispatcher(get_dispatcher_configuration())
     files = Files(host="metadata")
     # List blocks
@@ -67,7 +67,7 @@ def audit():
         LOGGER.debug("Looking at block {:s}".format(block.key))
     #   For each replica of the block
         providers = list(set(block.providers))
-        for index, provider_name in enumerate(providers):
+        for provider_name in providers:
             LOGGER.debug("Looking at replica of {:s} on {:s}".format(block.key, provider_name))
     #       Download replica
             replica = dispatcher.providers[provider_name].get(block.key)
@@ -98,14 +98,31 @@ def audit():
                 if not repaired:
     #               Queue the block for reconstruction
                     LOGGER.warn("Replica of {:s} on {:s} must be reconstructed".format(block.key, provider_name))
-                    path = extract_path_from_key(block.key)
-                    index = extract_index_from_key(block.key)
-                    indices = reconstruction_needed.get(path, set())
-                    indices.add(index)
-                    reconstruction_needed[path] = indices
+                    reconstruction_needed.append(block.key)
             else:
                 LOGGER.debug("Replica of {:s} on {:s} is OK".format(block.key, provider_name))
-    return reconstruction_needed
+    return group_blocks_by_path(reconstruction_needed)
+
+def group_blocks_by_path(block_keys):
+    """
+    Groups the block indices by document paths
+    Args:
+        block_keys(list(str)): Keys of the blocks to repair
+    Returns:
+        dict(path, set(int)): The indices of the blocks grouped by document path
+    """
+    if not isinstance(block_keys, list):
+        raise ValueError("block_keys argument must be a list")
+    groups = {}
+    for key in block_keys:
+        if not isinstance(key, str):
+            raise ValueError("elements of block_keys argument must be of type string")
+        path = extract_path_from_key(key)
+        index = extract_index_from_key(key)
+        indices = groups.get(path, set())
+        indices.add(index)
+        groups[path] = indices
+    return groups
 
 def repair(path, indices):
     """
@@ -163,11 +180,17 @@ if __name__ == "__main__":
                         "--daemon",
                         help="Start the script as a daemon",
                         action="store_true")
+    PARSER.add_argument("key", nargs="*")
     ARGS = PARSER.parse_args()
     if ARGS.daemon:
         LOGGER.info("Starting the repair daemon auditing every {:d} seconds".format(DAEMON_INTERVAL_IN_SECONDS))
         while True:
             time.sleep(DAEMON_INTERVAL_IN_SECONDS)
             run_audit_and_repair()
+    elif ARGS.key:
+        RECONSTRUCTION_QUEUE = group_blocks_by_path(ARGS.key)
+        for path_to_repair in RECONSTRUCTION_QUEUE:
+            indices_to_repair = list(RECONSTRUCTION_QUEUE.get(path_to_repair))
+            repair(path_to_repair, indices_to_repair)
     else:
         run_audit_and_repair()
