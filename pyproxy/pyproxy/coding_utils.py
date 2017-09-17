@@ -199,6 +199,21 @@ def get_fragment(strip_data):
     data = strip_data[end + 80:]
     return data
 
+def reconstruct_with_RS(path, indices):
+    """
+    Args:
+        path(str): Path of the file the blocks belongs to
+        indices(list(int)): Indices of the blocks to repair
+    Returns:
+        dict(int, bytes): The reconstructed blocks
+    """
+    if not isinstance(path, str) or not path:
+        raise ValueError("path argument must be a non empty string")
+    if not isinstance(indices, list):
+        raise ValueError("indices argument must be a list")
+    client = CoderClient()
+    reconstructed_blocks = client.reconstruct(path, indices)
+    return {index: reconstructed_blocks[index].data for index in reconstructed_blocks}
 
 def reconstruct_as_pointer(path, index):
     """

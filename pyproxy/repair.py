@@ -10,8 +10,7 @@ import json
 import os
 import time
 
-from pyproxy.coder_client import CoderClient
-from pyproxy.coding_utils import reconstruct_as_pointer
+from pyproxy.coding_utils import reconstruct_as_pointer, reconstruct_with_RS
 from pyproxy.files import compute_block_key, convert_binary_to_hex_digest, Files
 from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_index_from_key, extract_path_from_key
 
@@ -25,6 +24,7 @@ CONSOLE_HANDLER = logging.StreamHandler()
 CONSOLE_HANDLER.setLevel(logging.INFO)
 LOGGER.addHandler(CONSOLE_HANDLER)
 
+#TODO: Order blocks reconstruction lookingfor dependencies between them
 def get_dispatcher_configuration(path_to_configuration=PATH_TO_DISPATCHER_CONFIGURATION):
     """
     Reads the dispatcher's configuration
@@ -145,11 +145,9 @@ def repair(path, indices):
     dispatcher = Dispatcher(get_dispatcher_configuration())
     files = Files()
     if len(indices) <= erasures_threshold:
-        LOGGER.info("Should repair {:s}".format(indices))
-        client = CoderClient()
-        reconstructed_blocks = client.reconstruct(path, indices)
+        reconstructed_blocks = reconstruct_with_RS(path, indices)
         for index in reconstructed_blocks:
-            reconstructed_block = reconstructed_blocks[index].data
+            reconstructed_block = reconstructed_blocks[index]
             metablock = files.get_block(compute_block_key(path, index))
             for provider_name in set(metablock.providers):
                 dispatcher.providers[provider_name].put(reconstructed_block,
