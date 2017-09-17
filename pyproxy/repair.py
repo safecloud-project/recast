@@ -154,8 +154,17 @@ def repair(path, indices):
                                                         metablock.key)
     else:
         #FIXME order of blocks to reach e erasures than do RS reconstuction
-        for index in indices:
+        indices.sort()
+        while len(indices) > erasures_threshold:
+            index = indices.pop(0)
             reconstructed_block = reconstruct_as_pointer(path, index)
+            metablock = files.get_block(compute_block_key(path, index))
+            for provider_name in set(metablock.providers):
+                dispatcher.providers[provider_name].put(reconstructed_block,
+                                                        metablock.key)
+        reconstructed_blocks = reconstruct_with_RS(path, indices)
+        for index in reconstructed_blocks:
+            reconstructed_block = reconstructed_blocks[index]
             metablock = files.get_block(compute_block_key(path, index))
             for provider_name in set(metablock.providers):
                 dispatcher.providers[provider_name].put(reconstructed_block,
