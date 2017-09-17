@@ -6,7 +6,7 @@ import pytest
 
 from pyproxy.files import Metadata
 from pyproxy.playcloud_pb2 import File
-from pyproxy.safestore.providers.dispatcher import arrange_elements, Dispatcher
+from pyproxy.safestore.providers.dispatcher import place, Dispatcher
 from pyproxy.safestore.providers.dispatcher import ProviderFactory
 from pyproxy.safestore.providers.redis_provider import RedisProvider
 
@@ -61,15 +61,15 @@ def test_ProdiverFactory_get_factory_returns_a_provider_if_supported():
     assert isinstance(provider, RedisProvider)
 
 
-def test_arrange_elements_raises():
+def test_place_raises():
     with pytest.raises(ValueError):
-        arrange_elements(2, -1)
+        place(-1, ["a"], 1)
 
     with pytest.raises(ValueError):
-        arrange_elements(-1, 2)
+        place(2, None, 1)
 
     with pytest.raises(ValueError):
-        arrange_elements(-1, -1)
+        place(2, ["a"], -1)
 
 
 def test_Dispatcher_list_files():
