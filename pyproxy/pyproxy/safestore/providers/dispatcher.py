@@ -147,28 +147,41 @@ class NoReplicaException(Exception):
     """
     pass
 
-def arrange_elements(elements, bins):
+def place(elements, providers, replication_factor):
     """
-    Propose elements arrangement among a number of bins
+    Arrange elements over a set of providers using round-robin selecting the
+    first provider randomly.
     Args:
-        elements -- Number of elements to arrange (int)
-        bins -- Number of bins to store the elements (int)
-    Retunrs:
-        A list of index lists describing how the elements can be spread among
-        the bins
+        elements(int): Number of elements to arrange
+        providers(list(str)): Name of the providers
+        replication_factor(int): Replication factor
+    Returns:
+        dict(str, set(int)): The arrangement of the elements over the providers
     """
-    if elements < 0:
-        raise ValueError("")
-    if elements == 0 or bins == 0:
-        return []
-    start = random.randint(0, bins - 1)
-    dispatching = []
-    for i in range(bins):
-        dispatching.append([])
-    for i in range(elements):
-        index = (start + i) % bins
-        dispatching[index].append(i)
-    return dispatching
+    if not isinstance(elements, int) or elements < 0:
+        raise ValueError("elements argument must be an integer greater or equal to 0")
+    if not isinstance(providers, list):
+        raise ValueError("providers argument must be a list of strings")
+    if not isinstance(replication_factor, int) or replication_factor < 0:
+        raise ValueError("replication_factor argument must be an integer greater or equal to 0")
+    number_of_providers = len(providers)
+    if elements == 0 or number_of_providers == 0 or replication_factor == 0:
+        return {provider: set() for provider in providers}
+    placement = {}
+    if number_of_providers <= replication_factor:
+        indices = set([index for index in xrange(elements)])
+        for provider in providers:
+            placement[provider] = indices
+        return placement
+    index = random.randint(0, number_of_providers - 1)
+    for _ in xrange(replication_factor):
+        for element in xrange(elements):
+            provider_name = providers[index]
+            provider = placement.get(provider_name, set())
+            provider.add(element)
+            placement[provider_name] = provider
+            index = (index + 1) % number_of_providers
+    return placement
 
 class Dispatcher(object):
     """
@@ -213,16 +226,15 @@ class Dispatcher(object):
         """
         metadata = Metadata(path, original_size=long(encoded_file.original_size))
         provider_keys = self.providers.keys()
-        blocks = [strip.data for _ in xrange(self.replication_factor) for strip in encoded_file.strips]
-        arrangement = arrange_elements(len(blocks), len(provider_keys))
+        blocks = [strip.data for strip in encoded_file.strips]
+        arrangement = place(len(blocks), provider_keys, self.replication_factor)
         metablock_queue = {}
         pushers = []
-        index_format_length = len(str(len(blocks)))
         metablocks = {}
-        for i, provider_key in enumerate(provider_keys):
+        for provider_key in provider_keys:
             provider = self.providers[provider_key]
             blocks_for_provider = {}
-            for index in arrangement[i]:
+            for index in arrangement[provider_key]:
                 index = index % len(encoded_file.strips)
                 strip = encoded_file.strips[index]
                 key = compute_block_key(path, index)
