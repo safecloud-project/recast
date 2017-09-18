@@ -1,10 +1,17 @@
 #! /usr/bin/env python
+import argparse
 import json
 import os
 
 import numpy
 
-RESULTS_DIRECTORY = os.path.join(os.path.dirname(__file__), "results")
+DEFAULT_RESULTS_DIRECTORY = os.path.join(os.path.dirname(__file__), "results")
+
+NAMING_CONVENTION = {
+    "results1": "1",
+    "results2": "2",
+    "results3": "3"
+}
 
 def check_if_directory_is_explorable(base):
     if not isinstance(base, str) or not base:
@@ -70,8 +77,8 @@ def parse_run(run, stats_filter=None):
         delta[container] = container_stats
     return delta
 
-def parse():
-    run_directories = list_in_directory(RESULTS_DIRECTORY, filters=[os.path.isdir])
+def parse(directory):
+    run_directories = list_in_directory(directory, filters=[os.path.isdir])
     if not run_directories:
         return {}
     results = []
@@ -80,7 +87,7 @@ def parse():
     for run_directory in run_directories:
         results.append(parse_run(run_directory, stats_filter=stats_to_keep))
     # Compile results
-    containers = results[0].keys()
+    containers = ["playcloud_coder_1"]
     compiled_results = {}
     for container in containers:
         container_stats = {}
@@ -98,5 +105,25 @@ def parse():
         compiled_results[container] = container_stats
     return compiled_results
 
+def format_results(results):
+    lines = []
+    stats_to_keep = ["rx_bytes", "tx_bytes"] 
+    lines.append(",".join(["blocks reconstructed", "rx (avg)", "rx (std)", "tx (avg)", "tx (std)"]))
+    for result in sorted(results.keys()):
+        containers = results[result]
+        for container in containers:
+            line = [NAMING_CONVENTION.get(result, result)]
+            for stat in stats_to_keep:
+                line.append(str(results[result][container][stat]["average"] / 1000))
+                line.append(str(results[result][container][stat]["stdev"] / 1000))
+            lines.append(",".join(line))
+    return "\n".join(lines)
+
 if __name__ == "__main__":
-    print json.dumps(parse(), indent=4)
+    PARSER = argparse.ArgumentParser(__file__, description="Parse the results from run.sh")
+    PARSER.add_argument("directory", nargs="+", help="list of directories to parse")
+    ARGS = PARSER.parse_args()
+    results = {}
+    for directory in ARGS.directory:
+        results[directory] = parse(directory)
+    print format_results(results)
