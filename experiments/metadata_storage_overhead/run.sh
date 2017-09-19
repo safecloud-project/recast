@@ -21,7 +21,7 @@ readonly PROXY_PORT=3000
 readonly RESULTS_DIRECTORY="./results"
 readonly DOCUMENTS=10000
 readonly DOCUMENT_INCREMENTS=50
-readonly RUNS=5
+readonly RUNS=1
 readonly NUMBER_OF_CORES="$(nproc --all)"
 ################################################################################
 
