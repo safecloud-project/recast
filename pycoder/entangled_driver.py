@@ -72,14 +72,12 @@ def pad(data, length):
     Returns:
         (bytes): The adapted sequence of bytes
     """
-    length_diff = length - len(data)
-    if not length_diff:
-        return data
-    if length_diff > 0:
-        for _ in xrange(length_diff):
-            data += '\0'
-        return data
-    return data[0:length_diff]
+    difference = length - len(data)
+    if difference == 0:
+        return data[:]
+    if difference < 0:
+        return data[:difference]
+    return data + "\0"*difference
 
 class FragmentHeader(object):
     """
