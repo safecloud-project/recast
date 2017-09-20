@@ -5,16 +5,44 @@ from a Redis database
 import os
 import sys
 
-import redis
+from redis import BlockingConnectionPool, StrictRedis
 
 class RedisProvider(object):
     """
     A storage provider that stores data in a Redis database
     """
-    def __init__(self, configuration={}):
+    CONNECTION_POOLS = {}
+
+    @staticmethod
+    def get_pool(host, port):
+        """
+        Gets an existing connection pool to a given server or creates a new one
+        Args:
+            host(str): Host of the redis server
+            port(int): Port number the resdis server is listening on
+        Returns:
+            BlockingConnectionPool: A blocking redis connection pool
+        """
+        if not isinstance(host, (str, unicode)) or not host:
+            raise ValueError("host argument must be a non empty string")
+        if not isinstance(port, int) or port <= 0 or port > 65535:
+            raise ValueError("port argument must be an integer between 0 and 65535")
+        if not host in RedisProvider.CONNECTION_POOLS:
+            RedisProvider.CONNECTION_POOLS[host] = {}
+        if not port in RedisProvider.CONNECTION_POOLS[host]:
+            RedisProvider.CONNECTION_POOLS[host][port] = BlockingConnectionPool(host=host,
+                                                                                port=port,
+                                                                                db=0,
+                                                                                max_connections=128,
+                                                                                timeout=5)
+        return RedisProvider.CONNECTION_POOLS[host][port]
+
+    def __init__(self, configuration=None):
+        configuration = configuration or {}
         host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "redis"))
         port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
-        self.redis = redis.StrictRedis(host=host, port=port, db=0, encoding=None, socket_keepalive=True)
+        pool = RedisProvider.get_pool(host, port)
+        self.redis = StrictRedis(connection_pool=pool, encoding=None, socket_keepalive=True)
 
     def get(self, path):
         """
