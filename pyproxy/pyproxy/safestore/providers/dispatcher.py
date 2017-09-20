@@ -92,6 +92,17 @@ def extract_index_from_key(key):
     index_pattern = re.compile(r"\-\d+$")
     return int(index_pattern.findall(key)[0].replace("-", ""))
 
+class CouldNotPushException(Exception):
+    def __init__(self, provider, key):
+        """
+        Args:
+            provider(str): Name of the provider
+            path(str): key
+        """
+        super(Exception, self).__init__()
+        self.provider = provider
+        self.key = key
+
 class BlockPusher(threading.Thread):
     """
     Threaded code to push blocks using a given provider
@@ -119,9 +130,13 @@ class BlockPusher(threading.Thread):
         loop_temp = "Going to put block with key {:s} in provider {:s}"
         for metablock, data in self.blocks.iteritems():
             logger.debug(loop_temp.format(metablock.key, str(type(self.provider))))
-            self.provider.put(data, metablock.key)
-            index = extract_index_from_key(metablock.key)
-            self.queue[index] = metablock
+            try:
+                self.provider.put(data, metablock.key)
+                index = extract_index_from_key(metablock.key)
+                self.queue[index] = metablock
+            except ConnectionError as error:
+                index = extract_index_from_key(metablock.key)
+                self.queue[index] = CouldNotPushException(self.provider, metablock.key)
 
 class ProviderUnreachableException(Exception):
     """
@@ -255,6 +270,11 @@ class Dispatcher(object):
             pushers.append(pusher)
         for pusher in pushers:
             pusher.join()
+        for index in metablocks:
+            metablock = metablocks[index]
+            if isinstance(metablock, CouldNotPushException):
+                error_message = "Could not push block {:d} to provider {}".format(index, metablock.provider)
+                raise RuntimeError(error_message)
         for index, metablock in metablocks.items():
             metadata.blocks.append(metablock)
         return metadata
