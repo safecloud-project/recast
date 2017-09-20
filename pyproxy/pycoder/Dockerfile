@@ -1,12 +1,10 @@
 FROM dburihabwa/grpc-compiler-1.0-flat
 
-RUN apt-get update && \
-    apt-get dist-upgrade --assume-yes --quiet && \
-    apt-get autoremove   --assume-yes --quiet && \
-    apt-get autoclean    --assume-yes --quiet && \
-    apt-get install      --assume-yes --quiet python-all-dev python-hiredis python-numpy python-pip && \
+#Install dependencies
+RUN apt-get update --quiet && apt-get dist-upgrade --assume-yes --quiet && \
     apt-get install --assume-yes --quiet autoconf automake build-essential cython gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
     ldconfig
+
 
 # Install intel ISA-L
 WORKDIR /tmp/
@@ -45,11 +43,18 @@ RUN apt-get install --yes --quiet libssl-dev libffi-dev python-dev &&\
     easy_install -U cffi &&\
     pip install --quiet --requirement requirements.txt
 
-COPY requirements.txt  /usr/local/src/pyproxy/requirements.txt
-COPY pyproxy/safestore/data.db /root/data.db
-WORKDIR /usr/local/src/pyproxy
-RUN pip install --upgrade --requirement requirements.txt
-COPY . /usr/local/src/pyproxy
-EXPOSE 8000
-ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src/pyproxy"
-ENTRYPOINT ["python", "/usr/local/src/pyproxy/proxy.py"]
+# Copy server source
+COPY *py /usr/local/src/app/
+COPY pycoder.cfg /usr/local/src/app/
+COPY ACCOUNTS.INI /usr/local/src/app/
+COPY safestore /usr/local/src/app/safestore
+COPY test_files  /usr/local/src/app/test_files
+COPY safestore/keys /usr/local/src/app/safestore/keys
+COPY logging.conf /usr/local/src/app/
+COPY drivers /usr/local/src/app/drivers
+
+# Add coder's directory to python path
+ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src:/usr/local/src/app"
+
+# Entrypoint
+ENTRYPOINT /usr/bin/python /usr/local/src/app/server.py
