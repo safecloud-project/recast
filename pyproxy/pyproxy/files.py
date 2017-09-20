@@ -32,6 +32,12 @@ def uniform_random_selection(t, n):
     """
     if t >= n:
         return [index for index in xrange(n)]
+    difference = n - t
+    if difference < t:
+        selected = [index for index in xrange(n)]
+        while len(selected) > t:
+            selected.pop(random.randint(0, len(selected) - 1))
+        return selected
     selected = []
     while len(selected) < t:
         index = random.randint(0, n - 1)
@@ -53,6 +59,16 @@ def normal_selection(t, n, std=1000):
     selected = []
     if t >= n:
         return [element for element in xrange(n)]
+    std = min(n, std)
+    difference = n - t
+    if difference < t:
+        selected = [index for index in xrange(n)]
+        while len(selected) > t:
+            index = int(round(numpy.random.normal(len(selected), min(std, len(selected)))))
+            if index < 0 or index >= len(selected): # Checking that we are withtin bounds
+                continue
+            selected.pop(index)
+        return selected
     while len(selected) < t:
         index = int(round(numpy.random.normal(n, std)))
         if index < 0 or index >= n: # Checking that we are withtin bounds
