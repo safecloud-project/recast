@@ -231,7 +231,7 @@ class Dispatcher(object):
         metablock_queue = {}
         pushers = []
         metablocks = {}
-        for provider_key in provider_keys:
+        for provider_key in arrangement:
             provider = self.providers[provider_key]
             blocks_for_provider = {}
             for index in arrangement[provider_key]:
