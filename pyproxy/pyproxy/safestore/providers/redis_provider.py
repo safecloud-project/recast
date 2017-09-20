@@ -14,7 +14,7 @@ class RedisProvider(object):
     def __init__(self, configuration={}):
         host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "redis"))
         port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
-        self.redis = redis.StrictRedis(host=host, port=port, db=0, encoding=None)
+        self.redis = redis.StrictRedis(host=host, port=port, db=0, encoding=None, socket_keepalive=True)
 
     def get(self, path):
         """
@@ -33,7 +33,9 @@ class RedisProvider(object):
             data: Data to store in the database
             path: Key under which the data is stored
         Returns:
-            True if the insertion worked, False otherwise
+            True if the insertion worked
+        Raises:
+            ConnectionError: If the client cannot connect to the server
         """
         return self.redis.set(path, data)
 
