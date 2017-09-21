@@ -74,14 +74,23 @@ def create_dispatcher_configuration(configuration):
     """
     nodes = int(configuration["storage"]["nodes"])
     dispatcher_configuration = {"providers":{}}
-    for i in range(1, nodes + 1):
-        name = "redis" + str(i)
+    if nodes == 1:
+        name = "redis"
         provider = {
             "type": "redis",
             "host": name,
             "port": 6379
         }
         dispatcher_configuration["providers"][name] = provider
+    else:
+        for i in range(1, nodes + 1):
+            name = "redis" + str(i)
+            provider = {
+                "type": "redis",
+                "host": name,
+                "port": 6379
+            }
+            dispatcher_configuration["providers"][name] = provider
     replication_factor = int(configuration["storage"].get("replication_factor", 3))
     dispatcher_configuration["replication_factor"] = replication_factor
     dispatcher_configuration["entanglement"] = configuration.get("entanglement", {})
@@ -116,8 +125,8 @@ def create_docker_compose_configuration(configuration):
     redis_keys = [key for key in compose_configuration["services"] if key.startswith("redis")]
     for key in redis_keys:
         del compose_configuration["services"][key]
-    for i in range(1, nodes + 1):
-        container_name = "redis{:d}".format(i)
+    if nodes == 1:
+        container_name = "redis"
         compose_configuration["services"][container_name] = {
             "container_name": container_name,
             "image": "redis:3.2.8",
@@ -130,6 +139,21 @@ def create_docker_compose_configuration(configuration):
             "volumes": ["./volumes/{:s}/:/data/".format(container_name)]
         }
         create_volume_directory(container_name)
+    else:
+        for i in range(1, nodes + 1):
+            container_name = "redis{:d}".format(i)
+            compose_configuration["services"][container_name] = {
+                "container_name": container_name,
+                "image": "redis:3.2.8",
+                "command": "redis-server --appendonly yes",
+                "deploy": {
+                    "placement": {
+                        "constraints": ["node.role == worker"]
+                    }
+                },
+                "volumes": ["./volumes/{:s}/:/data/".format(container_name)]
+            }
+            create_volume_directory(container_name)
     create_volume_directory("metadata")
     return compose_configuration
 
