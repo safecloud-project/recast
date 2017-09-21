@@ -13,5 +13,5 @@ set grid ytics
 set key inside top left box
 
 set datafile separator ","
-plot "./data/mso.csv" every 10::1 using 2:xticlabels(1) with linespoints title columnheader(2),\
-     "./data/mso.csv" every 10::1 using 3:xticlabels(1) with linespoints title columnheader(3)
+plot "./data/mso.csv" using 2:xticlabels(1) with linespoints title columnheader(2),\
+     "./data/mso.csv" using 3:xticlabels(1) with linespoints title columnheader(3)
