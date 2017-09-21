@@ -9,8 +9,8 @@ readonly COMPOSE_FILE="../../docker-compose.yml"
 readonly COMPOSE_FILE_BACKUP="${COMPOSE_FILE}.bw.bak"
 readonly DISPARCHER_FILE="../../pyproxy/dispatcher.json"
 readonly DISPARCHER_FILE_BACKUP="${DISPARCHER_FILE}.bw.bak"
-readonly PYCODER_FILE="../../pycoder/pycoder.cfg"
-readonly PYCODER_FILE_BACKUP="../../pycoder/pycoder.cfg.bw.bak"
+readonly PYCODER_FILE="../../pyproxy/pycoder.cfg"
+readonly PYCODER_FILE_BACKUP="../../pyproxy/pycoder.cfg.bw.bak"
 
 # Proxy setup
 readonly DEFAULT_TIMEOUT_IN_SECONDS=60
