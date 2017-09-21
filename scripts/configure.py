@@ -142,6 +142,11 @@ def create_docker_compose_configuration_for_production(configuration):
     dev_compose_configuration["services"]["proxy"]["image"] = "dburihabwa/playcloud_proxy"
     del dev_compose_configuration["services"]["coder"]["build"]
     dev_compose_configuration["services"]["coder"]["image"] = "dburihabwa/playcloud_coder"
+    for service in dev_compose_configuration["services"].keys():
+        if service.startswith("redis"):
+            del dev_compose_configuration["services"][service]["volumes"]
+            del dev_compose_configuration["services"][service]["command"]
+            del dev_compose_configuration["services"][service]["container_name"]    
     return dev_compose_configuration
 
 def write_docker_compose_file(compose_configuration, path):
