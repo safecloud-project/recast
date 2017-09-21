@@ -23,7 +23,7 @@ from pyproxy.coder.playcloud_pb2 import ReconstructReply
 from pyproxy.coder.playcloud_pb2 import Strip
 from pyproxy.coder.playcloud_pb2_grpc import EncoderDecoderServicer
 
-from pyproxy.coder.proxy_client import ProxyClient
+from pyproxy.coder.proxy_client import LocalProxyClient
 
 from pyproxy.coder.safestore.xor_driver import XorDriver
 from pyproxy.coder.safestore.hashed_splitter_driver import HashedSplitterDriver
@@ -234,7 +234,7 @@ class DriverFactory(object):
             else:
                 raise RuntimeError("A value must be defined for the number of parity blocks generated as part of the erasure coding either in pycoder.cfg as a value for the key t under the step section or through the environment variable ENTANGLEMENT_T")
 
-            source = ProxyClient()
+            source = LocalProxyClient()
             driver = StepEntangler(source, source_blocks, pointer_blocks, parity_blocks)
             logger.info("Loaded driver {}".format(driver))
             return driver
@@ -428,7 +428,7 @@ class CodingService(EncoderDecoderServicer):
         if isinstance(self.driver, StepEntangler):
             fragments_needed = [index - self.driver.k for index in fragments_needed]
         logger.debug("Retrieved the list of indices to retrieve ({:s})".format(", ".join([str(i) for i in fragments_needed])))
-        client = ProxyClient()
+        client = LocalProxyClient()
         available_payload_fragments = []
         if isinstance(self.driver, StepEntangler):
             extra_needed = 0
