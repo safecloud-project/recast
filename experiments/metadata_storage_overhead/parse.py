@@ -43,8 +43,8 @@ def parse_file(memory_file):
     with open(memory_file, "r") as handle:
         lines = handle.readlines()
     for line in lines:
-        if "used_memory_rss:" in line:
-            return int(line.replace("used_memory_rss:", ""))
+        if "../../volumes/metadata/dump.rdb" in line:
+            return int(line.replace("../../volumes/metadata/dump.rdb", ""))
     raise RuntimeError("Could not find used_memory line in text")
     
 
