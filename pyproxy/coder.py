@@ -8,8 +8,8 @@ from ConfigParser import ConfigParser
 import concurrent.futures
 import grpc
 
-import pycoder.playcloud_pb2
-from pycoder.coding_servicer import CodingService
+import pyproxy.coder.playcloud_pb2
+from pyproxy.coder.coding_servicer import CodingService
 
 if __name__ == "__main__":
     CONFIG = ConfigParser()
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     ]
     SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10),
                          options=GRPC_SERVER_OPTIONS)
-    pycoder.playcloud_pb2.add_EncoderDecoderServicer_to_server(CodingService(), SERVER)
+    pyproxy.coder.playcloud_pb2.add_EncoderDecoderServicer_to_server(CodingService(), SERVER)
     PYCODER_LISTEN = PYCODER_LISTEN_ADDRESS + ":" + PYCODER_LISTEN_PORT
     SERVER.add_insecure_port(PYCODER_LISTEN)
     SERVER.start()
