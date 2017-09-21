@@ -19,10 +19,9 @@ readonly PROXY_PORT=3000
 
 # Experimental setup
 readonly RESULTS_DIRECTORY="./results"
-readonly DOCUMENTS=10050
-readonly DOCUMENT_INCREMENTS=50
 readonly RUNS=1
 readonly NUMBER_OF_CORES="$(nproc --all)"
+readonly STEPS=("0" "1" "10" "100" "1000" "10000")
 ################################################################################
 
 wait_for_proxy() {
@@ -125,11 +124,13 @@ for config in "${CONFIGS_TO_TEST[@]}"; do
     rm -f ../../volumes/metadata/dump.rdb
     rm -f ../../volumes/metadata/appendonly.aof
     start_playcloud "${config}"
-
-    for step in $(seq 1 "$(( DOCUMENTS / DOCUMENT_INCREMENTS ))"); do
-      ab -n "${DOCUMENT_INCREMENTS}" -c "${NUMBER_OF_CORES}" -u "${DATA_FILE}" "http://${PROXY_HOST}:${PROXY_PORT}/"
-      INSERTED=$((step * DOCUMENT_INCREMENTS))
-      take_storage_overhead_snapshot "${RESULTS_DIRECTORY}/${config}/${run}/${INSERTED}-info_memory.txt"
+    last_step="0"
+    for step in "${STEPS[@]}"; do
+      documents_to_insert=$((step - last_step))
+      echo "Will now insert ${documents_to_insert} documents"
+      ab -n "${documents_to_insert}" -u "${DATA_FILE}" "http://${PROXY_HOST}:${PROXY_PORT}/"
+      take_storage_overhead_snapshot "${RESULTS_DIRECTORY}/${config}/${run}/${step}-info_memory.txt"
+      last_step="${step}"
     done
     stop_playcloud "${config}"
     rm -f ../../volumes/metadata/dump.rdb
