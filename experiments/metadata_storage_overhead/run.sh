@@ -19,7 +19,7 @@ readonly PROXY_PORT=3000
 
 # Experimental setup
 readonly RESULTS_DIRECTORY="./results"
-readonly DOCUMENTS=10000
+readonly DOCUMENTS=10050
 readonly DOCUMENT_INCREMENTS=50
 readonly RUNS=1
 readonly NUMBER_OF_CORES="$(nproc --all)"
@@ -53,7 +53,7 @@ setup_playcloud() {
   cp "${PYCODER_FILE}" "${PYCODER_FILE_BACKUP}"
   cp "${config_directory}/docker-compose.yml" "${COMPOSE_FILE}"
   cp "${config_directory}/pyproxy/dispatcher.json" "${DISPARCHER_FILE}"
-  cp "${config_directory}/pycoder/pycoder.cfg" "${PYCODER_FILE}"
+  cp "${config_directory}/pyproxy/pycoder.cfg" "${PYCODER_FILE}"
   local volume_files=($(find ../../volumes -type f | sort | xargs))
   for vf in "${volume_files[@]}"; do
     local buvf="${vf}.bak"
@@ -105,6 +105,9 @@ take_storage_overhead_snapshot() {
   fi
   local destination="${1}"
   docker-compose -f "${COMPOSE_FILE}" exec  metadata redis-cli INFO memory > "${destination}"
+  docker-compose -f "${COMPOSE_FILE}" exec  metadata redis-cli SAVE
+  du -b ../../volumes/metadata/dump.rdb >> "${destination}"
+  du -b ../../volumes/metadata/appendonly.aof >> "${destination}"
 }
 
 DATA_FILE="/tmp/storage_overhead_doc.txt"
@@ -119,6 +122,8 @@ for config in "${CONFIGS_TO_TEST[@]}"; do
   mkdir -p "${RESULTS_DIRECTORY}/${config}"
   for run in $(seq 1 "${RUNS}"); do
     mkdir -p "${RESULTS_DIRECTORY}/${config}/${run}"
+    rm -f ../../volumes/metadata/dump.rdb
+    rm -f ../../volumes/metadata/appendonly.aof
     start_playcloud "${config}"
 
     for step in $(seq 1 "$(( DOCUMENTS / DOCUMENT_INCREMENTS ))"); do
@@ -126,7 +131,8 @@ for config in "${CONFIGS_TO_TEST[@]}"; do
       INSERTED=$((step * DOCUMENT_INCREMENTS))
       take_storage_overhead_snapshot "${RESULTS_DIRECTORY}/${config}/${run}/${INSERTED}-info_memory.txt"
     done
-
     stop_playcloud "${config}"
+    rm -f ../../volumes/metadata/dump.rdb
+    rm -f ../../volumes/metadata/appendonly.aof
   done
 done
