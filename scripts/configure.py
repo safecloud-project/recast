@@ -16,7 +16,7 @@ PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "..", "pyproxy
 PATH_TO_DOCKER_COMPOSE_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose.yml")
 PATH_TO_DOCKER_COMPOSE_PRODUCTION_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose-production.yml")
 PATH_TO_VOLUMES_DIRECTORY = os.path.join(os.path.dirname(__file__), "..", "volumes")
-PATH_TO_CODER_CONFIGURATION = os.path.join(os.path.dirname(__file__), "..", "pycoder", "pycoder.cfg")
+PATH_TO_CODER_CONFIGURATION = os.path.join(os.path.dirname(__file__), "..", "pyproxy", "pycoder.cfg")
 
 BASIC_COMPOSE_CONFIGURATION = {
     "version": "\"3\"",
@@ -24,8 +24,8 @@ BASIC_COMPOSE_CONFIGURATION = {
         "coder": {
             "container_name": "coder",
             "hostname": "coder",
-            "build": "./pycoder",
-            "environment": ["sec_measure=confd"],
+            "build": "./pyproxy",
+            "entrypoint": "python /usr/local/src/pyproxy/coder.py",
             "env_file": ["./erasure.env"],
             "deploy": {
                 "placement": {
