@@ -1,5 +1,5 @@
 
-from coding_servicer import DriverFactory
+from pyproxy.coder.coding_servicer import DriverFactory
 
 import ConfigParser
 

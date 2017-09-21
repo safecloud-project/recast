@@ -13,31 +13,31 @@ from pyeclib.ec_iface import ECInvalidParameter
 from pyeclib.ec_iface import ECOutOfMemory
 from pyeclib.ec_iface import ECDriverError
 
-from entangled_driver import EntanglementDriver
-from entangled_driver import StepEntangler
+from pyproxy.coder.entangled_driver import EntanglementDriver
+from pyproxy.coder.entangled_driver import StepEntangler
 
-from playcloud_pb2 import DecodeReply
-from playcloud_pb2 import EncodeReply
-from playcloud_pb2 import FragmentsNeededReply
-from playcloud_pb2 import ReconstructReply
-from playcloud_pb2 import Strip
-from playcloud_pb2_grpc import EncoderDecoderServicer
+from pyproxy.coder.playcloud_pb2 import DecodeReply
+from pyproxy.coder.playcloud_pb2 import EncodeReply
+from pyproxy.coder.playcloud_pb2 import FragmentsNeededReply
+from pyproxy.coder.playcloud_pb2 import ReconstructReply
+from pyproxy.coder.playcloud_pb2 import Strip
+from pyproxy.coder.playcloud_pb2_grpc import EncoderDecoderServicer
 
-from proxy_client import ProxyClient
+from pyproxy.coder.proxy_client import ProxyClient
 
-from safestore.xor_driver import XorDriver
-from safestore.hashed_splitter_driver import HashedSplitterDriver
-from safestore.signed_splitter_driver import SignedSplitterDriver
-from safestore.signed_hashed_splitter_driver import SignedHashedSplitterDriver
-from safestore.aes_driver import AESDriver
-from safestore.shamir_driver import ShamirDriver
-from safestore.assymetric_driver import AssymetricDriver
+from pyproxy.coder.safestore.xor_driver import XorDriver
+from pyproxy.coder.safestore.hashed_splitter_driver import HashedSplitterDriver
+from pyproxy.coder.safestore.signed_splitter_driver import SignedSplitterDriver
+from pyproxy.coder.safestore.signed_hashed_splitter_driver import SignedHashedSplitterDriver
+from pyproxy.coder.safestore.aes_driver import AESDriver
+from pyproxy.coder.safestore.shamir_driver import ShamirDriver
+from pyproxy.coder.safestore.assymetric_driver import AssymetricDriver
 
 
 __LOCAL_DIRECTORY = os.path.dirname(__file__)
 
 CONFIG = ConfigParser()
-CONFIG.read(os.path.join(__LOCAL_DIRECTORY, "..", "pycoder.cfg"))
+CONFIG.read(os.path.join(__LOCAL_DIRECTORY, "..", "..", "pycoder.cfg"))
 
 log_config = os.getenv("LOG_CONFIG", os.path.join(__LOCAL_DIRECTORY, "logging.conf"))
 logging.config.fileConfig(log_config)

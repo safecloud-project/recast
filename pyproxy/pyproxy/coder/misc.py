@@ -1,6 +1,7 @@
 import random
 import string
-from safestore.shamir_driver import ShamirDriver
+
+from pyproxy.coder.safestore.shamir_driver import ShamirDriver
 
 
 driver = ShamirDriver(5, 2)

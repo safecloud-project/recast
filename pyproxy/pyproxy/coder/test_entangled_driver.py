@@ -7,8 +7,8 @@ import os
 import pytest
 from pyeclib.ec_iface import ECDriverError
 
-from entangled_driver import StepEntangler, FragmentHeader
-from playcloud_pb2 import Strip
+from pyproxy.coder.entangled_driver import StepEntangler, FragmentHeader
+from pyproxy.coder.playcloud_pb2 import Strip
 
 
 ENTANGLEMENT_HEADER = "[]"
