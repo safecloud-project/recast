@@ -37,7 +37,7 @@ from safestore.assymetric_driver import AssymetricDriver
 __LOCAL_DIRECTORY = os.path.dirname(__file__)
 
 CONFIG = ConfigParser()
-CONFIG.read(os.path.join(__LOCAL_DIRECTORY, "pycoder.cfg"))
+CONFIG.read(os.path.join(__LOCAL_DIRECTORY, "..", "pycoder.cfg"))
 
 log_config = os.getenv("LOG_CONFIG", os.path.join(__LOCAL_DIRECTORY, "logging.conf"))
 logging.config.fileConfig(log_config)
