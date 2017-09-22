@@ -5,7 +5,7 @@ Client implementation and util functions to interact with EncoderDecoder service
 import grpc
 
 
-from pyproxy.playcloud_pb2 import FragmentsNeededRequest, ReconstructRequest
+from pyproxy.playcloud_pb2 import DecodeRequest, EncodeRequest, File, FragmentsNeededRequest, ReconstructRequest, Strip
 import pyproxy.playcloud_pb2_grpc as playcloud_pb2_grpc
 
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
@@ -23,6 +23,36 @@ class CoderClient(object):
         ]
         grpc_channel = grpc.insecure_channel(server_listen, options=grpc_options)
         self.stub = playcloud_pb2_grpc.EncoderDecoderStub(grpc_channel)
+
+    def encode(self, key, data):
+        """
+        Sends data to the encoder for decoding
+        Args:
+            key(str): Path of the file
+            data(bytes): Data to encode
+        Returns:
+            list(File): The encoded file
+        """
+        encode_request = EncodeRequest()
+        encode_request.payload = data
+        encode_request.parameters["key"] = key
+        encoded_file = self.stub.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
+        return encoded_file
+
+    def decode(self, key, strips):
+        """
+        Sends data to the encoder for decoding.
+        Args:
+            key(str): Path of the file
+            list(Strip): Strips to decode
+        Returns:
+            bytes: Decoded data
+        """
+        decode_request = DecodeRequest()
+        decode_request.strips.extend(strips)
+        decode_request.path = key
+        decoded_file = self.stub.Decode(decode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).dec_block
+        return decoded_file
 
     def reconstruct(self, path, missing_indices):
         """

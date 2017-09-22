@@ -19,6 +19,7 @@ from kazoo.handlers.threading import KazooTimeoutError
 import pyproxy.playcloud_pb2 as playcloud_pb2
 import pyproxy.playcloud_pb2_grpc as playcloud_pb2_grpc
 
+from pyproxy.coder_client import CoderClient
 from pyproxy.files import extract_entanglement_data, Files
 from pyproxy.pyproxy_globals import get_dispatcher_instance
 from pyproxy.playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
@@ -38,7 +39,7 @@ GRPC_OPTIONS = [
     ("grpc.max_receive_message_length", GRPC_MESSAGE_SIZE),
     ("grpc.max_send_message_length", GRPC_MESSAGE_SIZE)
 ]
-CODER_CLIENT_STUB = None
+CODER_CLIENT = CoderClient()
 
 # Loading dispatcher
 DISPATCHER = get_dispatcher_instance()
@@ -97,14 +98,9 @@ def get(key):
 
         LOGGER.debug("Received blocks from redis")
 
-        decode_request = DecodeRequest()
-        decode_request.strips.extend(strips)
-        decode_request.path = key
-
         LOGGER.debug("Going go to do decode request")
 
-        data = CODER_CLIENT_STUB.Decode(
-            decode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).dec_block
+        data = CODER_CLIENT.decode(key, strips)
         return data
 
 def store(key=None, data=None):
@@ -118,11 +114,8 @@ def store(key=None, data=None):
     key = unicode(key, errors="ignore").encode("utf-8")
     lock = KAZOO.WriteLock(os.path.join("/", key), HOSTNAME)
     with lock:
-        encode_request = EncodeRequest()
-        encode_request.payload = data
-        encode_request.parameters["key"] = key
         LOGGER.debug("Going to request data encoding")
-        encoded_file = CODER_CLIENT_STUB.Encode(encode_request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS).file
+        encoded_file = CODER_CLIENT.encode(key, data)
 
         number_of_blocks = len(encoded_file.strips)
         LOGGER.debug("Received {:2d} encoded blocks from data encoding".format(number_of_blocks))
@@ -184,21 +177,6 @@ def dictionary():
     """
     return json.dumps(FILES.get_entanglement_graph(), indent=4, separators=(',', ': '))
 
-def init_coder_client(host="coder", port=1234):
-    """
-    Tries to initialize the connection to playcloud's coder
-    Args:
-        host(str, optional): coder host
-        port(int, optional): coder port
-    Returns:
-        playcloud_pb2_grpc.EncoderDecoderStub: An initialized coder client
-    """
-    coder_address = "{:s}:{:d}".format(host, port)
-    LOGGER.info("Going to connect to the pycoder in {:s}".format(coder_address))
-    grpc_channel = grpc.insecure_channel(coder_address, options=GRPC_OPTIONS)
-    client_stub = playcloud_pb2_grpc.EncoderDecoderStub(grpc_channel)
-    return client_stub
-
 def init_zookeeper_client(host="zoo1", port=2181, max_retries=5):
     """
     Tries to initialize the connection to zookeeper.
@@ -252,6 +230,5 @@ if __name__ == "__main__":
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
     KAZOO = init_zookeeper_client()
-    CODER_CLIENT_STUB = init_coder_client()
     run(server="paste", app=APP, host="0.0.0.0", port=8000)
     KAZOO.stop()
