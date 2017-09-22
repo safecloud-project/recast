@@ -3,7 +3,7 @@
 ################################################################################
 # CONFIGURATION ################################################################
 # Configuration files
-readonly CONFIGS_TO_TEST=("./conf-1-10-3" "./conf-5-2-7")
+readonly CONFIGS_TO_TEST=("./conf-1-10-3" "./conf-1-5-3" "./conf-5-2-7" "./conf-5-1-7")
 readonly CONF_SETUP="./conf"
 readonly COMPOSE_FILE="../../docker-compose.yml"
 readonly COMPOSE_FILE_BACKUP="${COMPOSE_FILE}.bw.bak"
