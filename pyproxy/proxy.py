@@ -19,11 +19,11 @@ from kazoo.handlers.threading import KazooTimeoutError
 import pyproxy.playcloud_pb2 as playcloud_pb2
 import pyproxy.playcloud_pb2_grpc as playcloud_pb2_grpc
 
-from pyproxy.coder_client import CoderClient
 from pyproxy.files import extract_entanglement_data, Files
-from pyproxy.pyproxy_globals import get_dispatcher_instance
 from pyproxy.playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
-from pyproxy.proxy_service import ProxyService
+import pyproxy.coder_client
+import pyproxy.proxy_service
+import pyproxy.pyproxy_globals
 
 
 log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
@@ -39,10 +39,10 @@ GRPC_OPTIONS = [
     ("grpc.max_receive_message_length", GRPC_MESSAGE_SIZE),
     ("grpc.max_send_message_length", GRPC_MESSAGE_SIZE)
 ]
-CODER_CLIENT = CoderClient()
+CODER_CLIENT = pyproxy.coder_client.LocalCoderClient()
 
 # Loading dispatcher
-DISPATCHER = get_dispatcher_instance()
+DISPATCHER = pyproxy.pyproxy_globals.get_dispatcher_instance()
 
 # Loading the Files metadata structure
 FILES = Files()
@@ -210,8 +210,9 @@ def init_zookeeper_client(host="zoo1", port=2181, max_retries=5):
             zk_logger.warn("Waiting {:d} seconds to reconnect to {:s}"
                            .format(backoff_in_seconds, hosts))
             time.sleep(backoff_in_seconds)
-    zk_logger.error("Could not connect to {:s}".format(hosts))
-    raise EnvironmentError("Could not connect to {:s}".format(hosts))
+    error_message = "Could not connect to {:s}".format(hosts)
+    zk_logger.error(error_message)
+    raise EnvironmentError(error_message)
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(prog="proxy",
@@ -226,7 +227,7 @@ if __name__ == "__main__":
         logging.getLogger("dispatcher").setLevel(logging.INFO)
     GRPC_SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10),
                               options=GRPC_OPTIONS)
-    playcloud_pb2.add_ProxyServicer_to_server(ProxyService(), GRPC_SERVER)
+    playcloud_pb2.add_ProxyServicer_to_server(pyproxy.proxy_service.ProxyService(), GRPC_SERVER)
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
     KAZOO = init_zookeeper_client()
