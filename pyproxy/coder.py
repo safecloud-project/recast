@@ -1,18 +1,16 @@
 """Main pycoder module that launches the GRPC server."""
-
+import ConfigParser
 import os
 import time
-
-from ConfigParser import ConfigParser
 
 import concurrent.futures
 import grpc
 
 import pyproxy.coder.playcloud_pb2
-from pyproxy.coder.coding_servicer import CodingService
+import pyproxy.coder.coding_servicer
 
 if __name__ == "__main__":
-    CONFIG = ConfigParser()
+    CONFIG = ConfigParser.ConfigParser()
     CONFIG.read(os.path.join(os.path.dirname(__file__), "pycoder.cfg"))
 
     PYCODER_LISTEN_ADDRESS = None
@@ -38,7 +36,8 @@ if __name__ == "__main__":
     ]
     SERVER = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers=10),
                          options=GRPC_SERVER_OPTIONS)
-    pyproxy.coder.playcloud_pb2.add_EncoderDecoderServicer_to_server(CodingService(), SERVER)
+    pyproxy.coder.playcloud_pb2.add_EncoderDecoderServicer_to_server(pyproxy.coder.coding_servicer.CodingService(),
+                                                                     SERVER)
     PYCODER_LISTEN = PYCODER_LISTEN_ADDRESS + ":" + PYCODER_LISTEN_PORT
     SERVER.add_insecure_port(PYCODER_LISTEN)
     SERVER.start()

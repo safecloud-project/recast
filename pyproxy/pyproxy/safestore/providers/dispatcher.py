@@ -11,7 +11,7 @@ from multiprocessing import Manager, Process
 from enum import Enum
 from redis import ConnectionError
 
-from pyproxy.coder_client import CoderClient
+import pyproxy.coder_client
 from pyproxy.files import BlockType, compute_block_key, Files, MetaBlock, Metadata
 from pyproxy.safestore.providers.dbox import DBox
 from pyproxy.safestore.providers.disk import Disk
@@ -367,7 +367,7 @@ class Dispatcher(object):
         metablock = metadata.blocks[index]
         data = self.__get_blocks([metablock])[metablock.key]
         if isinstance(data, NoReplicaException) and reconstruct_if_missing:
-            coder_client = CoderClient()
+            coder_client = pyproxy.coder_client.CoderClient()
             data = coder_client.reconstruct(path, [index])[index].data
         return data
 
@@ -396,7 +396,7 @@ class Dispatcher(object):
                 continue
 
         while len(block_queue) < len(metablocks):
-            coder = CoderClient()
+            coder = pyproxy.coder_client.CoderClient()
             indices_needed = coder.fragments_needed(missing_indices)
             indices_secured = [extract_index_from_key(m) for m in block_queue.keys()]
             indices_to_compensate = list(set(indices_needed).difference(set(indices_secured)))

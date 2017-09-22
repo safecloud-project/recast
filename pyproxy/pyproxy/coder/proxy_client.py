@@ -6,7 +6,7 @@ import grpc
 import pyproxy.coder.playcloud_pb2_grpc
 from pyproxy.coder.playcloud_pb2 import BlockRequest, NamedBlockRequest, Strip
 from pyproxy.proxy_service import get_random_blocks
-from pyproxy.pyproxy_globals import get_dispatcher_instance
+import pyproxy.pyproxy_globals
 from pyproxy.safestore.providers.dispatcher import NoReplicaException
 
 # TODO Read the default grpc timeout in configuration file before assigning this value
@@ -76,7 +76,7 @@ class LocalProxyClient(object):
     Local proxy client
     """
     def __init__(self):
-        self.dispatcher = get_dispatcher_instance()
+        self.dispatcher = pyproxy.pyproxy_globals.get_dispatcher_instance()
 
     def get_random_blocks(self, blocks):
         """
