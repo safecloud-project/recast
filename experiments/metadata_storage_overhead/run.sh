@@ -19,7 +19,7 @@ readonly PROXY_PORT=3000
 
 # Experimental setup
 readonly RESULTS_DIRECTORY="./results"
-readonly RUNS=1
+readonly RUNS=5
 readonly NUMBER_OF_CORES="$(nproc --all)"
 readonly STEPS=("0" "1" "10" "100" "1000" "10000")
 ################################################################################
@@ -132,7 +132,9 @@ for config in "${CONFIGS_TO_TEST[@]}"; do
       take_storage_overhead_snapshot "${RESULTS_DIRECTORY}/${config}/${run}/${step}-info_memory.txt"
       last_step="${step}"
     done
+    docker-compose -f "${COMPOSE_FILE}" exec  metadata redis-cli SAVE
     stop_playcloud "${config}"
+    du -b ../../volumes/metadata/dump.rdb >> "${RESULTS_DIRECTORY}/${config}/${run}/final-info_memory.txt"
     rm -f ../../volumes/metadata/dump.rdb
     rm -f ../../volumes/metadata/appendonly.aof
   done
