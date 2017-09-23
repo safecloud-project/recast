@@ -92,7 +92,7 @@ def format_results(results):
         line = []
         line.append(str(increment))
         for config in configs:
-            line.append(str(results[config][increment]["average"] / 1000000))
+            line.append(str(results[config][increment]["average"]))
         lines.append(",".join(line))
     return "\n".join(lines)
     
