@@ -1,10 +1,10 @@
 # Memory
-used_memory:1345392
-used_memory_human:1.28M
-used_memory_rss:8429568
+used_memory:904208
+used_memory_human:883.02K
+used_memory_rss:8433664
 used_memory_rss_human:8.04M
-used_memory_peak:1361008
-used_memory_peak_human:1.30M
+used_memory_peak:906736
+used_memory_peak_human:885.48K
 total_system_memory:7844077568
 total_system_memory_human:7.31G
 used_memory_lua:37888
@@ -12,7 +12,7 @@ used_memory_lua_human:37.00K
 maxmemory:0
 maxmemory_human:0B
 maxmemory_policy:noeviction
-mem_fragmentation_ratio:6.27
+mem_fragmentation_ratio:9.33
 mem_allocator:jemalloc-4.0.3
-267794	../../volumes/metadata/dump.rdb
-387833	../../volumes/metadata/appendonly.aof
+23327	../../volumes/metadata/dump.rdb
+36777	../../volumes/metadata/appendonly.aof
