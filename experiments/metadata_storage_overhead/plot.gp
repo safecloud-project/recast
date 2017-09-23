@@ -6,7 +6,6 @@ set title "Metadata size over time"
 set xlabel "Number of documents"
 set ylabel "Size (in bytes)"
 set xtics 100
-set xtics rotate 90
 
 set grid ytics
 
