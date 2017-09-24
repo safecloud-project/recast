@@ -187,6 +187,45 @@ class FragmentMetadata(object):
                self.backend_id == other.backend_id and \
                self.backend_version == other.backend_version
 
+def serialize_entanglement_header(strips):
+    """
+    Serialize information about the blocks used for entanglement in the form of
+    a JSON string.
+    Args:
+        strips(list(Strip)): The strips of data used for entanglement
+    Returns:
+        str: The serialized entanglement header
+    """
+    path_pattern = re.compile(r"^(.+)\-\d+$")
+    index_pattern = re.compile(r"\-(\d+)$")
+    header = []
+    for strip in strips:
+        path = path_pattern.findall(strip.id)[0]
+        index = int(index_pattern.findall(strip.id)[0])
+        header.append((path, index))
+    return json.dumps(header)
+
+def parse_entanglement_header(header):
+    """
+    Parse the entanglement header encoded as a JSON string.
+    Args:
+        header(str): JSON encoded entanglement header
+    Returns:
+        list((path, int)): The deseralized entanglement header
+    """
+    return json.loads(header)
+
+def get_entanglement_header_from_strip(strip):
+    """
+    Returns the header part of the bytes strip
+    Args:
+        strip(bytes): The bytes containing the header, size and data
+    Returns:
+        bytes: The header part of the strip
+    """
+    pos = strip.find(HEADER_DELIMITER)
+    return strip[:pos]
+
 def get_fragment_from_strip(strip_data):
     """
     Returns the pyeclib fragment (with its header) from the strip data
@@ -199,6 +238,8 @@ def get_fragment_from_strip(strip_data):
     end = strip_data.find(HEADER_DELIMITER, start) + len(HEADER_DELIMITER)
     data = strip_data[end:]
     return data
+
+
 
 def fetch_and_prep_pointer_block(source, path, index, fragment_index, fragment_size, original_data_size):
     """
@@ -313,33 +354,6 @@ class StepEntangler(object):
         self.driver = ECDriver(k=self.k, m=self.p, ec_type=ec_type)
 
     @staticmethod
-    def __serialize_entanglement_header(strips):
-        path_pattern = re.compile(r"^(.+)\-\d+$")
-        index_pattern = re.compile(r"\-(\d+)$")
-        header = []
-        for strip in strips:
-            path = path_pattern.findall(strip.id)[0]
-            index = int(index_pattern.findall(strip.id)[0])
-            header.append((path, index))
-        return json.dumps(header)
-
-    @staticmethod
-    def __parse_entanglement_header(header):
-        return json.loads(header)
-
-    @staticmethod
-    def __get_header_from_strip(strip):
-        """
-        Returns the header part of the bytes strip
-        Args:
-            strip(bytes): The bytes containing the header, size and data
-        Returns:
-            bytes: The header part of the strip
-        """
-        pos = strip.find(EntanglementDriver.HEADER_DELIMITER)
-        return strip[:pos]
-
-    @staticmethod
     def __get_original_size_from_strip(strip):
         """
         Returns the size of the original data located
@@ -380,7 +394,7 @@ class StepEntangler(object):
         pointer_blocks = []
         if self.t > 0:
             pointer_blocks = self.source.get_random_blocks(self.t)
-        block_header = self.__serialize_entanglement_header(pointer_blocks)
+        block_header = serialize_entanglement_header(pointer_blocks)
         size = len(data)
         fragment_size = int(math.ceil(size / float(self.s)))
         if (fragment_size % 2) == 1:
@@ -471,10 +485,10 @@ class StepEntangler(object):
         modified_pointer_blocks = []
 
         original_data_size = self.__get_original_size_from_strip(strips[0])
-        block_header_text = self.__get_header_from_strip(strips[0])
+        block_header_text = get_entanglement_header_from_strip(strips[0])
         strips = [self.__get_data_from_strip(strip) for strip in strips]
         if self.t > 0:
-            block_header = self.__parse_entanglement_header(block_header_text)
+            block_header = parse_entanglement_header(block_header_text)
             modified_pointer_blocks = self.fetch_and_prep_pointer_blocks(block_header,
                                                                          fragment_size,
                                                                          orig_data_size)
@@ -549,8 +563,8 @@ class StepEntangler(object):
         Returns:
             list(bytes): The list of reconstructed blocks
         """
-        header_text = self.__get_header_from_strip(available_fragment_payloads[0])
-        list_of_pointer_blocks = self.__parse_entanglement_header(header_text)
+        header_text = get_entanglement_header_from_strip(available_fragment_payloads[0])
+        list_of_pointer_blocks = parse_entanglement_header(header_text)
 
         parity_header = FragmentHeader(self.__get_data_from_strip(available_fragment_payloads[0])[:80])
         data_size = self.__get_original_size_from_strip(available_fragment_payloads[0])
@@ -613,21 +627,6 @@ class EntanglementDriver(object):
     def __merge_data(fragments):
         return "".join(fragments)
 
-    @staticmethod
-    def __serialize_entanglement_header(strips):
-        path_pattern = re.compile(r"^(.+)\-\d+$")
-        index_pattern = re.compile(r"\-(\d+)$")
-        header = []
-        for strip in strips:
-            path = path_pattern.findall(strip.id)[0]
-            index = int(index_pattern.findall(strip.id)[0])
-            header.append((path, index))
-        return json.dumps(header)
-
-    @staticmethod
-    def __parse_entanglement_header(header):
-        return json.loads(header)
-
     def encode(self, data):
         """
         Encodes data into a series of strips after entangling them
@@ -640,7 +639,7 @@ class EntanglementDriver(object):
         random_blocks = []
         if self.pointers > 0:
             random_blocks = self.source.get_random_blocks(self.pointers)
-        block_header = self.__serialize_entanglement_header(random_blocks)
+        block_header = serialize_entanglement_header(random_blocks)
         random_blocks = [block.data for block in random_blocks]
         encoded_blocks = []
         for block in blocks:
@@ -648,19 +647,6 @@ class EntanglementDriver(object):
             encoded_block = block_header + self.HEADER_DELIMITER + encoded_block
             encoded_blocks.append(encoded_block)
         return encoded_blocks
-
-
-    @staticmethod
-    def __get_header_from_strip(strip):
-        """
-        Returns the header part of the bytes strip
-        Args:
-            strip(bytes): The bytes containing the header, size and data
-        Returns:
-            bytes: The header part of the strip
-        """
-        pos = strip.find(EntanglementDriver.HEADER_DELIMITER)
-        return strip[:pos]
 
     @staticmethod
     def __get_data_from_strip(strip):
@@ -683,8 +669,8 @@ class EntanglementDriver(object):
         Returns:
             bytes: The decoded data
         """
-        block_header_text = EntanglementDriver.__get_header_from_strip(strips[0])
-        block_header = EntanglementDriver.__parse_entanglement_header(block_header_text)
+        block_header_text = get_entanglement_header_from_strip(strips[0])
+        block_header = parse_entanglement_header(block_header_text)
         strips = [self.__get_data_from_strip(strip) for strip in strips]
 
         random_blocks = []
