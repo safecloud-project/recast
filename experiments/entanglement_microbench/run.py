@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import argparse
 import errno
+import json
 import os
 import sys
 import time
@@ -8,8 +9,8 @@ import time
 sys.path.append(os.path.abspath('../../pyproxy'))
 import pyproxy.coder.entangled_driver as entangled_driver
 
-with open("./header.pack", "rb") as handle:
-    FRAGMENT_HEADER = entangled_driver.FragmentHeader(handle.read())
+with open("./header.pack", "rb") as FILE_HANDLE:
+    FRAGMENT_HEADER = entangled_driver.FragmentHeader(FILE_HANDLE.read())
 
 #TODO add a fragment header to the bogus script
 
@@ -38,11 +39,11 @@ class BogusSource(object):
             random_blocks.append(block)
         return random_blocks
 
-def encode(source, s, t, p, runs):
+def encode(source, s, t, p, block_size, repetitions):
     entangler = entangled_driver.StepEntangler(source, s, t, p, ec_type="liberasurecode_rs_vand")
-    data = os.urandom(ARGS.block_size)
+    data = os.urandom(block_size)
     results = []
-    for _ in xrange(runs):
+    for _ in xrange(repetitions):
         start = time.clock()
         entangler.encode(data)
         end = time.clock()
@@ -50,19 +51,19 @@ def encode(source, s, t, p, runs):
         results.append(elapsed)
     return results
 
-def decode(source, s, t, p, runs):
+def decode(source, s, t, p, block_size, repetitions):
     entangler = entangled_driver.StepEntangler(source, s, t, p, ec_type="liberasurecode_rs_vand")
-    data = os.urandom(ARGS.block_size)
+    data = os.urandom(block_size)
     encoded = entangler.encode(data)
     results = []
-    for _ in xrange(runs):
+    for _ in xrange(repetitions):
         start = time.clock()
         entangler.decode(encoded)
         end = time.clock()
         elapsed = end - start
         results.append(elapsed)
     return results
-    
+
 def mkdir_p(path):
     try:
         os.makedirs(path)
@@ -72,26 +73,35 @@ def mkdir_p(path):
         else:
             raise
 
+def run_once(source_blocks, pointers, parities, block_size, repetitions, run_number):
+    source = BogusSource(block_size)
+    results_directory = os.path.join("results",
+                                     "conf-{:d}-{:d}-{:d}".format(source_blocks, pointers, parities))
+
+    run_results_path = os.path.join(results_directory, str(block_size), str(run_number))
+    mkdir_p(run_results_path)
+    numbers = encode(source, source_blocks, pointers, parities, block_size, repetitions)
+    with open(os.path.join(run_results_path, "encode.txt"), "w") as handle:
+        handle.write("\n".join([str(number) for number in numbers]))
+    numbers = decode(source, source_blocks, pointers, parities, block_size, repetitions)
+    with open(os.path.join(run_results_path, "decode.txt"), "w") as handle:
+        handle.write("\n".join([str(number) for number in numbers]))
+
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(__file__, description="")
-    PARSER.add_argument("-s", "--source", help="Number of source blocks", type=int, required=True)
-    PARSER.add_argument("-t", "--pointers", help="Number of pointer blocks", type=int, required=True)
-    PARSER.add_argument("-p", "--parities", help="Number of parity blocks", type=int, required=True)
-    PARSER.add_argument("-b", "--block-size", help="Size of the block in bytes", type=int, required=True)
-    PARSER.add_argument("-r", "--repetitions", help="Number of times the operation must be performed", type=int, required=True)
+    PARSER.add_argument("configuration_file", help="Number of source blocks", type=str)
     ARGS = PARSER.parse_args()
-    SOURCE = BogusSource(ARGS.block_size)
+    CONFIGURATION_FILE = ARGS.configuration_file
+    with open(CONFIGURATION_FILE, "r") as file_handle:
+        PARAMETERS = json.load(file_handle)
 
-    RUNS = 5
-    RESULTS_DIRECTORY = os.path.join("results",
-                                     "conf-{:d}-{:d}-{:d}".format(ARGS.source, ARGS.pointers, ARGS.parities))
-    
-    for run in xrange(1, 6, 1):
-        RUN_RESULTS_PATH = os.path.join(RESULTS_DIRECTORY, str(ARGS.block_size), str(run))
-        mkdir_p(RUN_RESULTS_PATH)
-        NUMBERS = encode(SOURCE, ARGS.source, ARGS.pointers, ARGS.parities, ARGS.repetitions)
-        with open(os.path.join(RUN_RESULTS_PATH, "encode.txt"), "w") as handle:
-            handle.write("\n".join([str(number) for number in NUMBERS]))
-        NUMBERS = decode(SOURCE, ARGS.source, ARGS.pointers, ARGS.parities, ARGS.repetitions)
-        with open(os.path.join(RUN_RESULTS_PATH, "decode.txt"), "w") as handle:
-            handle.write("\n".join([str(number) for number in NUMBERS]))
+    RUNS = PARAMETERS["runs"]
+    for run in xrange(1, RUNS + 1, 1):
+        for bs in PARAMETERS["block_sizes"]:
+            for configuration in PARAMETERS["configurations"]:
+                run_once(configuration["s"],
+                         configuration["t"],
+                         configuration["p"],
+                         bs,
+                         PARAMETERS["repetitions"],
+                         run)
