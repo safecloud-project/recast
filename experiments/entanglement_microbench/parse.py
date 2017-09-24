@@ -108,10 +108,12 @@ def format(parsing_results, operation):
     configs = sorted(parsing_results[parsing_results.keys()[0]].keys())
     lines.append(",".join(["payload size"] + configs))
     for payload_size in parsing_results:
-        line = [str(payload_size)]
+        line = [str(int(payload_size) / (2**10))]
         for config in configs:
             latency = parsing_results[payload_size][config][operation]["average"]
-            line.append(str(latency))
+            throughput = float(payload_size) / latency
+            throughput_in_kb = throughput / (2**20)
+            line.append(str(throughput_in_kb))
         lines.append(",".join(line))
     return "\n".join(lines)
         
