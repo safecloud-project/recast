@@ -229,7 +229,7 @@ if __name__ == "__main__":
                               options=GRPC_OPTIONS)
     playcloud_pb2.add_ProxyServicer_to_server(pyproxy.proxy_service.ProxyService(), GRPC_SERVER)
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
-    GRPC_SERVER.start()
+    #GRPC_SERVER.start()
     KAZOO = init_zookeeper_client()
     run(server="paste", app=APP, host="0.0.0.0", port=8000)
     KAZOO.stop()
