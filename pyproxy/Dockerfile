@@ -35,9 +35,6 @@ RUN python setup.py install
 # Install libgfshare
 RUN apt-get update --quiet && apt-get install --assume-yes --quiet libgfshare-dev
 
-# Expose port to other containers
-EXPOSE 1234
-
 # Install pip dependencies
 WORKDIR /usr/local/src/app/
 COPY requirements.txt /usr/local/src/app

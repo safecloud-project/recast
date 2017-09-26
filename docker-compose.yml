@@ -2,10 +2,22 @@
 ---
 version: "3"
 services:
+    load_balancer:
+      image: dockercloud/haproxy:1.6.7
+      restart: always
+      ports:
+        - 3000:80
+      depends_on:
+        - proxy
+      links:
+        - proxy
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      deploy:
+        mode: global
+
     proxy:
         build: ./pyproxy
-        ports:
-          - "3000:8000"
         env_file:
           - ./erasure.env
         deploy:
