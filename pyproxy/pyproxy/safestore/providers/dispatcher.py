@@ -6,6 +6,7 @@ import logging
 import random
 import re
 import threading
+import time
 from multiprocessing import Manager, Process
 
 from enum import Enum
@@ -239,6 +240,7 @@ class Dispatcher(object):
         Returns:
             A metadata object describing how the blocks have been stored
         """
+        start = time.clock()
         metadata = Metadata(path, original_size=long(encoded_file.original_size))
         provider_keys = self.providers.keys()
         blocks = [strip.data for strip in encoded_file.strips]
@@ -277,6 +279,9 @@ class Dispatcher(object):
                 raise RuntimeError(error_message)
         for index, metablock in metablocks.items():
             metadata.blocks.append(metablock)
+        end = time.clock()
+        elapsed = end - start
+        logger.info("Storing blocks for {:s} was done in {:f} s".format(path, elapsed))
         return metadata
 
     def __get_block(self, metablock, queue):
@@ -427,6 +432,7 @@ class Dispatcher(object):
             A list of tuples where the first element is a metablock and the
             second one is the block data itself
         """
+        start = time.clock()
         random_metablocks = self.files.select_random_blocks(blocks_desired)
         block_queue = self.__get_blocks(random_metablocks)
         random_blocks = []
@@ -435,4 +441,7 @@ class Dispatcher(object):
             if  isinstance(block, NoReplicaException):
                 continue
             random_blocks.append((key, block))
+        end = time.clock()
+        elapsed = end - start
+        logger.info("Took {:f} seconds to fetch {:f} random blocks".format(elapsed, len(random_blocks)))
         return random_blocks

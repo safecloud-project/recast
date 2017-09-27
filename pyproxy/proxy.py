@@ -109,6 +109,7 @@ def store(key=None, data=None):
 
     key -- Key under which the data should be stored (default None)
     """
+    start = time.clock()
     if key is None:
         key = str(uuid.uuid4())
     key = unicode(key, errors="ignore").encode("utf-8")
@@ -130,7 +131,9 @@ def store(key=None, data=None):
         HEADER_DICTIONARY[key] = [creation_date, formatted_entangling_blocks, keys_and_providers]
 
         FILES.put(key, metadata)
-
+        end = time.clock()
+        elapsed = end - start
+        LOGGER.info("Store request for {:s} took {:f} seconds".format(key, elapsed))
         return key
 
 
@@ -139,13 +142,18 @@ def put(key):
     """
     Handles PUT requests to store data into playcloud
     """
+    start = time.clock()
     LOGGER.debug("Received put request for key {:s}".format(key))
     # Check if the PUT request actually carries any data in its body to avoid
     # storing empty blocks under a key.
     data = request.body.getvalue()
     if not data:
         return abort(400, "The request body must contain data to store")
-    return store(key=key, data=request.body.getvalue())
+    key = store(key=key, data=request.body.getvalue())
+    end = time.clock()
+    elapsed = end - start
+    LOGGER.info("put request for {:s} took {:f} seconds".format(key, elapsed))
+    return key
 
 
 @APP.route("/", method="PUT")
@@ -155,10 +163,15 @@ def put_keyless():
     """
     # Check if the PUT request actually carries any data in its body to avoid
     # storing empty blocks under a key.
+    start = time.clock()
     data = request.body.getvalue()
     if not data:
-        return abort(400, "The request body must contain data to store")
-    return store(key=None, data=request.body.getvalue())
+        return abort(400, "The request body must contain data to store")    
+    key = store(key=None, data=request.body.getvalue())
+    end = time.clock()
+    elapsed = end - start
+    LOGGER.info("put_keyless request took {:f} seconds".format(elapsed))
+    return key
 
 @APP.route("/", method="GET")
 def list_files():
