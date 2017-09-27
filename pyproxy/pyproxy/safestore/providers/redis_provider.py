@@ -5,7 +5,7 @@ from a Redis database
 import os
 import sys
 
-from redis import BlockingConnectionPool, StrictRedis
+from redis import ConnectionPool, StrictRedis
 
 class RedisProvider(object):
     """
@@ -30,11 +30,11 @@ class RedisProvider(object):
         if not host in RedisProvider.CONNECTION_POOLS:
             RedisProvider.CONNECTION_POOLS[host] = {}
         if not port in RedisProvider.CONNECTION_POOLS[host]:
-            RedisProvider.CONNECTION_POOLS[host][port] = BlockingConnectionPool(host=host,
-                                                                                port=port,
-                                                                                db=0,
-                                                                                max_connections=128,
-                                                                                timeout=5)
+            RedisProvider.CONNECTION_POOLS[host][port] = ConnectionPool(host=host,
+                                                                        port=port,
+                                                                        db=0,
+                                                                        max_connections=128,
+                                                                        socket_keepalive=True)
         return RedisProvider.CONNECTION_POOLS[host][port]
 
     def __init__(self, configuration=None):
