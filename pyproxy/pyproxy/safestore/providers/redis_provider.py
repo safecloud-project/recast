@@ -2,10 +2,14 @@
 A storage provider inspired by the safestore providers to store and get data
 from a Redis database
 """
+import logging
 import os
 import sys
+import time
 
 from redis import ConnectionPool, StrictRedis
+
+LOGGER = logging.getLogger("dispatcher")
 
 class RedisProvider(object):
     """
@@ -42,6 +46,7 @@ class RedisProvider(object):
         host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "redis"))
         port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
         pool = RedisProvider.get_pool(host, port)
+        self.host = host
         self.redis = StrictRedis(connection_pool=pool, encoding=None, socket_keepalive=True)
 
     def get(self, path):
@@ -52,7 +57,12 @@ class RedisProvider(object):
         Returns:
             The data if it was found, None otherwise
         """
-        return self.redis.get(path)
+        start = time.clock()
+        value = self.redis.get(path)
+        end = time.clock()
+        elapsed = end - start
+        LOGGER.info("Provider {:s} fetched {:s} in {:f} seconds".format(self.host, path, elapsed))
+        return value
 
     def put(self, data, path):
         """
@@ -65,7 +75,12 @@ class RedisProvider(object):
         Raises:
             ConnectionError: If the client cannot connect to the server
         """
-        return self.redis.set(path, data)
+        start = time.clock()
+        value = self.redis.set(path, data)
+        end = time.clock()
+        elapsed = end - start
+        LOGGER.info("Provider {:s} stored {:s} in {:f} seconds".format(self.host, path, elapsed))
+        return value
 
     def delete(self, path):
         """

@@ -2,18 +2,22 @@
 Metadata management for the files and blocks stored in playcloud
 """
 import datetime
+import logging
 import json
 import random
+import time
 
 import enum
 import numpy
 import redis
 
+LOGGER = logging.getLogger("metadata")
+
 def compute_block_key(path, index, length=2):
     """
     Computes a block key from a file path and an index.
     Args:
-        path(str): Path to the file related to the block
+        path(str): Path to the file related to the blocloggerk
         index(int): index of the block
         length(int, optional): Length of the index part of the key for zero filling (Defaults to 2)
     Returns:
@@ -317,6 +321,7 @@ class Files(object):
         Returns:
             str: The key under which the object was stored
         """
+        start = time.clock()
         if not path:
             raise ValueError("path argument must be a valid non-empty string")
         if not metadata:
@@ -358,6 +363,9 @@ class Files(object):
         timestamp = (metadata.creation_date - datetime.datetime(1970, 1, 1)).total_seconds()
         pipeline.zadd("file_index", timestamp, path)
         pipeline.execute()
+        end = time.clock()
+        elapsed = end - start
+        LOGGER.info("Storing metadata for {:s} took {:f} seconds".format(path, elapsed))
         return path
 
     @staticmethod
@@ -449,6 +457,7 @@ class Files(object):
         Returns:
             list(MetaBlock): randomly selected blocks
         """
+        start = time.clock()
         blocks_desired = requested
         blocks_available = self.redis.zcard("block_index")
 
@@ -462,7 +471,11 @@ class Files(object):
         for index in selected_indexes:
             selected_key = self.redis.zrange("block_index", index, index + 1)[0]
             selected_keys.append(selected_key)
-        return self.get_blocks(selected_keys)
+        random_blocks = self.get_blocks(selected_keys)
+        end = time.clock()
+        elapsed = end - start
+        LOGGER.info("Took {:f} seconds to select random blocks".format(elapsed))
+        return random_blocks
 
     def get_entanglement_graph(self):
         """
