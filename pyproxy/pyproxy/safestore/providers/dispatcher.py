@@ -7,7 +7,7 @@ import random
 import re
 import threading
 import time
-from multiprocessing import Manager, Process
+from multiprocessing import Manager
 
 from enum import Enum
 from redis import ConnectionError
@@ -135,7 +135,7 @@ class BlockPusher(threading.Thread):
                 self.provider.put(data, metablock.key)
                 index = extract_index_from_key(metablock.key)
                 self.queue[index] = metablock
-            except ConnectionError as error:
+            except ConnectionError:
                 index = extract_index_from_key(metablock.key)
                 self.queue[index] = CouldNotPushException(self.provider, metablock.key)
 
@@ -237,6 +237,21 @@ def get_block(providers, metablock, queue):
         return
     queue[key] = NoReplicaException("Could not found any (valid) replica of block {:s}".format(key))
 
+class BlockFetcher(threading.Thread):
+    """
+    Fetches a block from the data nodes going through the provider where the blocks
+    are available
+    """
+    def __init__(self, providers, metablock, queue):
+        super(BlockFetcher, self).__init__()
+        self.providers = providers
+        self.metablock = metablock
+        self.queue = queue
+
+    def run(self):
+        get_block(self.providers, self.metablock, self.queue)
+
+
 class Dispatcher(object):
     """
     A class that decices where to store data blocks and keeps track of how to
@@ -332,14 +347,14 @@ class Dispatcher(object):
         """
         manager = Manager()
         blocks = manager.dict()
-        processes = []
+        fetchers = []
         for metablock in metablocks:
             possible_providers = {key: self.providers[key] for key in metablock.providers}
-            process = Process(target=get_block, args=(possible_providers, metablock, blocks,))
-            process.start()
-            processes.append(process)
-        for process in processes:
-            process.join()
+            fetcher = BlockFetcher(possible_providers, metablock, blocks)
+            fetcher.start()
+            fetchers.append(fetcher)
+        for fetcher in fetchers:
+            fetcher.join()
         return blocks
 
     def get_block(self, path, index, reconstruct_if_missing=True):
