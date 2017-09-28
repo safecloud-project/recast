@@ -199,6 +199,44 @@ def place(elements, providers, replication_factor):
             index = (index + 1) % number_of_providers
     return placement
 
+def get_block(providers, metablock, queue):
+    """
+    Fetches a single block, randomly choosing a replica to return.
+    If the replica cannot be found, it moves on to the next one and so on until a replica is found and added to the queue or no replica can be found and a NoReplicaException is added to the queue.
+    Args:
+        provider(dict(str, Provider)): List of providers that host a copy of the block
+        metablock(MetaBlock): The metablock describing the block to fetch
+        queue(dict(str, bytes)): The dictionary where the data should be pushed under the block's key
+    """
+    #TODO Push the errors (conenction, integrity, not found, ...) into a proper
+    # to apply the required fix
+    key = metablock.key
+    replica_providers = metablock.providers[:]
+    random.shuffle(replica_providers)
+    for provider_key in replica_providers:
+        provider = providers[provider_key]
+        logger.debug("About to fetch block {:s} from {:s}".format(key, provider_key))
+        try:
+            data = provider.get(key)
+        except ConnectionError as exception:
+            message = "Received a connection error from provider {:s} trying to get block {:s}".format(provider_key, key)
+            logger.error(exception)
+            continue
+        if data is None:
+            message = "Replica of block {:s} cannot be found in {:s}".format(key, provider_key)
+            logger.error(message)
+            continue
+        logger.debug("Checking block {:s}'s integrity".format(key))
+        computed_checksum = hashlib.sha256(data).digest()
+        if metablock.checksum != computed_checksum:
+            message = "Block {:s} does not match its checksum".format(key)
+            logger.error(message)
+            continue
+        logger.debug("Storing block {:s} in synchronization queue".format(key))
+        queue[key] = data
+        return
+    queue[key] = NoReplicaException("Could not found any (valid) replica of block {:s}".format(key))
+
 class Dispatcher(object):
     """
     A class that decices where to store data blocks and keeps track of how to
@@ -284,43 +322,6 @@ class Dispatcher(object):
         logger.info("Storing blocks for {:s} was done in {:f} s".format(path, elapsed))
         return metadata
 
-    def __get_block(self, metablock, queue):
-        """
-        Fetches a single block, randomly choosing a replica to return.
-        If the replica cannot be found, it moves on to the next one and so on until a replica is found and added to the queue or no replica can be found and a NoReplicaException is added to the queue.
-        Args:
-            metablock(MetaBlock): The metablock describing the block to fetch
-            queue(dict(str, bytes)): The dictionary where the data should be pushed under the block's key
-        """
-        #TODO Push the errors (conenction, integrity, not found, ...) into a proper
-        # to apply the required fix
-        key = metablock.key
-        replica_providers = metablock.providers[:]
-        random.shuffle(replica_providers)
-        for provider_key in replica_providers:
-            provider = self.providers[provider_key]
-            logger.debug("About to fetch block {:s} from {:s}".format(key, provider_key))
-            try:
-                data = provider.get(key)
-            except ConnectionError as exception:
-                message = "Received a connection error from provider {:s} trying to get block {:s}".format(provider_key, key)
-                logger.error(exception)
-                continue
-            if data is None:
-                message = "Replica of block {:s} cannot be found in {:s}".format(key, provider_key)
-                logger.error(message)
-                continue
-            logger.debug("Checking block {:s}'s integrity".format(key))
-            computed_checksum = hashlib.sha256(data).digest()
-            if metablock.checksum != computed_checksum:
-                message = "Block {:s} does not match its checksum".format(key)
-                logger.error(message)
-                continue
-            logger.debug("Storing block {:s} in synchronization queue".format(key))
-            queue[key] = data
-            return
-        queue[key] = NoReplicaException("Could not found any (valid) replica of block {:s}".format(key))
-
     def __get_blocks(self, metablocks):
         """
         Args:
@@ -333,7 +334,8 @@ class Dispatcher(object):
         blocks = manager.dict()
         processes = []
         for metablock in metablocks:
-            process = Process(target=self.__get_block, args=(metablock, blocks,))
+            possible_providers = {key: self.providers[key] for key in metablock.providers}
+            process = Process(target=get_block, args=(possible_providers, metablock, blocks,))
             process.start()
             processes.append(process)
         for process in processes:
@@ -432,9 +434,13 @@ class Dispatcher(object):
             A list of tuples where the first element is a metablock and the
             second one is the block data itself
         """
+        full_start = time.clock()
         start = time.clock()
         random_metablocks = self.files.select_random_blocks(blocks_desired)
         block_queue = self.__get_blocks(random_metablocks)
+        end = time.clock()
+        logger.info("Took {:f} seconds to fetch {:d} random blocks".format(end - start, len(block_queue)))
+        start = time.clock()
         random_blocks = []
         for key in block_queue.keys():
             block = block_queue.get(key)
@@ -442,6 +448,6 @@ class Dispatcher(object):
                 continue
             random_blocks.append((key, block))
         end = time.clock()
-        elapsed = end - start
-        logger.info("Took {:f} seconds to fetch {:f} random blocks".format(elapsed, len(random_blocks)))
+        logger.info("Took {:f} seconds to filter and sort {:d} random blocks".format(end - start, len(random_blocks)))
+        logger.info("Took {:f} seconds to fetch and order {:d} random blocks".format(end - full_start, len(random_blocks)))
         return random_blocks
