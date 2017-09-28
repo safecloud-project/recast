@@ -250,5 +250,5 @@ if __name__ == "__main__":
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     #GRPC_SERVER.start()
     KAZOO = init_zookeeper_client()
-    run(server="paste", app=APP, host="0.0.0.0", port=8000)
+    run(server="bjoern", app=APP, host="0.0.0.0", port=8000)
     KAZOO.stop()

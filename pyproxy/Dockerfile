@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get dist-upgrade --assume-yes --quiet && \
     apt-get autoremove   --assume-yes --quiet && \
     apt-get autoclean    --assume-yes --quiet && \
-    apt-get install      --assume-yes --quiet python-all-dev python-hiredis python-numpy python-pip && \
+    apt-get install      --assume-yes --quiet libev-dev python-all-dev python-hiredis python-numpy python-pip && \
     apt-get install --assume-yes --quiet autoconf automake build-essential cython gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
     ldconfig
 
