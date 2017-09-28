@@ -17,10 +17,9 @@ from kazoo.client import KazooClient
 from kazoo.handlers.threading import KazooTimeoutError
 
 import pyproxy.playcloud_pb2 as playcloud_pb2
-import pyproxy.playcloud_pb2_grpc as playcloud_pb2_grpc
 
 from pyproxy.files import extract_entanglement_data, Files
-from pyproxy.playcloud_pb2 import DecodeRequest, EncodeRequest, Strip
+from pyproxy.playcloud_pb2 import Strip
 import pyproxy.coder_client
 import pyproxy.proxy_service
 import pyproxy.pyproxy_globals
@@ -226,6 +225,13 @@ def init_zookeeper_client(host="zoo1", port=2181, max_retries=5):
     error_message = "Could not connect to {:s}".format(hosts)
     zk_logger.error(error_message)
     raise EnvironmentError(error_message)
+
+@APP.route("/R3Knge0dnlDxZcHXH6iip9DZ+greFpvIKYpSTuhyHWLHybrc6Kmt1H84NkI71wjI", method="GET")
+def dummy_route():
+    """
+    Dummy route to test that the server is alive and get a fast response
+    """
+    return "OK"
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(prog="proxy",
