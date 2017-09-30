@@ -381,6 +381,27 @@ class StepEntangler(object):
         pos = strip.find(EntanglementDriver.HEADER_DELIMITER, first_pos) +\
               len(EntanglementDriver.HEADER_DELIMITER)
         return strip[pos:]
+    @staticmethod
+    def compute_fragment_size(document_size, fragments):
+        """
+        Computes the fragment size that will be used to process a document of size
+        `document_size`.
+        Args:
+            document_size(int): Document size in bytes
+            fragments(int): Number of fragments
+        Returns:
+            int: The required fragment size in bytes
+        Raises:
+            ValueError: if the document size argument is not an integer or lower than 0
+        """
+        if not isinstance(document_size, int) or document_size < 0:
+            raise ValueError("document_size argument must be an integer greater or equal to 0")
+        if not isinstance(fragments, int) or fragments <= 0:
+            raise ValueError("fragments argument must be an integer greater than 0")
+        fragment_size = int(math.ceil(document_size / float(fragments)))
+        if (fragment_size % 2) == 1:
+            fragment_size += 1
+        return fragment_size
 
     def encode(self, data):
         """
@@ -396,9 +417,7 @@ class StepEntangler(object):
             pointer_blocks = self.source.get_random_blocks(self.t)
         block_header = serialize_entanglement_header(pointer_blocks)
         size = len(data)
-        fragment_size = int(math.ceil(size / float(self.s)))
-        if (fragment_size % 2) == 1:
-            fragment_size += 1
+        fragment_size = StepEntangler.compute_fragment_size(size, self.s)
         padded_size = fragment_size * self.s
         padded_data = pad(data, padded_size)
         pointer_blocks = [pad(self.__get_data_from_strip(block.data)[80:], fragment_size) for block in pointer_blocks]
