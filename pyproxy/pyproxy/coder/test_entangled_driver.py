@@ -286,3 +286,24 @@ def test_fetch_and_prep_pointer_blocks_returns_None_for_blocks_that_cannot_fetch
     assert isinstance(prepped_pointers, list)
     assert len(prepped_pointers) == 1
     assert prepped_pointers[0] is None
+
+def test_step_entangler_compute_fragment_size_raises_ValueError_if_document_size_is_negative():
+    with pytest.raises(ValueError) as excinfo:
+        StepEntangler.compute_fragment_size(-1, 1)
+    assert str(excinfo.value) == "document_size argument must be an integer greater or equal to 0"
+
+def test_step_entangler_compute_fragment_size_raises_ValueError_if_fragments_is_negative():
+    with pytest.raises(ValueError) as excinfo:
+        StepEntangler.compute_fragment_size(1, -1)
+    assert str(excinfo.value) == "fragments argument must be an integer greater than 0"
+
+def test_step_entangler_compute_fragment_size_raises_ValueError_if_fragments_is_equal_to_0():
+    with pytest.raises(ValueError) as excinfo:
+        StepEntangler.compute_fragment_size(1, 0)
+    assert str(excinfo.value) == "fragments argument must be an integer greater than 0"
+
+def test_step_entangler_compute_fragment_size():
+    assert StepEntangler.compute_fragment_size(100, 1) == 100
+    assert StepEntangler.compute_fragment_size(101, 1) == 102
+    assert StepEntangler.compute_fragment_size(100, 2) == 50
+    assert StepEntangler.compute_fragment_size(100, 3) == 34
