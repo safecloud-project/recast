@@ -18,7 +18,7 @@ from kazoo.handlers.threading import KazooTimeoutError
 
 import pyproxy.playcloud_pb2 as playcloud_pb2
 
-from pyproxy.files import extract_entanglement_data, Files
+from pyproxy.metadata import extract_entanglement_data, Files
 from pyproxy.playcloud_pb2 import Strip
 import pyproxy.coder_client
 import pyproxy.proxy_service

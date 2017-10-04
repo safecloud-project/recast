@@ -3,7 +3,7 @@ Unit tests for the files module
 """
 import pytest
 
-from pyproxy.files import BlockType, Files, Metadata
+from pyproxy.metadata import BlockType, Files, Metadata
 
 ################################################################################
 # Testing helper classes and functions

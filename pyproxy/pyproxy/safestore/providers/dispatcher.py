@@ -13,7 +13,7 @@ from enum import Enum
 from redis import ConnectionError
 
 import pyproxy.coder_client
-from pyproxy.files import BlockType, compute_block_key, Files, MetaBlock, Metadata
+from pyproxy.metadata import BlockType, compute_block_key, Files, MetaBlock, Metadata
 from pyproxy.safestore.providers.dbox import DBox
 from pyproxy.safestore.providers.disk import Disk
 from pyproxy.safestore.providers.gdrive import GDrive

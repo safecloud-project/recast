@@ -11,7 +11,7 @@ import os
 import time
 
 from pyproxy.coding_utils import reconstruct_as_pointer, reconstruct_with_RS
-from pyproxy.files import compute_block_key, convert_binary_to_hex_digest, Files
+from pyproxy.metadata import compute_block_key, convert_binary_to_hex_digest, Files
 from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_index_from_key, extract_path_from_key
 
 PATH_TO_DISPATCHER_CONFIGURATION = os.path.join(os.path.dirname(__file__),

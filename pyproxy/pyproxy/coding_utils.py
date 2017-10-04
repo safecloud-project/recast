@@ -7,7 +7,7 @@ import math
 import os
 import struct
 
-from pyproxy.files import compute_block_key, Files
+from pyproxy.metadata import compute_block_key, Files
 from pyproxy.coder_client import CoderClient
 
 HEADER_DELIMITER = chr(29)
