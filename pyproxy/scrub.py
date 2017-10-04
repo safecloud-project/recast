@@ -12,7 +12,7 @@ import time
 
 from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_path_from_key
 from proxy import init_zookeeper_client
-from pyproxy.files import Files, MetaBlock
+from pyproxy.metadata import Files, MetaBlock
 
 __PROGRAM_DESCRIPTION = ("A script that scans the database looking for ",
                          "blocks that have passed a given threshold in ",

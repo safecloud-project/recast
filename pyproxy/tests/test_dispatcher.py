@@ -4,7 +4,7 @@ import os
 import mock
 import pytest
 
-from pyproxy.files import Metadata
+from pyproxy.metadata import Metadata
 from pyproxy.playcloud_pb2 import File
 from pyproxy.safestore.providers.dispatcher import place, Dispatcher
 from pyproxy.safestore.providers.dispatcher import ProviderFactory
