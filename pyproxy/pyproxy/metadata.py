@@ -220,6 +220,7 @@ class Files(object):
     """
     FILE_PREFIX = "files:"
     BLOCK_PREFIX = "blocks:"
+    READ_BUFFER_SIZE = 100
 
     def __init__(self, host="metadata", port=6379, pointer_selector=normal_selection):
         self.redis = redis.StrictRedis(host=host, port=port)
@@ -520,3 +521,27 @@ class Files(object):
             raise ValueError("pointers argument must be a valid integer greater or equal to 0")
         metablock = self.get_block(block_key)
         return len(metablock.entangled_with) >= pointers
+
+    def get_blocks_from_provider(self, provider):
+        """
+        Returns the list of blocks located on a given provider
+        Args:
+            provider(str): Name of the provider
+        Returns:
+            list(MetaBlock): The list of blocks located on the provider
+        """
+        if not isinstance(provider, str) or not provider:
+            raise ValueError("provider argument must be a non empty string")
+        block_names = self.list_blocks()
+        if not block_names:
+            return []
+        number_of_blocks = len(block_names)
+        step = min(number_of_blocks, Files.READ_BUFFER_SIZE)
+        blocks_from_provider = []
+        for index in xrange(0, number_of_blocks, step):
+            current_range = block_names[index:index + step]
+            blocks = self.get_blocks(current_range)
+            for block in blocks:
+                if provider in block.providers:
+                    blocks_from_provider.append(block)
+        return blocks_from_provider

@@ -3,7 +3,7 @@ Unit tests for the files module
 """
 import pytest
 
-from pyproxy.metadata import BlockType, Files, Metadata
+from pyproxy.metadata import BlockType, Files, MetaBlock, Metadata
 
 ################################################################################
 # Testing helper classes and functions
@@ -134,3 +134,48 @@ def test_files_list_blocks(monkeypatch):
     assert type(blocks) is list
     assert len(blocks) == 3
     assert blocks == ["block1", "block2", "block3"]
+
+def test_files_get_provider_with_None_as_provider():
+    files = Files()
+    with pytest.raises(ValueError) as excinfo:
+        files.get_blocks_from_provider(None)
+    assert excinfo.match("provider argument must be a non empty string")
+
+def test_files_get_provider_with_empty_string_as_provider():
+    files = Files()
+    with pytest.raises(ValueError) as excinfo:
+        files.get_blocks_from_provider("")
+    assert excinfo.match("provider argument must be a non empty string")
+
+def test_files_get_provider_returns_empty_list_if_no_blocks(monkeypatch):
+    files = Files()
+    def return_empty_list():
+        return []
+    monkeypatch.setattr(files, "list_blocks", return_empty_list)
+    result = files.get_blocks_from_provider("NonExistingProvider")
+    assert isinstance(result, list)
+    assert len(result) == 0
+
+def test_files_get_provider_returns_empty_list_if_no_match(monkeypatch):
+    files = Files()
+    def return_block_names():
+        return ["doc-00"]
+    monkeypatch.setattr(files, "list_blocks", return_block_names)
+    def return_fake_blocks(block_list):
+        return [MetaBlock(key, providers=["FakeProvider"]) for key in block_list]
+    monkeypatch.setattr(files, "get_blocks", return_fake_blocks)
+    result = files.get_blocks_from_provider("NonExistingProvider")
+    assert isinstance(result, list)
+    assert len(result) == 0
+
+def test_files_get_provider(monkeypatch):
+    files = Files()
+    def return_block_names():
+        return ["doc-00"]
+    monkeypatch.setattr(files, "list_blocks", return_block_names)
+    def return_fake_blocks(block_list):
+        return [MetaBlock(key, providers=["FakeProvider"]) for key in block_list]
+    monkeypatch.setattr(files, "get_blocks", return_fake_blocks)
+    result = files.get_blocks_from_provider("FakeProvider")
+    assert isinstance(result, list)
+    assert len(result) == 1
