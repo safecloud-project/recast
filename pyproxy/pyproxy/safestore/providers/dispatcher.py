@@ -76,6 +76,8 @@ class ProviderFactory(object):
             return initializer(configuration)
         if provider_type == Providers.disk.name:
             return initializer(folder=configuration.get("folder", "/data"))
+        if provider_type == Providers.s3.name:
+            return  initializer(**configuration)
         return initializer()
 
 

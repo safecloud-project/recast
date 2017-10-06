@@ -12,16 +12,21 @@ class S3Provider(object):
     """
     A playcloud backend that talks with an S3-compatible backend
     """
-    def __init__(self):
+    def __init__(self,
+                 bucket="playcloud",
+                 endpoint_url="http://durable:9000",
+                 aws_access_key_id="playcloud",
+                 aws_secret_access_key="playcloud",
+                 type="s3"):
         self.client = boto3.client("s3",
-                                   endpoint_url="http://durable:9000",
-                                   aws_access_key_id="playcloud",
-                                   aws_secret_access_key="playcloud")
+                                   endpoint_url=endpoint_url,
+                                   aws_access_key_id=aws_access_key_id,
+                                   aws_secret_access_key=aws_secret_access_key)
 
-        self.bucket = "playcloud"
+        self.bucket = bucket
         available_buckets = self.client.list_buckets()["Buckets"]
-        for bucket in available_buckets:
-            if bucket["Name"] == self.bucket:
+        for a_bucket in available_buckets:
+            if a_bucket["Name"] == self.bucket:
                 return
         self.client.create_bucket(Bucket=self.bucket)
 
@@ -42,8 +47,8 @@ class S3Provider(object):
     def put(self, data, path):
         """
         Args:
-            value(bytes): data
-            key(str): Key under which the data should be placed
+            data(bytes): Byte sequence of the file to store
+            path(str): Key under which the data should be placed
         Returns:
             bool: True if the insertion worked
         """
