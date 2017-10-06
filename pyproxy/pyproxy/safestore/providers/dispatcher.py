@@ -19,6 +19,7 @@ from pyproxy.safestore.providers.disk import Disk
 from pyproxy.safestore.providers.gdrive import GDrive
 from pyproxy.safestore.providers.one import ODrive
 from pyproxy.safestore.providers.redis_provider import RedisProvider
+from pyproxy.safestore.providers.s3 import S3Provider
 from pyproxy.playcloud_pb2 import Strip
 
 logger = logging.getLogger("dispatcher")
@@ -33,6 +34,8 @@ class Providers(Enum):
     dropbox = 2
     onedrive = 3
     disk = 4
+    s3 = 5
+
 
 class ProviderFactory(object):
     """
@@ -44,10 +47,11 @@ class ProviderFactory(object):
             Providers.gdrive.name: GDrive,
             Providers.redis.name: RedisProvider,
             Providers.onedrive.name: ODrive,
-            Providers.disk.name: Disk
+            Providers.disk.name: Disk,
+            Providers.s3.name: S3Provider
         }
 
-    def get_provider(self, configuration={}):
+    def get_provider(self, configuration=None):
         """
         Return a storage provider based on the values in a dictionary
         Args:
@@ -59,17 +63,20 @@ class ProviderFactory(object):
             Exception -- If the configuration dictionary does not have a type
                 key or the value under key is not supported by the factory
         """
+        configuration = configuration or None
         provider_type = configuration.get("type", None)
         if provider_type is None:
             raise Exception("configuration parameter must have a type key-value pair")
         initializer = self.initializers.get(provider_type)
         if initializer is None:
-            raise Exception("configuration type is not supported by the factory")
+            message = "configuration type '{:s}' is not supported by the factory".format(provider_type)
+            raise Exception(message)
         if provider_type == Providers.redis.name:
             return initializer(configuration)
         if provider_type == Providers.disk.name:
             return initializer(folder=configuration.get("folder", "/data"))
         return initializer()
+
 
 def extract_path_from_key(key):
     """
@@ -82,6 +89,7 @@ def extract_path_from_key(key):
     path_pattern = re.compile(r"^(.+)\-\d+$")
     return path_pattern.findall(key)[0]
 
+
 def extract_index_from_key(key):
     """
     Extracts the index from a block key.
@@ -93,6 +101,7 @@ def extract_index_from_key(key):
     index_pattern = re.compile(r"\-\d+$")
     return int(index_pattern.findall(key)[0].replace("-", ""))
 
+
 class CouldNotPushException(Exception):
     def __init__(self, provider, key):
         """
@@ -103,6 +112,7 @@ class CouldNotPushException(Exception):
         super(Exception, self).__init__()
         self.provider = provider
         self.key = key
+
 
 class BlockPusher(threading.Thread):
     """
@@ -139,11 +149,13 @@ class BlockPusher(threading.Thread):
                 index = extract_index_from_key(metablock.key)
                 self.queue[index] = CouldNotPushException(self.provider, metablock.key)
 
+
 class ProviderUnreachableException(Exception):
     """
     An exception raised when a provider cannot be connected to
     """
     pass
+
 
 class BlockNotFoundException(Exception):
     """
@@ -151,17 +163,20 @@ class BlockNotFoundException(Exception):
     """
     pass
 
+
 class CorruptedBlockException(Exception):
     """
     An exception raised when a block does not match its related checksum
     """
     pass
 
+
 class NoReplicaException(Exception):
     """
     An exception raised when no valid replica could be found for a given block
     """
     pass
+
 
 def place(elements, providers, replication_factor):
     """
@@ -199,16 +214,17 @@ def place(elements, providers, replication_factor):
             index = (index + 1) % number_of_providers
     return placement
 
+
 def get_block(providers, metablock, queue):
     """
     Fetches a single block, randomly choosing a replica to return.
     If the replica cannot be found, it moves on to the next one and so on until a replica is found and added to the queue or no replica can be found and a NoReplicaException is added to the queue.
     Args:
-        provider(dict(str, Provider)): List of providers that host a copy of the block
+        providers(dict(str, Provider)): List of providers that host a copy of the block
         metablock(MetaBlock): The metablock describing the block to fetch
         queue(dict(str, bytes)): The dictionary where the data should be pushed under the block's key
     """
-    #TODO Push the errors (conenction, integrity, not found, ...) into a proper
+    #TODO Push the errors (connection, integrity, not found, ...) into a proper
     # to apply the required fix
     key = metablock.key
     replica_providers = metablock.providers[:]
@@ -218,9 +234,9 @@ def get_block(providers, metablock, queue):
         logger.debug("About to fetch block {:s} from {:s}".format(key, provider_key))
         try:
             data = provider.get(key)
-        except ConnectionError as exception:
+        except ConnectionError:
             message = "Received a connection error from provider {:s} trying to get block {:s}".format(provider_key, key)
-            logger.error(exception)
+            logger.error(message)
             continue
         if data is None:
             message = "Replica of block {:s} cannot be found in {:s}".format(key, provider_key)
@@ -236,6 +252,7 @@ def get_block(providers, metablock, queue):
         queue[key] = data
         return
     queue[key] = NoReplicaException("Could not found any (valid) replica of block {:s}".format(key))
+
 
 class BlockFetcher(threading.Thread):
     """
@@ -309,7 +326,7 @@ class Dispatcher(object):
                 strip = encoded_file.strips[index]
                 key = compute_block_key(path, index)
                 block_type = BlockType.PARITY
-                if  strip.type == Strip.DATA:
+                if strip.type == Strip.DATA:
                     block_type = BlockType.DATA
                 metablock = metablocks.get(index,
                                            MetaBlock(key,
@@ -436,7 +453,6 @@ class Dispatcher(object):
             missing_indices = list(set(missing_indices))
 
         return [block_queue[key] for key in sorted(block_queue.keys())]
-
 
     def get_random_blocks(self, blocks_desired):
         """
