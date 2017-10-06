@@ -3,29 +3,30 @@ A component that distributes blocks for storage keeps track of their location
 """
 import hashlib
 import logging
+import multiprocessing
 import random
 import re
 import threading
 import time
-from multiprocessing import Manager
 
-from enum import Enum
+import enum
 from redis import ConnectionError
 
 import pyproxy.coder_client
-from pyproxy.metadata import BlockType, compute_block_key, Files, MetaBlock, Metadata
-from pyproxy.safestore.providers.dbox import DBox
-from pyproxy.safestore.providers.disk import Disk
-from pyproxy.safestore.providers.gdrive import GDrive
-from pyproxy.safestore.providers.one import ODrive
-from pyproxy.safestore.providers.redis_provider import RedisProvider
-from pyproxy.safestore.providers.s3 import S3Provider
-from pyproxy.playcloud_pb2 import Strip
+import pyproxy.metadata
+import pyproxy.playcloud_pb2
+import pyproxy.safestore.providers.dbox
+import pyproxy.safestore.providers.disk
+import pyproxy.safestore.providers.gdrive
+import pyproxy.safestore.providers.one
+import pyproxy.safestore.providers.redis_provider
+import pyproxy.safestore.providers.s3
+
 
 logger = logging.getLogger("dispatcher")
 
 
-class Providers(Enum):
+class Providers(enum.Enum):
     """
     Enumeration of all the storage providers supported by the Dispatcher
     """
@@ -43,12 +44,12 @@ class ProviderFactory(object):
     """
     def __init__(self):
         self.initializers = {
-            Providers.dropbox.name: DBox,
-            Providers.gdrive.name: GDrive,
-            Providers.redis.name: RedisProvider,
-            Providers.onedrive.name: ODrive,
-            Providers.disk.name: Disk,
-            Providers.s3.name: S3Provider
+            Providers.dropbox.name: pyproxy.safestore.providers.dbox.DBox,
+            Providers.gdrive.name: pyproxy.safestore.providers.gdrive.GDrive,
+            Providers.redis.name: pyproxy.safestore.providers.redis_provider.RedisProvider,
+            Providers.onedrive.name: pyproxy.safestore.providers.one.ODrive,
+            Providers.disk.name: pyproxy.safestore.providers.disk.Disk,
+            Providers.s3.name: pyproxy.safestore.providers.s3.S3Provider
         }
 
     def get_provider(self, configuration=None):
@@ -289,7 +290,7 @@ class Dispatcher(object):
         factory = ProviderFactory()
         for name, config in providers_configuration.items():
             self.providers[name] = factory.get_provider(config)
-        self.files = Files(host="metadata", port=6379)
+        self.files = pyproxy.metadata.Files(host="metadata", port=6379)
         self.replication_factor = configuration.get("replication_factor", 3)
 
     def list(self):
@@ -311,7 +312,7 @@ class Dispatcher(object):
             A metadata object describing how the blocks have been stored
         """
         start = time.clock()
-        metadata = Metadata(path, original_size=long(encoded_file.original_size))
+        metadata = pyproxy.metadata.Metadata(path, original_size=long(encoded_file.original_size))
         provider_keys = self.providers.keys()
         blocks = [strip.data for strip in encoded_file.strips]
         arrangement = place(len(blocks), provider_keys, self.replication_factor)
@@ -324,16 +325,16 @@ class Dispatcher(object):
             for index in arrangement[provider_key]:
                 index = index % len(encoded_file.strips)
                 strip = encoded_file.strips[index]
-                key = compute_block_key(path, index)
-                block_type = BlockType.PARITY
-                if strip.type == Strip.DATA:
-                    block_type = BlockType.DATA
+                key = pyproxy.metadata.compute_block_key(path, index)
+                block_type = pyproxy.metadata.BlockType.PARITY
+                if strip.type == pyproxy.playcloud_pb2.Strip.DATA:
+                    block_type = pyproxy.metadata.BlockType.DATA
                 metablock = metablocks.get(index,
-                                           MetaBlock(key,
-                                                     providers=[],
-                                                     checksum=strip.checksum,
-                                                     block_type=block_type,
-                                                     size=len(strip.data)))
+                                           pyproxy.metadata.MetaBlock(key,
+                                                                      providers=[],
+                                                                      checksum=strip.checksum,
+                                                                      block_type=block_type,
+                                                                      size=len(strip.data)))
                 metablock.providers.append(provider_key)
                 metablocks[index] = metablock
                 blocks_for_provider[metablock] = strip.data
@@ -362,7 +363,7 @@ class Dispatcher(object):
         Returns:
             dict(metablock, bytes): The blocks fetched from the data stores
         """
-        manager = Manager()
+        manager = multiprocessing.Manager()
         blocks = manager.dict()
         fetchers = []
         for metablock in metablocks:
@@ -422,7 +423,7 @@ class Dispatcher(object):
             metadata = self.files.get(path)
         except KeyError:
             return None
-        metablocks = [b for b in metadata.blocks if b.block_type == BlockType.DATA]
+        metablocks = [b for b in metadata.blocks if b.block_type == pyproxy.metadata.BlockType.DATA]
 
         block_queue = self.__get_blocks(metablocks)
         missing_indices = []
