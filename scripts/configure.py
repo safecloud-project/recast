@@ -48,6 +48,7 @@ BASIC_COMPOSE_CONFIGURATION = {
     }
 }
 
+
 def rename_existing_file(file_path):
     """
     Renames a file with an index number at the end for backup
@@ -61,12 +62,28 @@ def rename_existing_file(file_path):
     os.rename(file_path, new_file_path)
     return new_file_path
 
+
 def read_configuration_file(path):
     """
     Read the configuration file and return a configuration object
     """
     with open(path, "r") as configuration_file:
         return json.load(configuration_file)
+
+
+def create_redis_dispatcher_node(name):
+    """
+    Args:
+        name(str): Name of the redis node
+    Returns:
+        dict: A dictionnary with the redis node configuration
+    """
+    return {
+        "host": name,
+        "port": 6379,
+        "type": "redis"
+    }
+
 
 def create_dispatcher_configuration(configuration):
     """
@@ -76,25 +93,16 @@ def create_dispatcher_configuration(configuration):
     dispatcher_configuration = {"providers":{}}
     if nodes == 1:
         name = "redis"
-        provider = {
-            "type": "redis",
-            "host": name,
-            "port": 6379
-        }
-        dispatcher_configuration["providers"][name] = provider
+        dispatcher_configuration["providers"][name] = create_redis_dispatcher_node(name)
     else:
-        for i in range(1, nodes + 1):
-            name = "redis" + str(i)
-            provider = {
-                "type": "redis",
-                "host": name,
-                "port": 6379
-            }
-            dispatcher_configuration["providers"][name] = provider
+        for index in range(1, nodes + 1):
+            name = "redis{:d}".format(index)
+            dispatcher_configuration["providers"][name] = create_redis_dispatcher_node(name)
     replication_factor = int(configuration["storage"].get("replication_factor", 3))
     dispatcher_configuration["replication_factor"] = replication_factor
     dispatcher_configuration["entanglement"] = configuration.get("entanglement", {})
     return dispatcher_configuration
+
 
 def write_dispatcher_file(dispatcher_configuration):
     """
@@ -108,6 +116,25 @@ def write_dispatcher_file(dispatcher_configuration):
     with open(PATH_TO_DISPATCHER_FILE, "w") as dispatcher_dump_file:
         dispatcher_dump_file.write(json_dispatcher)
 
+
+def create_redis_compose_node(name):
+    """
+    Args:
+        name(str): Name of the redis node
+    Returns:
+        dict: The service configuration for the redis node
+    """
+    return {
+        "container_name": name,
+        "image": "redis:3.2.8",
+        "command": "redis-server --appendonly yes",
+        "deploy": {
+            "placement": {
+                "constraints": ["node.role == worker"]
+            }
+        },
+        "volumes": ["./volumes/{:s}/:/data/".format(name)]
+    }
 
 
 def create_docker_compose_configuration(configuration):
@@ -127,35 +154,16 @@ def create_docker_compose_configuration(configuration):
         del compose_configuration["services"][key]
     if nodes == 1:
         container_name = "redis"
-        compose_configuration["services"][container_name] = {
-            "container_name": container_name,
-            "image": "redis:3.2.8",
-            "command": "redis-server --appendonly yes",
-            "deploy": {
-                "placement": {
-                    "constraints": ["node.role == worker"]
-                }
-            },
-            "volumes": ["./volumes/{:s}/:/data/".format(container_name)]
-        }
+        compose_configuration["services"][container_name] = create_redis_compose_node(container_name)
         create_volume_directory(container_name)
     else:
         for i in range(1, nodes + 1):
             container_name = "redis{:d}".format(i)
-            compose_configuration["services"][container_name] = {
-                "container_name": container_name,
-                "image": "redis:3.2.8",
-                "command": "redis-server --appendonly yes",
-                "deploy": {
-                    "placement": {
-                        "constraints": ["node.role == worker"]
-                    }
-                },
-                "volumes": ["./volumes/{:s}/:/data/".format(container_name)]
-            }
+            compose_configuration["services"][container_name] = create_redis_compose_node(container_name)
             create_volume_directory(container_name)
     create_volume_directory("metadata")
     return compose_configuration
+
 
 def create_docker_compose_configuration_for_production(configuration):
     """
@@ -170,8 +178,9 @@ def create_docker_compose_configuration_for_production(configuration):
         if service.startswith("redis"):
             del dev_compose_configuration["services"][service]["volumes"]
             del dev_compose_configuration["services"][service]["command"]
-            del dev_compose_configuration["services"][service]["container_name"]    
+            del dev_compose_configuration["services"][service]["container_name"]
     return dev_compose_configuration
+
 
 def write_docker_compose_file(compose_configuration, path):
     """
@@ -190,17 +199,20 @@ def write_docker_compose_file(compose_configuration, path):
         compose_dump_file.write(gen_line)
         compose_dump_file.write(yaml_for_compose)
 
+
 def write_docker_compose_file_for_dev(compose_configuration):
     """
     Writes to the given docker-compose content to PATH_TO_DOCKER_COMPOSE_FILE
     """
     write_docker_compose_file(compose_configuration, PATH_TO_DOCKER_COMPOSE_FILE)
 
+
 def write_docker_compose_file_for_production(compose_configuration):
     """
     Writes to the given docker-compose content to PATH_TO_DOCKER_COMPOSE_PRODUCTION_FILE
     """
     write_docker_compose_file(compose_configuration, PATH_TO_DOCKER_COMPOSE_PRODUCTION_FILE)
+
 
 def create_volume_directory(name):
     """
@@ -253,6 +265,7 @@ def set_coder_configuration(path_to_central_configuration):
     with open(PATH_TO_CODER_CONFIGURATION, "w") as handle:
         parser.write(handle)
     return parser
+
 
 if __name__ == "__main__":
     PATH_TO_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "..", "configuration.json")
