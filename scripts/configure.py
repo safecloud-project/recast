@@ -85,19 +85,37 @@ def create_redis_dispatcher_node(name):
     }
 
 
+def create_minio_dispatcher_node(name):
+    """
+    Args:
+        name(str): Name of the minio node
+    Returns:
+        dict: A dictionnary with the minio node configuration
+    """
+    return {
+        "endpoint_url": "http://{:s}:9000/".format(name),
+        "aws_access_key_id": "playcloud",
+        "aws_secret_access_key": "playcloud",
+        "type": "s3",
+    }
+
+
 def create_dispatcher_configuration(configuration):
     """
     Read the configuration file and create a coherent pyproxy's dispatcher.json file
     """
     nodes = int(configuration["storage"]["nodes"])
     dispatcher_configuration = {"providers":{}}
+    make_node = create_redis_dispatcher_node
+    if configuration["storage"]["type"] == "minio":
+        make_node = create_minio_dispatcher_node
     if nodes == 1:
-        name = "redis"
-        dispatcher_configuration["providers"][name] = create_redis_dispatcher_node(name)
+        name = "storage-node"
+        dispatcher_configuration["providers"][name] = make_node(name)
     else:
         for index in range(1, nodes + 1):
-            name = "redis{:d}".format(index)
-            dispatcher_configuration["providers"][name] = create_redis_dispatcher_node(name)
+            name = "storage-node-{:d}".format(index)
+            dispatcher_configuration["providers"][name] = make_node(name)
     replication_factor = int(configuration["storage"].get("replication_factor", 3))
     dispatcher_configuration["replication_factor"] = replication_factor
     dispatcher_configuration["entanglement"] = configuration.get("entanglement", {})
@@ -136,6 +154,24 @@ def create_redis_compose_node(name):
         "volumes": ["./volumes/{:s}/:/data/".format(name)]
     }
 
+def create_minio_compose_node(name):
+    """
+    Args:
+        name(str): Name of the minio node
+    Returns:
+        dict: The service configuration for the redis node
+    """
+    return {
+        "container_name": name,
+        "image": "minio/minio:latest",
+        "command": "server /data",
+        "environment": [
+            "MINIO_ACCESS_KEY=playcloud",
+            "MINIO_SECRET_KEY=playcloud"
+        ],
+        "volumes": ["./volumes/{:s}:/data/".format(name)]
+    }
+
 
 def create_docker_compose_configuration(configuration):
     """
@@ -148,18 +184,21 @@ def create_docker_compose_configuration(configuration):
         with open(PATH_TO_DOCKER_COMPOSE_FILE) as dc_file:
             compose_configuration = ruamel.yaml.round_trip_load(dc_file.read().strip(),
                                                                 preserve_quotes=True)
-
-    redis_keys = [key for key in compose_configuration["services"] if key.startswith("redis")]
-    for key in redis_keys:
+    services_to_keep = ["coder", "load_balancer", "metadata", "proxy", "zoo1"]
+    node_keys = [key for key in compose_configuration["services"] if key not in services_to_keep]
+    make_node = create_redis_compose_node
+    if configuration["storage"]["type"] == "minio":
+        make_node = create_minio_compose_node
+    for key in node_keys:
         del compose_configuration["services"][key]
     if nodes == 1:
-        container_name = "redis"
-        compose_configuration["services"][container_name] = create_redis_compose_node(container_name)
+        container_name = "storage-node"
+        compose_configuration["services"][container_name] = make_node(container_name)
         create_volume_directory(container_name)
     else:
         for i in range(1, nodes + 1):
-            container_name = "redis{:d}".format(i)
-            compose_configuration["services"][container_name] = create_redis_compose_node(container_name)
+            container_name = "storage-node-{:d}".format(i)
+            compose_configuration["services"][container_name] = make_node(container_name)
             create_volume_directory(container_name)
     create_volume_directory("metadata")
     return compose_configuration

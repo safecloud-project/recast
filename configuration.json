@@ -1,6 +1,7 @@
 {
   "storage": {
-    "nodes": 1,
+    "nodes": 16,
+    "type": "minio",
     "replication_factor": 3
   },
   "entanglement": {
