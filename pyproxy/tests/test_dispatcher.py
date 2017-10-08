@@ -4,7 +4,7 @@ import os
 import mock
 import pytest
 
-from pyproxy.metadata import Metadata
+from pyproxy.metadata import MetaDocument
 from pyproxy.playcloud_pb2 import File
 from pyproxy.safestore.providers.dispatcher import place, Dispatcher
 from pyproxy.safestore.providers.dispatcher import ProviderFactory
@@ -32,7 +32,7 @@ def test_dispatcher_store_returns_a_Metadata_object():
     encoded_file = File()
     encoded_file.original_size = 0
     meta = dispatcher.put(DEFAULT_PATH, encoded_file)
-    assert isinstance(meta, Metadata)
+    assert isinstance(meta, MetaDocument)
     assert meta.path == DEFAULT_PATH
 
 
@@ -81,10 +81,10 @@ def test_Dispatcher_list_files():
     assert isinstance(result, list)
     assert len(result) == 0
     path = "key"
-    metadata = Metadata(path)
+    metadata = MetaDocument(path)
     with mock.patch("pyproxy.safestore.providers.dispatcher.Files.values", return_value=[metadata]):
         result = dispatcher.list()
     assert isinstance(result, list)
     assert len(result) == 1
-    assert isinstance(result[0], Metadata)
+    assert isinstance(result[0], MetaDocument)
     assert result[0].path == path
