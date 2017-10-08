@@ -161,7 +161,7 @@ def convert_binary_to_hex_digest(binary_digest):
     """
     return "".join(["{:02x}".format(ord(c)) for c in binary_digest])
 
-class Metadata(object):
+class MetaDocument(object):
     """
     A class describing how a file has been stored in the system
     """
@@ -232,7 +232,7 @@ class Files(object):
         Args:
             path(str): The key the Metadata object was stored under
         Returns:
-            Metadata: The Metadata object stored under the key
+            MetaDocument: The Metadata object stored under the key
         Raises:
             ValueError: If path is an empty string
         """
@@ -246,7 +246,7 @@ class Files(object):
         Args:
             paths(list(str)): The key the Metadata object was stored under
         Returns:
-            Metadata: The Metadata object stored under the key
+            MetaDocument: The Metadata object stored under the key
         Raises:
             ValueError: If the paths argument is an empty list or if one of the
                         paths is an empty string
@@ -318,7 +318,7 @@ class Files(object):
         """
         Stores a Metadata object using the given path as the key
         Args:
-            metadata(Metadata): The object to store
+            metadata(MetaDocument): The object to store
         Returns:
             str: The key under which the object was stored
         """
@@ -412,13 +412,13 @@ class Files(object):
         Args:
             record(dict): A dictionary describing the metadata
         Returns:
-            Metadata: The parsed Metadata
+            MetaDocument: The parsed Metadata
         """
         path = record.get("path")
         original_size = int(record.get("original_size"))
         creation_date = datetime.datetime.strptime(record.get("creation_date"),
                                                    "%Y-%m-%d %H:%M:%S.%f")
-        metadata = Metadata(path, original_size=original_size)
+        metadata = MetaDocument(path, original_size=original_size)
         metadata.creation_date = creation_date
         metadata.entangling_blocks = json.loads(record.get("entangling_blocks"))
         return metadata
@@ -443,7 +443,7 @@ class Files(object):
         """
         Returns all files metadata objects
         Returns:
-            list(Metadata): All the metadata object stored in the system
+            list(MetaDocument): All the metadata object stored in the system
         """
         filenames = self.keys()
         if not filenames:

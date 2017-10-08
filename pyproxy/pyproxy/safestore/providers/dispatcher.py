@@ -314,7 +314,7 @@ class Dispatcher(object):
             A metadata object describing how the blocks have been stored
         """
         start = time.clock()
-        metadata = pyproxy.metadata.Metadata(path, original_size=long(encoded_file.original_size))
+        metadata = pyproxy.metadata.MetaDocument(path, original_size=long(encoded_file.original_size))
         provider_keys = self.providers.keys()
         blocks = [strip.data for strip in encoded_file.strips]
         arrangement = place(len(blocks), provider_keys, self.replication_factor)

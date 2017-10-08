@@ -3,7 +3,7 @@ Unit tests for the files module
 """
 import pytest
 
-from pyproxy.metadata import BlockType, Files, MetaBlock, Metadata
+from pyproxy.metadata import BlockType, Files, MetaBlock, MetaDocument
 
 ################################################################################
 # Testing helper classes and functions
@@ -83,13 +83,13 @@ def test_files_put_raises_ValueError_if_metadata_is_None():
 def test_files_put_raises_ValueError_if_path_is_None():
     files = Files()
     with pytest.raises(ValueError) as excinfo:
-        files.put(None, Metadata("path"))
+        files.put(None, MetaDocument("path"))
     assert excinfo.match("path argument must be a valid non-empty string")
 
 def test_files_put_raises_ValueError_if_path_is_empty():
     files = Files()
     with pytest.raises(ValueError) as excinfo:
-        files.put("", Metadata("path"))
+        files.put("", MetaDocument("path"))
     assert excinfo.match("path argument must be a valid non-empty string")
 
 def test_files_has_been_entangled_enough_raises_ValueError_if_block_key_is_None():
