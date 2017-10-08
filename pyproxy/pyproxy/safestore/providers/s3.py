@@ -1,11 +1,7 @@
 """
 An S3 backend for playcloud
 """
-import os
-
 import boto3
-
-#TODO Implement an in-memory io.RawIOBase class that wraps the byte sequence as if it were file on disk
 
 
 class S3Provider(object):
@@ -37,12 +33,8 @@ class S3Provider(object):
         Returns:
             bytes: The data to return
         """
-        temp_filename = "/tmp/{:s}-{:s}".format(self.bucket, path)
-        self.client.download_file(self.bucket, path, temp_filename)
-        with open(temp_filename, "rb") as handle:
-            data = handle.read()
-        os.remove(temp_filename)
-        return data
+        response = self.client.get_object(Bucket=self.bucket, Key=path)
+        return response["Body"].read()
 
     def put(self, data, path):
         """
@@ -52,12 +44,8 @@ class S3Provider(object):
         Returns:
             bool: True if the insertion worked
         """
-        temp_filename = "/tmp/{:s}-{:s}".format(self.bucket, path)
-        with open(temp_filename, "wb") as handle:
-            handle.write(data)
-        self.client.upload_file(temp_filename, self.bucket, path)
-        os.remove(temp_filename)
-        return os.path.isfile(temp_filename)
+        self.client.put_object(Bucket=self.bucket, Key=path, Body=data)
+        return True
 
     def delete(self, path):
         """
