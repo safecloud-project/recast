@@ -6,7 +6,8 @@ import logging
 from pyproxy.playcloud_pb2_grpc import ProxyServicer
 from pyproxy.playcloud_pb2 import BlockReply, Strip
 from pyproxy.pyproxy_globals import get_dispatcher_instance
-from pyproxy.safestore.providers.dispatcher import NoReplicaException
+
+import pyproxy.safestore.providers.dispatcher
 
 class ProxyService(ProxyServicer):
     """
@@ -51,7 +52,7 @@ class ProxyService(ProxyServicer):
                                     index,
                                     reconstruct_if_missing=reconstruct_if_missing)
         reply = Strip()
-        if not isinstance(data, NoReplicaException):
+        if not isinstance(data, pyproxy.safestore.providers.dispatcher.NoReplicaException):
             reply.data = data
         self.logger.debug("End   {:s}".format(call_signature))
         return reply
