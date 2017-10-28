@@ -98,6 +98,13 @@ class RedisProvider(object):
         """
         return self.redis.flushall()
 
+    def list(self):
+        """
+        Returns:
+            list(str): The list of blocks on the storage provider
+        """
+        return self.redis.keys("*")
+
     @staticmethod
     def quota():
         """
