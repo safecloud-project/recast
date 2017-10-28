@@ -18,7 +18,6 @@ class S3Provider(object):
                                    endpoint_url=endpoint_url,
                                    aws_access_key_id=aws_access_key_id,
                                    aws_secret_access_key=aws_secret_access_key)
-
         self.bucket = bucket
         available_buckets = self.client.list_buckets()["Buckets"]
         for a_bucket in available_buckets:
@@ -56,3 +55,13 @@ class S3Provider(object):
         """
         response = self.client.delete_object(Bucket=self.bucket, Key=path)
         return response["DeleteMarker"]
+
+    def list(self):
+        """
+        Lists all objects in the bucket
+        Returns:
+            list(str): The list of objects in the bucket
+        """
+        response = self.client.list_objects(Bucket=self.bucket)
+        # Depending on whether the storage node hosts blocks or not, the field Contents may or may not be present
+        return [entry["Key"] for entry in response.get("Contents", [])]
