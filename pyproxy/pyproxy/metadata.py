@@ -214,6 +214,20 @@ def extract_entanglement_data(block_data):
     formatted_header = json.loads(raw_header)
     return formatted_header
 
+def extract_document_size(block_data):
+    """
+    Args:
+        block_data(str): A data block with an entanglement header
+    Returns:
+        int: The size of the original document
+    """
+    if not block_data or not isinstance(block_data, str):
+        raise ValueError("argument block_data must be a non-empty sequence of bytes")
+    header_delimiter = chr(29)
+    start = block_data.find(header_delimiter) + 1
+    end = block_data.find(header_delimiter, start)
+    return int(block_data[start:end])
+
 class Files(object):
     """
     Represents metadata stored in the cluster
