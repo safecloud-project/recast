@@ -5,6 +5,7 @@ import os
 import hashlib
 import logging
 import logging.config
+import Queue
 
 from pyeclib.ec_iface import ECDriver
 from pyeclib.ec_iface import ECBackendInstanceNotAvailable
@@ -23,7 +24,7 @@ from pyproxy.coder.playcloud_pb2 import ReconstructReply
 from pyproxy.coder.playcloud_pb2 import Strip
 from pyproxy.coder.playcloud_pb2_grpc import EncoderDecoderServicer
 
-from pyproxy.coder.proxy_client import LocalProxyClient
+from pyproxy.coder.proxy_client import CacheFiller, CachingProxyClient, LocalProxyClient, ProxyClient
 
 from pyproxy.coder.safestore.xor_driver import XorDriver
 from pyproxy.coder.safestore.hashed_splitter_driver import HashedSplitterDriver
@@ -43,6 +44,12 @@ log_config = os.getenv("LOG_CONFIG", os.path.join(__LOCAL_DIRECTORY, "logging.co
 logging.config.fileConfig(log_config)
 
 logger = logging.getLogger("pycoder")
+
+########################################################################################################################
+# Cached proxy setup
+POINTER_CACHE = None
+CACHE_FILLER = None
+########################################################################################################################
 
 
 def should_be_deactivated(message):
@@ -234,7 +241,11 @@ class DriverFactory(object):
             else:
                 raise RuntimeError("A value must be defined for the number of parity blocks generated as part of the erasure coding either in pycoder.cfg as a value for the key t under the step section or through the environment variable ENTANGLEMENT_T")
 
-            source = LocalProxyClient()
+            POINTER_CACHE = Queue.Queue(maxsize=128)
+            CACHE_FILLER = CacheFiller(POINTER_CACHE, pointer_blocks)
+            CACHE_FILLER.setDaemon(True)
+            CACHE_FILLER.start()
+            source = CachingProxyClient(POINTER_CACHE)
             driver = StepEntangler(source, source_blocks, pointer_blocks, parity_blocks)
             logger.info("Loaded driver {}".format(driver))
             return driver

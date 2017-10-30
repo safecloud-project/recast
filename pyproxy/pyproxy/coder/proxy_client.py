@@ -1,6 +1,9 @@
 """
 A GRPC client for the proxy service that recovers block from the data stores
 """
+import Queue
+import threading
+
 import grpc
 
 import pyproxy.coder.playcloud_pb2_grpc
@@ -118,3 +121,55 @@ class LocalProxyClient(object):
         if not isinstance(data, pyproxy.safestore.providers.dispatcher.NoReplicaException):
             reply.data = data
         return reply
+
+
+class CacheFiller(threading.Thread):
+    DEFAULT_TIMEOUT = 600
+
+    def __init__(self, queue,blocks):
+        if not queue or not isinstance(queue, Queue.Queue):
+            raise ValueError("queue argument must be an instance of Queue.Queue")
+        if not blocks or not isinstance(blocks, int) or blocks < 0:
+            raise ValueError("blocks argument must be an integer greater than 0")
+        threading.Thread.__init__(self)
+        self.queue = queue
+        self.blocks = blocks
+
+    def run(self):
+        while True:
+            try:
+                self.queue.put(get_random_blocks(self.blocks),
+                               block=True,
+                               timeout=CacheFiller.DEFAULT_TIMEOUT)
+            except Queue.Full:
+                # Ignore the exception
+                pass
+
+
+class CachingProxyClient(LocalProxyClient):
+    """
+    A local proxy clients that reads random blocks from the pointer cache
+    """
+    DEFAULT_TIMEOUT = 10
+
+    def __init__(self, queue):
+        """
+        Args:
+            queue(Queue.Queue): A queue of pointers
+        """
+        if not queue or not isinstance(queue, Queue.Queue):
+            raise ValueError("queue argument must be an instance of Queue.Queue")
+        LocalProxyClient.__init__(self)
+        self.queue = queue
+
+    def get_random_blocks(self, blocks):
+        """
+        Args:
+            blocks(int): Number of blocks to fetch
+        Returns:
+            list(pyproxy.playcloud_pb2.Strip): A list of blocks
+        """
+        try:
+            return self.queue.get(block=True, timeout=CachingProxyClient.DEFAULT_TIMEOUT)
+        except Queue.Empty:
+            return get_random_blocks(blocks)
