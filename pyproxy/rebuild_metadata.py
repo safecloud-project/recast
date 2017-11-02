@@ -4,6 +4,7 @@ A script that rebuilds playcloud metadata in a given redis database
 """
 import argparse
 import hashlib
+import logging
 import json
 import os
 
@@ -80,6 +81,7 @@ def write_metadata(host, port, documents):
         port(int): Port number the metadata server is listening on
         documents(dict(str, metadata.MetaDocument)): MetaDocuments to insert
     """
+    logger = logging.getLogger("REBUILD_METADATA")
     if not host or not isinstance(host, str):
         raise ValueError("argument host must be a non-empty string")
     if not isinstance(port, int) or port < 0 or port > 65535:
@@ -95,33 +97,27 @@ def write_metadata(host, port, documents):
         group.append(doc)
         documents_grouped_by_pointers[number_of_pointers] = group
 
-    print "Formed {:d} groups of documents based on the number of pointers".format(len(documents_grouped_by_pointers))
-    inserted = []
+    logger.info("Formed {:d} groups of documents based on the number of pointers".format(len(documents_grouped_by_pointers)))
     for number_of_pointers in sorted(documents_grouped_by_pointers):
         documents_group = documents_grouped_by_pointers[number_of_pointers]
-        print "Grouped {:d} documents with {:d} pointers".format(len(documents_group), number_of_pointers)
+        logger.info("Grouped {:d} documents with {:d} pointers".format(len(documents_group), number_of_pointers))
         while documents_group:
             last_inserts = []
             current_documents_set = set([unicode(doc.path) for doc in documents_group])
-            print "####################################################################################################"
-            print "{:d} Documents left in the current document set".format(len(current_documents_set))
-            print "####################################################################################################"
+            logger.info("{:d} documents left in the current document set".format(len(current_documents_set)))
             for document in documents_group:
-                print document.path
                 # If any of the entangling blocks of the current document have not been inserted yet, we move on to the next one
                 documents_pointed = set([eb[0] for eb in document.entangling_blocks])
-                print "************************************************************************************************"
                 must_abort = False
                 for pointed_d in documents_pointed:
                     if pointed_d in current_documents_set:
-                        print "{:s} is in the current document set".format(pointed_d)
                         must_abort = True
                         break
                 if must_abort:
                     continue
                 metadata_server.put(document.path, document)
                 last_inserts.append(document)
-                print "inserted document {:s}".format(document.path)
+                logger.info("inserted metadata for document {:s}".format(document.path))
             for inserted in last_inserts:
                 documents_group.remove(inserted)
 
