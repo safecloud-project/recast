@@ -73,6 +73,35 @@ def rebuild(configuration_path):
         documents = rebuild_node(provider, provider_name, documents=documents)
     return documents
 
+def group_documents_by_pointers(documents):
+    """
+    Groups a list of documents by their number of pointers
+    Args:
+        documents(list(metadata.MetaDocument)): MetaDocuments to group
+    Returns:
+        dict(int, list(metadata.MetaDocument)): MetaDocuments grouped by number of pointers
+    """
+    if not isinstance(documents, list):
+        raise ValueError("documents argument must be a list")
+    groups = {}
+    for doc in documents:
+        number_of_pointers = len(doc.entangling_blocks)
+        group = groups.get(number_of_pointers, [])
+        group.append(doc)
+        groups[number_of_pointers] = group
+    return groups
+
+def pointers_and_documents_overlap(pointed_documents, documents_to_avoid):
+    """
+    Checks if any of the documents pointed is part of the documents to avoid.
+    Returns True if there is an overlap, False otherwise.
+    Args:
+        pointed_documents(set(str)): The list of documents pointed to
+        documents(set(str)): The list of documents to avoid
+    Returns:
+        bool: Whether the document can be inserted or not
+    """
+    return len(pointed_documents.intersection(documents_to_avoid)) != 0
 
 def write_metadata(host, port, documents):
     """
@@ -89,13 +118,7 @@ def write_metadata(host, port, documents):
     if not isinstance(documents, dict):
         raise ValueError("argument documents must be a dictionary")
     metadata_server = metadata.Files(host=host, port=port)
-    documents_grouped_by_pointers = {}
-    for path in documents:
-        doc = documents[path]
-        number_of_pointers = len(doc.entangling_blocks)
-        group = documents_grouped_by_pointers.get(number_of_pointers, [])
-        group.append(doc)
-        documents_grouped_by_pointers[number_of_pointers] = group
+    documents_grouped_by_pointers = group_documents_by_pointers(documents.values())
 
     logger.info("Formed {:d} groups of documents based on the number of pointers".format(len(documents_grouped_by_pointers)))
     for number_of_pointers in sorted(documents_grouped_by_pointers):
@@ -106,14 +129,8 @@ def write_metadata(host, port, documents):
             current_documents_set = set([unicode(doc.path) for doc in documents_group])
             logger.info("{:d} documents left in the current document set".format(len(current_documents_set)))
             for document in documents_group:
-                # If any of the entangling blocks of the current document have not been inserted yet, we move on to the next one
                 documents_pointed = set([eb[0] for eb in document.entangling_blocks])
-                must_abort = False
-                for pointed_d in documents_pointed:
-                    if pointed_d in current_documents_set:
-                        must_abort = True
-                        break
-                if must_abort:
+                if pointers_and_documents_overlap(documents_pointed, current_documents_set):
                     continue
                 metadata_server.put(document.path, document)
                 last_inserts.append(document)
