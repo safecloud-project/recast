@@ -211,8 +211,9 @@ def create_docker_compose_configuration_for_production(configuration):
     dev_compose_configuration = create_docker_compose_configuration(configuration)
     del dev_compose_configuration["services"]["proxy"]["build"]
     dev_compose_configuration["services"]["proxy"]["image"] = "dburihabwa/playcloud_proxy"
-    del dev_compose_configuration["services"]["coder"]["build"]
-    dev_compose_configuration["services"]["coder"]["image"] = "dburihabwa/playcloud_coder"
+    if "coder" in dev_compose_configuration["services"]:
+        del dev_compose_configuration["services"]["coder"]["build"]
+        dev_compose_configuration["services"]["coder"]["image"] = "dburihabwa/playcloud_coder"
     for service in dev_compose_configuration["services"].keys():
         if service.startswith("storage-node"):
             del dev_compose_configuration["services"][service]["volumes"]
@@ -295,6 +296,7 @@ def set_coder_configuration(path_to_central_configuration):
     parser.set("main", "splitter", "entanglement")
     entanglement_configuration = configuration.get("entanglement")
     parser.set("entanglement", "type", entanglement_configuration.get("type", "step"))
+    parser.set("entanglement", "p", str(entanglement_configuration.get("prefetch", 3)))
     code_configuration = entanglement_configuration.get("configuration", {"s": 1, "t": 10, "p": 3})
     parser.set("step", "s", str(code_configuration.get("s", 1)))
     parser.set("step", "t", str(code_configuration.get("t", 10)))

@@ -241,13 +241,23 @@ class DriverFactory(object):
             else:
                 raise RuntimeError("A value must be defined for the number of parity blocks generated as part of the erasure coding either in pycoder.cfg as a value for the key t under the step section or through the environment variable ENTANGLEMENT_T")
 
-            POINTER_CACHE = Queue.Queue(maxsize=128)
-            CACHE_FILLER = CacheFiller(POINTER_CACHE, pointer_blocks)
-            CACHE_FILLER.setDaemon(True)
-            CACHE_FILLER.start()
-            source = CachingProxyClient(POINTER_CACHE)
+            prefetch = None
+            if os.environ.has_key("ENTANGLEMENT_PREFETCH"):
+                prefetch = int(os.environ.get("ENTANGLEMENT_PREFETCH"))
+            elif self.config.has_option("step", "prefetch"):
+                prefetch = int(self.config.get("step", "prefetch"))
+            if prefetch:
+                POINTER_CACHE = Queue.Queue(maxsize=10)
+                CACHE_FILLER = CacheFiller(POINTER_CACHE, pointer_blocks)
+                CACHE_FILLER.setDaemon(True)
+                CACHE_FILLER.start()
+                source = CachingProxyClient(POINTER_CACHE)
+            else:
+                source = LocalProxyClient()
             driver = StepEntangler(source, source_blocks, pointer_blocks, parity_blocks)
             logger.info("Loaded driver {}".format(driver))
+            if prefetch:
+                logger.info("Using pointer prefetching with a cache of size {:d}".format(prefetch))
             return driver
         else:
             raise RuntimeError("Type of entanglement {} is not supported".format(entanglement_type))
