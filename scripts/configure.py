@@ -191,15 +191,18 @@ def create_docker_compose_configuration(configuration):
         make_node = create_minio_compose_node
     for key in node_keys:
         del compose_configuration["services"][key]
+    compose_configuration["services"]["proxy"]["depends_on"] = []
     if nodes == 1:
         container_name = "storage-node"
         compose_configuration["services"][container_name] = make_node(container_name)
         create_volume_directory(container_name)
+        compose_configuration["services"]["proxy"]["depends_on"].append(container_name)
     else:
         for i in range(1, nodes + 1):
             container_name = "storage-node-{:d}".format(i)
             compose_configuration["services"][container_name] = make_node(container_name)
             create_volume_directory(container_name)
+            compose_configuration["services"]["proxy"]["depends_on"].append(container_name)
     create_volume_directory("metadata")
     return compose_configuration
 
@@ -214,7 +217,11 @@ def create_docker_compose_configuration_for_production(configuration):
     if "coder" in dev_compose_configuration["services"]:
         del dev_compose_configuration["services"]["coder"]["build"]
         dev_compose_configuration["services"]["coder"]["image"] = "dburihabwa/playcloud_coder"
+    if "load_balancer" in dev_compose_configuration["services"]:
+        del dev_compose_configuration["services"]["load_balancer"]
     for service in dev_compose_configuration["services"].keys():
+        if "depends_on" in dev_compose_configuration["services"][service]:
+            del dev_compose_configuration["services"][service]["depends_on"]
         if service.startswith("storage-node"):
             del dev_compose_configuration["services"][service]["volumes"]
             del dev_compose_configuration["services"][service]["container_name"]
