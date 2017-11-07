@@ -7,6 +7,7 @@ import hashlib
 import logging
 import json
 import os
+import random
 
 import pyproxy.safestore.providers.dispatcher as d
 import pyproxy.metadata as metadata
@@ -94,7 +95,9 @@ def rebuild(configuration_path):
         "block_accuracy": [0]
     }
     documents = {}
-    for provider_name in dispatcher.providers:
+    provider_names = dispatcher.providers.keys()
+    random.shuffle(provider_names)
+    for provider_name in provider_names:
         blocks_score = 0.0
         provider = dispatcher.providers[provider_name]
         documents = rebuild_node(provider, provider_name, documents=documents)
