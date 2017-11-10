@@ -303,11 +303,11 @@ def set_coder_configuration(path_to_central_configuration):
     parser.set("main", "splitter", "entanglement")
     entanglement_configuration = configuration.get("entanglement")
     parser.set("entanglement", "type", entanglement_configuration.get("type", "step"))
-    parser.set("entanglement", "p", str(entanglement_configuration.get("prefetch", 3)))
     code_configuration = entanglement_configuration.get("configuration", {"s": 1, "t": 10, "p": 3})
     parser.set("step", "s", str(code_configuration.get("s", 1)))
     parser.set("step", "t", str(code_configuration.get("t", 10)))
     parser.set("step", "p", str(code_configuration.get("p", 3)))
+    parser.set("step", "prefetch", str(entanglement_configuration.get("prefetch", 3)))
     rename_existing_file(PATH_TO_CODER_CONFIGURATION)
     with open(PATH_TO_CODER_CONFIGURATION, "w") as handle:
         parser.write(handle)

@@ -247,7 +247,7 @@ class DriverFactory(object):
             elif self.config.has_option("step", "prefetch"):
                 prefetch = int(self.config.get("step", "prefetch"))
             if prefetch:
-                POINTER_CACHE = Queue.Queue(maxsize=10)
+                POINTER_CACHE = Queue.Queue(maxsize=prefetch)
                 CACHE_FILLER = CacheFiller(POINTER_CACHE, pointer_blocks)
                 CACHE_FILLER.setDaemon(True)
                 CACHE_FILLER.start()
