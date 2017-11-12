@@ -50,4 +50,13 @@ if __name__ == "__main__":
     POOL = Pool(ARGS.concurrency)
     IGNORED_ARGUMENTS = [None for _ in xrange(ARGS.requests)]
     RESULTS = POOL.map(CONFIGURED_PUT, IGNORED_ARGUMENTS)
-    print json.dumps(RESULTS)
+    print json.dumps({
+        "conf": {
+            "requests": ARGS.requests,
+            "concurrency": ARGS.concurrency,
+            "payload_size": ARGS.payload_size,
+            "host": ARGS.host,
+            "port": ARGS.port,
+        },
+        "results": RESULTS
+    })
