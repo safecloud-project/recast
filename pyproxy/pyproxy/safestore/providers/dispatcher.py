@@ -354,7 +354,7 @@ class Dispatcher(object):
             metadata.blocks.append(metablock)
         end = time.clock()
         elapsed = end - start
-        logger.info("Storing blocks for {:s} was done in {:f} s".format(path, elapsed))
+        logger.debug("Storing blocks for {:s} was done in {:f} s".format(path, elapsed))
         return metadata
 
     def __get_blocks(self, metablocks):
@@ -473,7 +473,7 @@ class Dispatcher(object):
         random_metablocks = self.files.select_random_blocks(blocks_desired)
         block_queue = self.__get_blocks(random_metablocks)
         end = time.clock()
-        logger.info("Took {:f} seconds to fetch {:d} random blocks".format(end - start, len(block_queue)))
+        logger.debug("Took {:f} seconds to fetch {:d} random blocks".format(end - start, len(block_queue)))
         start = time.clock()
         random_blocks = []
         for key in block_queue.keys():
@@ -482,6 +482,6 @@ class Dispatcher(object):
                 continue
             random_blocks.append((key, block))
         end = time.clock()
-        logger.info("Took {:f} seconds to filter and sort {:d} random blocks".format(end - start, len(random_blocks)))
-        logger.info("Took {:f} seconds to fetch and order {:d} random blocks".format(end - full_start, len(random_blocks)))
+        logger.debug("Took {:f} seconds to filter and sort {:d} random blocks".format(end - start, len(random_blocks)))
+        logger.debug("Took {:f} seconds to fetch and order {:d} random blocks".format(end - full_start, len(random_blocks)))
         return random_blocks

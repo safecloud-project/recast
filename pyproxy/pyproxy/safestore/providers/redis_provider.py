@@ -61,7 +61,7 @@ class RedisProvider(object):
         value = self.redis.get(path)
         end = time.clock()
         elapsed = end - start
-        LOGGER.info("Provider {:s} fetched {:s} in {:f} seconds".format(self.host, path, elapsed))
+        LOGGER.debug("Provider {:s} fetched {:s} in {:f} seconds".format(self.host, path, elapsed))
         return value
 
     def put(self, data, path):
@@ -79,7 +79,7 @@ class RedisProvider(object):
         value = self.redis.set(path, data)
         end = time.clock()
         elapsed = end - start
-        LOGGER.info("Provider {:s} stored {:s} in {:f} seconds".format(self.host, path, elapsed))
+        LOGGER.debug("Provider {:s} stored {:s} in {:f} seconds".format(self.host, path, elapsed))
         return value
 
     def delete(self, path):

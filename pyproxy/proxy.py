@@ -132,7 +132,7 @@ def store(key=None, data=None):
         FILES.put(key, metadata)
         end = time.clock()
         elapsed = end - start
-        LOGGER.info("Store request for {:s} took {:f} seconds".format(key, elapsed))
+        LOGGER.debug("Store request for {:s} took {:f} seconds".format(key, elapsed))
         return key
 
 
@@ -151,7 +151,7 @@ def put(key):
     key = store(key=key, data=request.body.getvalue())
     end = time.clock()
     elapsed = end - start
-    LOGGER.info("put request for {:s} took {:f} seconds".format(key, elapsed))
+    LOGGER.debug("put request for {:s} took {:f} seconds".format(key, elapsed))
     return key
 
 
@@ -169,7 +169,7 @@ def put_keyless():
     key = store(key=None, data=request.body.getvalue())
     end = time.clock()
     elapsed = end - start
-    LOGGER.info("put_keyless request took {:f} seconds".format(elapsed))
+    LOGGER.debug("put_keyless request took {:f} seconds".format(elapsed))
     return key
 
 @APP.route("/", method="GET")
