@@ -380,7 +380,7 @@ class Files(object):
         pipeline.execute()
         end = time.clock()
         elapsed = end - start
-        LOGGER.info("Storing metadata for {:s} took {:f} seconds".format(path, elapsed))
+        LOGGER.debug("Storing metadata for {:s} took {:f} seconds".format(path, elapsed))
         return path
 
     @staticmethod
@@ -489,7 +489,7 @@ class Files(object):
         random_blocks = self.get_blocks(selected_keys)
         end = time.clock()
         elapsed = end - start
-        LOGGER.info("Took {:f} seconds to select random blocks".format(elapsed))
+        LOGGER.debug("Took {:f} seconds to select random blocks".format(elapsed))
         return random_blocks
 
     def get_entanglement_graph(self):
