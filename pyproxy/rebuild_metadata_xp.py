@@ -8,6 +8,7 @@ import logging
 import json
 import os
 import random
+import sys
 
 import pyproxy.safestore.providers.dispatcher as d
 import pyproxy.metadata as metadata
@@ -55,6 +56,13 @@ def rebuild_node(provider, provider_name, documents=None):
 
 
 def count_blocks(documents):
+    """
+    Counts the total number of blocks in a list of documents
+    Args:
+        documents(metadata.MetaDocument): The list of documents
+    Returns:
+        int: Size of the list
+    """
     return sum([len(doc.blocks) for doc in documents])
 
 def compute_block_completion(block, original_block):
@@ -97,18 +105,20 @@ def rebuild(configuration_path):
     documents = {}
     provider_names = dispatcher.providers.keys()
     random.shuffle(provider_names)
+    sys.stderr.write("total_blocks: {:d}\n".format(total_blocks))
     for provider_name in provider_names:
         blocks_score = 0.0
         provider = dispatcher.providers[provider_name]
         documents = rebuild_node(provider, provider_name, documents=documents)
         completion["files"].append(float(len(documents)) / total_documents)
         current_block_count = count_blocks(documents.values())
+        sys.stderr.write("{:d} blocks read\n".format(current_block_count))
         completion["blocks"].append(float(current_block_count / total_blocks))
         for document in documents.values():
             original_blocks = {b.key: b for b in metadata_server.get(document.path).blocks}
             for block in document.blocks:
                 blocks_score += compute_block_completion(block, original_blocks[block.key])
-        completion["block_accuracy"].append(float(blocks_score) / current_block_count)
+        completion["block_accuracy"].append(float(blocks_score) / total_blocks)
     return completion
 
 if __name__ == "__main__":
