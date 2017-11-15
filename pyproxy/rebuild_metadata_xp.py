@@ -73,8 +73,8 @@ def compute_block_completion(block, original_block):
     Returns:
         float: Completion level
     """
-    if block.key == original_block.key and set(block.providers) == set(original_block.providers) and \
-                    block.checksum == original_block.checksum and block.size == original_block.size:
+    if block.key == original_block.key and block.providers and \
+       block.checksum == original_block.checksum and block.size == original_block.size:
         return 1.0
     return 0.0
 
