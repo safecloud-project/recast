@@ -78,6 +78,19 @@ def compute_block_completion(block, original_block):
         return 1.0
     return 0.0
 
+def is_document_available(document, available_blocks):
+    """
+    Tests if a document, its blocks and entangling_blocks are available
+    Args:
+        document(metadata.MetaDocument): The document whose availabiltiy must be tested
+        available_blocks(set(metadata.MetaBlock)): Blocks available
+    Returns:
+        bool: True if the document is available. False otherwise
+    """
+    block_keys = {block.key for block in document.blocks}
+    entangling_block_keys = {metadata.compute_block_key(eb[0], eb[1]) for eb in document.entangling_blocks}
+    return block_keys < available_blocks and entangling_block_keys < available_blocks
+
 def rebuild(configuration_path):
     """
     Rebuilds metadata by data from the storage nodes
@@ -98,27 +111,40 @@ def rebuild(configuration_path):
     total_blocks = count_blocks(original_documents)
     dispatcher = d.Dispatcher(configuration=dispatcher_configuration)
     completion = {
-        "files": [0],
+        "documents": [0],
+        "documents_availability": [0],
         "blocks": [0],
-        "block_accuracy": [0]
+        "blocks_availability": [0]
     }
     documents = {}
     provider_names = dispatcher.providers.keys()
     random.shuffle(provider_names)
     sys.stderr.write("total_blocks: {:d}\n".format(total_blocks))
+    available_blocks = set()
     for provider_name in provider_names:
         blocks_score = 0.0
         provider = dispatcher.providers[provider_name]
         documents = rebuild_node(provider, provider_name, documents=documents)
-        completion["files"].append(float(len(documents)) / total_documents)
+        completion["documents"].append(float(len(documents)) / total_documents)
         current_block_count = count_blocks(documents.values())
         sys.stderr.write("{:d} blocks read\n".format(current_block_count))
         completion["blocks"].append(float(current_block_count / total_blocks))
         for document in documents.values():
             original_blocks = {b.key: b for b in metadata_server.get(document.path).blocks}
             for block in document.blocks:
-                blocks_score += compute_block_completion(block, original_blocks[block.key])
-        completion["block_accuracy"].append(float(blocks_score) / total_blocks)
+                score_for_block = compute_block_completion(block, original_blocks[block.key])
+                blocks_score += score_for_block
+                if score_for_block == 1.0:
+                    available_blocks.add(block.key)
+        documents_availability = 0
+        sys.stderr.write("There are {:d} blocks available\n".format(len(available_blocks)))
+        for doc_key in documents:
+            document = metadata_server.get(doc_key)
+            if is_document_available(document, available_blocks):
+                documents_availability += 1
+                sys.stderr.write("Document {:s} is available\n".format(doc_key))
+        completion["documents_availability"].append(float(documents_availability) / total_documents)
+        completion["blocks_availability"].append(float(blocks_score) / total_blocks)
     return completion
 
 if __name__ == "__main__":
