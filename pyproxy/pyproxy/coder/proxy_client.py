@@ -1,19 +1,21 @@
 """
 A GRPC client for the proxy service that recovers block from the data stores
 """
+import logging
 import Queue
 import threading
 
 import grpc
 
+import pyproxy.coder.playcloud_pb2 as playcloud
 import pyproxy.coder.playcloud_pb2_grpc
-from pyproxy.coder.playcloud_pb2 import BlockRequest, NamedBlockRequest, Strip
-from pyproxy.proxy_service import get_random_blocks
+import pyproxy.proxy_service as proxy_service
 import pyproxy.pyproxy_globals
 import pyproxy.safestore.providers.dispatcher
 
 # TODO Read the default grpc timeout in configuration file before assigning this value
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
+
 
 class ProxyClient(object):
     """
@@ -21,7 +23,7 @@ class ProxyClient(object):
     """
     def __init__(self, host="proxy", port=1234):
         server_listen = host + ":" + str(port)
-        grpc_message_size = (2 * 1024 * 1024 * 1024) - 1 # 2^31 - 1
+        grpc_message_size = (2 * 1024 * 1024 * 1024) - 1  # 2^31 - 1
         grpc_options = [
             ("grpc.max_receive_message_length", grpc_message_size),
             ("grpc.max_send_message_length", grpc_message_size)
@@ -39,10 +41,10 @@ class ProxyClient(object):
         Raises:
             ValueError: if the blocks arguments has a value that is lower or equal to 0
         """
-        # TODO Handle grpc.framework.interfaces.face.face.RemoteError
+        #  TODO Handle grpc.framework.interfaces.face.face.RemoteError
         if blocks <= 0:
             raise ValueError("argument blocks cannot be lower or equal to 0")
-        request = BlockRequest()
+        request = playcloud.BlockRequest()
         request.blocks = blocks
         reply = self.stub.GetRandomBlocks(request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS)
         strips = [strip for strip in reply.strips]
@@ -68,11 +70,12 @@ class ProxyClient(object):
             raise ValueError("path argument cannot empty")
         if index < 0:
             raise ValueError("index argument cannot be negative")
-        request = NamedBlockRequest()
+        request = playcloud.NamedBlockRequest()
         request.path = path
         request.index = index
         request.reconstruct_if_missing = reconstruct_if_missing
         return self.stub.GetBlock(request, DEFAULT_GRPC_TIMEOUT_IN_SECONDS)
+
 
 class LocalProxyClient(object):
     """
@@ -92,7 +95,7 @@ class LocalProxyClient(object):
         """
         if blocks <= 0:
             raise ValueError("argument blocks cannot be lower or equal to 0")
-        return get_random_blocks(blocks)
+        return proxy_service.get_random_blocks(blocks)
 
     def get_block(self, path, index, reconstruct_if_missing=True):
         """
@@ -117,7 +120,7 @@ class LocalProxyClient(object):
         data = self.dispatcher.get_block(path,
                                          index,
                                          reconstruct_if_missing=reconstruct_if_missing)
-        reply = Strip()
+        reply = playcloud.Strip()
         if not isinstance(data, pyproxy.safestore.providers.dispatcher.NoReplicaException):
             reply.data = data
         return reply
@@ -126,7 +129,7 @@ class LocalProxyClient(object):
 class CacheFiller(threading.Thread):
     DEFAULT_TIMEOUT = 600
 
-    def __init__(self, queue,blocks):
+    def __init__(self, queue, blocks):
         if not queue or not isinstance(queue, Queue.Queue):
             raise ValueError("queue argument must be an instance of Queue.Queue")
         if not blocks or not isinstance(blocks, int) or blocks < 0:
@@ -138,7 +141,7 @@ class CacheFiller(threading.Thread):
     def run(self):
         while True:
             try:
-                self.queue.put(get_random_blocks(self.blocks),
+                self.queue.put(proxy_service.get_random_blocks(self.blocks),
                                block=True,
                                timeout=CacheFiller.DEFAULT_TIMEOUT)
             except Queue.Full:
@@ -159,8 +162,9 @@ class CachingProxyClient(LocalProxyClient):
         """
         if not queue or not isinstance(queue, Queue.Queue):
             raise ValueError("queue argument must be an instance of Queue.Queue")
-        LocalProxyClient.__init__(self)
+        super(LocalProxyClient, self).__init__()
         self.queue = queue
+        self.logger = logging.getLogger("CachingProxyClient")
 
     def get_random_blocks(self, blocks):
         """
@@ -170,6 +174,11 @@ class CachingProxyClient(LocalProxyClient):
             list(pyproxy.playcloud_pb2.Strip): A list of blocks
         """
         try:
-            return self.queue.get(block=True, timeout=CachingProxyClient.DEFAULT_TIMEOUT)
+            pointers = self.queue.get_nowait()
+            self.logger.info("cache hit")
+            return pointers
         except Queue.Empty:
-            return get_random_blocks(blocks)
+            self.logger.info("cache miss")
+            #TODO Should call parent method but keeps failing
+            # return super(LocalProxyClient, self).get_random_blocks(blocks)
+            return proxy_service.get_random_blocks(blocks)
