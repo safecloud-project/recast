@@ -40,8 +40,8 @@ def start_minio(provider, provider_conf, ssh_port=22):
                "docker run --detach=true --name {:s} " +
                "--publish={:d}:{:d} " +
                "-e 'MINIO_ACCESS_KEY={:s}' -e 'MINIO_SECRET_KEY={:s}' " +
-               "--volume $(readlink playcloud/volumes/{:s}):/data " +
-               "minio/minio server /data").format(ssh_port,
+               "--volume ~/playcloud/volumes/{:s}:/data " +
+               "minio/minio server --address '0.0.0.0:9000' /data").format(ssh_port,
                                                   minio_host,
                                                   provider,
                                                   minio_port,
@@ -69,7 +69,7 @@ def start_redis(provider, provider_conf, ssh_port=22):
                "docker pull minio/minio:latest && " +
                "docker run --detach=true --name {:s} " +
                "--publish={:d}:{:d} " +
-               "--volume $(readlink playcloud/volumes/{:s}):/data " +
+               "--volume ~/playcloud/volumes/{:s}:/data " +
                "minio/minio server /data").format(ssh_port,
                                                   redis_host,
                                                   provider,
