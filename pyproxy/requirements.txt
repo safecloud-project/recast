@@ -20,5 +20,6 @@ pytest==2.9.2
 python-onedrive
 redis==2.10.5
 secretsharing==0.2.6
+uwsgi
 waitress
 watchdog

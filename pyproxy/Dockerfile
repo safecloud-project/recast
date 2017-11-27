@@ -38,7 +38,8 @@ RUN apt-get update --quiet && apt-get install --assume-yes --quiet libgfshare-de
 # Install pip dependencies
 WORKDIR /usr/local/src/app/
 COPY requirements.txt /usr/local/src/app
-RUN apt-get install --yes --quiet libssl-dev libffi-dev python-dev &&\
+RUN apt-get update &&\
+    apt-get install --yes --quiet libssl-dev libffi-dev python-dev &&\
     easy_install -U cffi &&\
     pip install --quiet --requirement requirements.txt
 
@@ -49,4 +50,10 @@ RUN pip install --upgrade --requirement requirements.txt
 COPY . /usr/local/src/pyproxy
 EXPOSE 8000
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src/pyproxy"
-ENTRYPOINT ["python", "/usr/local/src/pyproxy/proxy.py"]
+ENTRYPOINT ["uwsgi",\
+                    "--http-socket", "0.0.0.0:3000",\
+                    "--plugin", "python",\
+                    "--disable-logging",\
+                    "--enable-threads",\
+                    "--threads", "100",\
+                    "--wsgi-file", "/usr/local/src/pyproxy/proxy.py"]
