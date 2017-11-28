@@ -25,7 +25,7 @@ import pyproxy.proxy_service
 import pyproxy.pyproxy_globals
 
 
-log_config = os.getenv("LOG_CONFIG", "/usr/local/src/pyproxy/logging.conf")
+log_config = os.getenv("LOG_CONFIG", os.path.join(os.path.dirname(__file__), "logging.conf"))
 logging.config.fileConfig(log_config)
 
 LOGGER = logging.getLogger("proxy")
