@@ -52,7 +52,6 @@ EXPOSE 8000
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src/pyproxy"
 ENTRYPOINT ["uwsgi",\
                     "--http-socket", "0.0.0.0:3000",\
-                    "--plugin", "python",\
                     "--disable-logging",\
                     "--enable-threads",\
                     "--threads", "100",\
