@@ -48,11 +48,8 @@ COPY pyproxy/safestore/data.db /root/data.db
 WORKDIR /usr/local/src/pyproxy
 RUN pip install --upgrade --requirement requirements.txt
 COPY . /usr/local/src/pyproxy
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 EXPOSE 8000
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src/pyproxy"
-ENTRYPOINT ["uwsgi",\
-                    "--http-socket", "0.0.0.0:3000",\
-                    "--disable-logging",\
-                    "--enable-threads",\
-                    "--threads", "100",\
-                    "--wsgi-file", "/usr/local/src/pyproxy/proxy.py"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
