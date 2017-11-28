@@ -8,14 +8,12 @@ RUN apt-get update && \
     apt-get install --assume-yes --quiet autoconf automake build-essential cython gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
     ldconfig
 
-# Install intel ISA-L
+# Install intel ISA-L 2.20.0
 WORKDIR /tmp/
-RUN wget --quiet https://01.org/sites/default/files/downloads/intelr-storage-acceleration-library-open-source-version/isa-l-2.14.0.tar.gz && \
-    tar xf isa-l-2.14.0.tar.gz
-WORKDIR isa-l-2.14.0
-RUN sed -i 's/1.14.1/1.15.1/' aclocal.m4 configure Makefile.in && \
-    sed -i 's/1.14/1.15/'     aclocal.m4 configure Makefile.in && \
-    ./configure && make && make install && \
+RUN wget --quiet https://github.com/01org/isa-l/archive/v2.20.0.tar.gz && \
+    tar xaf v2.20.0.tar.gz &&\
+    cd isa-l-2.20.0/ && \
+    ./autogen.sh && ./configure && make -s && make install && \
     echo "/usr/lib" >> /etc/ld.so.conf && ldconfig
 
 # Install liberasurecode 1.1.1
