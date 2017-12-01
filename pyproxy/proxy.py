@@ -54,8 +54,6 @@ APP = bottle.app()
 KAZOO = None
 HOSTNAME = os.uname()[1]
 
-# Inizialize the dictionary for keeping track of blocks used in encoding
-HEADER_DICTIONARY = {}
 
 @APP.route("/<key:path>/__meta", method="GET")
 def get_file_metadata(key):
@@ -123,11 +121,7 @@ def store(key=None, data=None):
         metadata = DISPATCHER.put(key, encoded_file)
         LOGGER.debug("Stored {:2d} blocks with key {:s}".format(number_of_blocks, key))
 
-        creation_date = str(metadata.creation_date)
         metadata.entangling_blocks = extract_entanglement_data(encoded_file.strips[0].data)
-        formatted_entangling_blocks = json.dumps(metadata.entangling_blocks)
-        keys_and_providers = str([[b.key, b.providers[0]] for b in metadata.blocks])
-        HEADER_DICTIONARY[key] = [creation_date, formatted_entangling_blocks, keys_and_providers]
 
         FILES.put(key, metadata)
         end = time.clock()
