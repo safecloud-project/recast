@@ -3,6 +3,7 @@
 A script that reads configuration.json and produces a matching configuration files
 for docker-compose and the pyproxy.
 """
+import argparse
 import copy
 import json
 import os
@@ -10,6 +11,11 @@ import os
 from configparser import ConfigParser
 
 import ruamel.yaml
+
+__DESCRIPTION = """
+A script that reads configuration.json and produces a matching configuration files
+for docker-compose and the pyproxy.
+"""
 
 PATH_TO_DISPATCHER_FILE = os.path.join(os.path.dirname(__file__), "..", "pyproxy", "dispatcher.json")
 PATH_TO_DOCKER_COMPOSE_FILE = os.path.join(os.path.dirname(__file__), "..", "docker-compose.yml")
@@ -36,7 +42,7 @@ BASIC_COMPOSE_CONFIGURATION = {
             "container_name": "proxy",
             "hostname": "proxy",
             "build": "./pyproxy",
-            "ports": ["3000:8000"],
+            "ports": ["3000:3000"],
             "env_file": ["./erasure.env"],
             "deploy": {
                 "placement": {
@@ -171,9 +177,12 @@ def create_minio_compose_node(name):
     }
 
 
-def create_docker_compose_configuration(configuration):
+def create_docker_compose_configuration(configuration, scale=1):
     """
     Read the configuration file and create a coherent docker-compose file
+    Args:
+        configuration(dict): Configuration file
+        scale(int): Number of instances of the proxy
     """
     nodes = int(configuration["storage"]["nodes"])
 
@@ -185,6 +194,26 @@ def create_docker_compose_configuration(configuration):
     services_to_keep = ["coder", "load_balancer", "metadata", "proxy", "zoo1"]
     node_keys = [key for key in compose_configuration["services"] if key not in services_to_keep]
     make_node = create_redis_compose_node
+    if scale <= 1:
+        del compose_configuration["services"]["load_balancer"]
+        compose_configuration["services"]["proxy"]["ports"] = ["3000:3000"]
+    else:
+        compose_configuration["services"]["load_balancer"] = {
+            "image": "dockercloud/haproxy:latest",
+            "restart": "always",
+            "volumes": ["/var/run/docker.sock:/var/run/docker.sock"],
+            "deploy": {
+                "mode": "global"
+            },
+            "depends_on": ["proxy"],
+            "links": ["proxy"],
+            "ports": ["3000:80"]
+        }
+        if not "deploy" in compose_configuration["services"]["proxy"]:
+            compose_configuration["services"]["proxy"]["deploy"] = {}
+        compose_configuration["services"]["proxy"]["deploy"]["replicas"] = scale
+        compose_configuration["services"]["proxy"]["deploy"]["mode"] = "replicated"
+        compose_configuration["services"]["proxy"]["ports"] = ["3000"]
     if configuration["storage"]["type"] == "minio":
         make_node = create_minio_compose_node
     for key in node_keys:
@@ -311,11 +340,18 @@ def set_coder_configuration(path_to_central_configuration):
 
 
 if __name__ == "__main__":
+    PARSER = argparse.ArgumentParser(__file__,
+                                     description=__DESCRIPTION)
+    PARSER.add_argument("--scale",
+                        type=int,
+                        default=1,
+                        help="The number of instances of the proxy that should be deployed")
+    ARGS = PARSER.parse_args()
     PATH_TO_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "..", "configuration.json")
     GLOBAL_CONFIGURATION = read_configuration_file(PATH_TO_CONFIGURATION_FILE)
     DISPATCHER_CONFIGURATION = create_dispatcher_configuration(GLOBAL_CONFIGURATION)
     write_dispatcher_file(DISPATCHER_CONFIGURATION)
-    COMPOSE_CONFIGURATION = create_docker_compose_configuration(GLOBAL_CONFIGURATION)
+    COMPOSE_CONFIGURATION = create_docker_compose_configuration(GLOBAL_CONFIGURATION, scale=ARGS.scale)
     write_docker_compose_file_for_dev(COMPOSE_CONFIGURATION)
     COMPOSE_PRODUCTION_CONFIGURATION = create_docker_compose_configuration_for_production(GLOBAL_CONFIGURATION)
     write_docker_compose_file_for_production(COMPOSE_PRODUCTION_CONFIGURATION)
