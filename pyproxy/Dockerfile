@@ -48,6 +48,6 @@ RUN pip install --upgrade --requirement requirements.txt
 COPY . /usr/local/src/pyproxy
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-EXPOSE 8000
+EXPOSE 3000
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/src/pyproxy"
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["python", "/usr/local/src/pyproxy/proxy.py"]
