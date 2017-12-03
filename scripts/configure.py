@@ -24,7 +24,7 @@ PATH_TO_VOLUMES_DIRECTORY = os.path.join(os.path.dirname(__file__), "..", "volum
 PATH_TO_CODER_CONFIGURATION = os.path.join(os.path.dirname(__file__), "..", "pyproxy", "pycoder.cfg")
 
 BASIC_COMPOSE_CONFIGURATION = {
-    "version": "\"3\"",
+    "version": "3.3",
     "services": {
         "coder": {
             "container_name": "coder",
@@ -45,6 +45,29 @@ BASIC_COMPOSE_CONFIGURATION = {
             "ports": ["3000:3000"],
             "env_file": ["./erasure.env"],
             "deploy": {
+                "placement": {
+                    "constraints": ["node.role == manager"]
+                }
+            }
+        },
+        "metadata": {
+            "image": "redis:3.2.8",
+            "command": "redis-server --appendonly yes",
+            "deploy": {
+                "mode": "replicated",
+                "placement": {
+                    "constraints": ["node.role == manager"]
+                }
+            },
+            "volumes": ["./volumes/metadata/:/data/"]
+        },
+        "zoo1": {
+            "image": "zookeeper",
+            "restart": "always",
+            "ports": ["2181:2181"],
+            "environment": ["ZOO_MY_ID=1"],
+            "deploy": {
+                "mode": "replicated",
                 "placement": {
                     "constraints": ["node.role == manager"]
                 }
@@ -198,6 +221,7 @@ def create_docker_compose_configuration(configuration, scale=1):
         del compose_configuration["services"]["load_balancer"]
         compose_configuration["services"]["proxy"]["ports"] = ["3000:3000"]
     else:
+        del compose_configuration["services"]["proxy"]["container_name"]
         compose_configuration["services"]["load_balancer"] = {
             "image": "dockercloud/haproxy:latest",
             "restart": "always",
