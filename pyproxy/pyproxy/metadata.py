@@ -5,6 +5,7 @@ import datetime
 import logging
 import json
 import random
+import socket
 import time
 
 import enum
@@ -237,7 +238,8 @@ class Files(object):
     READ_BUFFER_SIZE = 100
 
     def __init__(self, host="metadata", port=6379, pointer_selector=normal_selection):
-        self.redis = redis.StrictRedis(host=host, port=port)
+        ip_address = socket.gethostbyname(host)
+        self.redis = redis.StrictRedis(host=ip_address, port=port)
         self.select_pointers = pointer_selector
 
     def get(self, path):

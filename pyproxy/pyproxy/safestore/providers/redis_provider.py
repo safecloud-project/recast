@@ -4,6 +4,7 @@ from a Redis database
 """
 import logging
 import os
+import socket
 import sys
 import time
 
@@ -45,8 +46,8 @@ class RedisProvider(object):
         configuration = configuration or {}
         host = configuration.get("host", os.getenv("REDIS_PORT_6379_TCP_ADDR", "redis"))
         port = int(configuration.get("port", os.getenv("REDIS_PORT_6379_TCP_PORT", 6379)))
-        pool = RedisProvider.get_pool(host, port)
-        self.host = host
+        self.host = socket.gethostbyname(host)
+        pool = RedisProvider.get_pool(self.host, port)
         self.redis = StrictRedis(connection_pool=pool, encoding=None, socket_keepalive=True)
 
     def get(self, path):
