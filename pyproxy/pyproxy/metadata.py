@@ -236,10 +236,39 @@ class Files(object):
     FILE_PREFIX = "files:"
     BLOCK_PREFIX = "blocks:"
     READ_BUFFER_SIZE = 100
+    CONNECTION_POOLS = {}
+
+    @staticmethod
+    def get_pool(host, port):
+        """
+        Gets an existing connection pool to a given server or creates a new one
+        Args:
+            host(str): Host of the redis server
+            port(int): Port number the resdis server is listening on
+        Returns:
+            BlockingConnectionPool: A blocking redis connection pool
+        """
+        if not isinstance(host, (str, unicode)) or not host:
+            raise ValueError("host argument must be a non empty string")
+        if not isinstance(port, int) or port <= 0 or port > 65535:
+            raise ValueError("port argument must be an integer between 0 and 65535")
+        if not host in Files.CONNECTION_POOLS:
+            Files.CONNECTION_POOLS[host] = {}
+        if not port in Files.CONNECTION_POOLS[host]:
+            pool = redis.ConnectionPool(host=host,
+                                        port=port,
+                                        db=0,
+                                        max_connections=128,
+                                        socket_keepalive=True)
+            Files.CONNECTION_POOLS[host][port] = pool
+        return Files.CONNECTION_POOLS[host][port]
 
     def __init__(self, host="metadata", port=6379, pointer_selector=normal_selection):
         ip_address = socket.gethostbyname(host)
-        self.redis = redis.StrictRedis(host=ip_address, port=port)
+        pool = Files.get_pool(ip_address, port)
+        self.redis = redis.StrictRedis(connection_pool=pool,
+                                       encoding=None,
+                                       socket_keepalive=True)
         self.select_pointers = pointer_selector
 
     def get(self, path):
