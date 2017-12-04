@@ -6,11 +6,12 @@ services:
         env_file:
           - ./erasure.env
         ports:
-          - 3000:8000
+          - '3000'
         deploy:
             mode: replicated
             placement:
                 constraints: [node.role == manager]
+            replicas: 8
         depends_on:
           - storage-node-1
           - storage-node-2
@@ -49,6 +50,19 @@ services:
                 constraints: [node.role == manager]
         volumes:
           - ./volumes/metadata/:/data/
+    load_balancer:
+        links:
+          - proxy
+        deploy:
+            mode: global
+        depends_on:
+          - proxy
+        image: dockercloud/haproxy:latest
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+          - 3000:80
+        restart: always
     storage-node-1:
         environment:
           - MINIO_ACCESS_KEY=playcloud
