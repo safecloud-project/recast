@@ -64,14 +64,15 @@ class ProviderFactory(object):
             Exception -- If the configuration dictionary does not have a type
                 key or the value under key is not supported by the factory
         """
-        configuration = configuration or None
+        if not configuration or not isinstance(configuration, dict):
+            raise ValueError("configuration parameter must be a non empty dictionary")
         provider_type = configuration.get("type", None)
         if provider_type is None:
-            raise Exception("configuration parameter must have a type key-value pair")
+            raise ValueError("configuration parameter must have a type key-value pair")
         initializer = self.initializers.get(provider_type)
         if initializer is None:
             message = "configuration type '{:s}' is not supported by the factory".format(provider_type)
-            raise Exception(message)
+            raise ValueError(message)
         if provider_type == Providers.redis.name:
             return initializer(configuration)
         if provider_type == Providers.disk.name:
