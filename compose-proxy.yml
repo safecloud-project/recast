@@ -1,7 +1,0 @@
-proxy:
-  build: ./pyproxy
-  ports:
-  - "3000:8000"
-  env_file:
-  - ./erasure.env
-  - ../exports.env
