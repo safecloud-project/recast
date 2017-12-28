@@ -1,9 +1,0 @@
-coder:
-  build: ./pycoder
-  ports:
-  - "1234:1234"
-  env_file:
-  - ./erasure.env
-  - ../exports.env
-  volumes:
-  - "/tmp/pycoder/log:/tmp/pycoder/log"
