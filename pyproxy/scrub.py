@@ -10,9 +10,9 @@ import os
 import sys
 import time
 
-from pyproxy.safestore.providers.dispatcher import Dispatcher, extract_path_from_key
-from proxy import init_zookeeper_client
-from pyproxy.metadata import Files, MetaBlock
+import pyproxy.metadata as mtdt
+import pyproxy.safestore.providers.dispatcher as dsp
+import pyproxy.utils as utils
 
 __PROGRAM_DESCRIPTION = ("A script that scans the database looking for ",
                          "blocks that have passed a given threshold in ",
@@ -36,7 +36,7 @@ def list_replicas_to_delete(pointers, host="metadata", port=6379):
     if not isinstance(pointers, int) or pointers < 0:
         raise ValueError("pointers must be an integer greater or equal to 0")
     LOGGER.debug("list_replicas_to_delete: pointers={:d}, host={:s}, port={:d}".format(pointers, host, port))
-    files = Files(host=host, port=port)
+    files = mtdt.Files(host=host, port=port)
     blocks = files.get_blocks(files.list_blocks())
     LOGGER.debug("list_replicas_to_delete: loaded {:d} blocks to inspect".format(len(blocks)))
     consider_for_scrubbing = []
@@ -45,6 +45,48 @@ def list_replicas_to_delete(pointers, host="metadata", port=6379):
            len(set(block.providers)) > 1:
             consider_for_scrubbing.append(block)
     return consider_for_scrubbing
+
+def has_replicas(block):
+    """
+    Returns True if the block has replicas. False otherwise.
+    Args:
+        block(MetaBlock): The block to examine
+    Returns:
+        Bool: Result of the test
+    """
+    if not block or not isinstance(block, mtdt.MetaBlock):
+        msg = "block must be a valid instance of MetaBlock"
+        raise ValueError(msg)
+    return len(block.providers) > 1
+
+
+def list_replicas_out_of_window_to_delete(window, host="metadata", port=6379):
+    """
+    List the documents whose replicas can be deleted.
+    Args:
+        window(int): The number of most recent documents whose blocks need to be replicated
+        host(str): Host of the metadata server
+        port(int): Port number the metadata server is listening on
+    Returns:
+        list(MetaBlock): The list of blocks that are considered in the old generation and can be deleted
+    Raises:
+        ValueError: if window is not a number greater or equal to 0,
+                    if host is not a valid string or
+                    if port is not a number between 0 and 65535
+    """
+    if not isinstance(window, int) or window < 0:
+        msg = "window must be an integer greater than 0"
+        raise ValueError(msg)
+    if not host or not isinstance(host, (str, unicode)):
+        msg = "host argument must be a non-empty string"
+        raise ValueError(msg)
+    if not isinstance(port, int) or port < 0 or port > 65535:
+        msg = "port argument must be an integer between 0 and 65535"
+        raise ValueError(msg)
+    metadata = mtdt.Files(host=host, port=port)
+    blocks = metadata.get_blocks(metadata.list_blocks()[-window:])
+    blocks_to_cleanup = [b for b in blocks if has_replicas(b)]
+    return blocks_to_cleanup
 
 
 def delete_block(block, host="metadata", port=6379):
@@ -59,14 +101,14 @@ def delete_block(block, host="metadata", port=6379):
     Raises:
         ValueError: if the block is not a MetaBlock instance
     """
-    if not block or not isinstance(block, MetaBlock):
+    if not block or not isinstance(block, mtdt.MetaBlock):
         raise ValueError("block argument must be a valid MetaBlock")
     LOGGER.debug("delete_block: block={:s}, host={:s}, port={:d}".format(block.key, host, port))
-    files = Files(host=host, port=port)
-    filename = extract_path_from_key(block.key)
+    files = mtdt.Files(host=host, port=port)
+    filename = dsp.extract_path_from_key(block.key)
     with open("./dispatcher.json", "r") as handle:
         dispatcher_configuration = json.load(handle)
-    dispatcher = Dispatcher(configuration=dispatcher_configuration)
+    dispatcher = dsp.Dispatcher(configuration=dispatcher_configuration)
     hostname = os.uname()[1]
     kazoo_resource = os.path.join("/", filename)
     kazoo_identifier = "repair-{:s}".format(hostname)
@@ -88,6 +130,9 @@ def init_logger():
     Returns:
         logger: Initialized logger
     """
+    log_config = os.getenv("LOG_CONFIG", os.path.join(os.path.dirname(__file__), "logging.conf"))
+    logging.config.fileConfig(log_config)
+
     logger = logging.getLogger("scrub")
 
     file_handler = logging.FileHandler("scrub.log")
@@ -111,6 +156,10 @@ if __name__ == "__main__":
                               "scrubbing"),
                         type=int,
                         default=3)
+    PARSER.add_argument("-w",
+                        "--window",
+                        help="The size of the replication window",
+                        type=int)
     PARSER.add_argument("--hostname",
                         help="The server hosting the metadata",
                         type=str,
@@ -127,14 +176,18 @@ if __name__ == "__main__":
                         default=0)
     ARGS = PARSER.parse_args()
     LOGGER = init_logger()
-    KAZOO_CLIENT = init_zookeeper_client()
+    KAZOO_CLIENT = utils.init_zookeeper_client()
     if ARGS.interval:
         LOGGER.info("Going to start scrubbing with {:d} seconds interval".format(ARGS.interval))
         while True:
             try:
                 time.sleep(ARGS.interval)
                 LOGGER.info("Scrubbing database...")
-                BLOCKS = list_replicas_to_delete(ARGS.pointers)
+                BLOCKS = None
+                if ARGS.window:
+                    BLOCKS = list_replicas_out_of_window_to_delete(ARGS.window)
+                else:
+                    BLOCKS = list_replicas_to_delete(ARGS.pointers)
                 LOGGER.info("Found {:d} blocks to scrub".format(len(BLOCKS)))
                 for BLOCK in BLOCKS:
                     LOGGER.debug("Looking at {:s}".format(BLOCK.key))
@@ -150,7 +203,13 @@ if __name__ == "__main__":
     else:
         LOGGER.info("Going to start scrubbing with {:d} seconds interval".format(ARGS.interval))
         LOGGER.info("Scrubbing database...")
-        BLOCKS = list_replicas_to_delete(ARGS.pointers)
+        BLOCKS = None
+        if ARGS.window:
+            LOGGER.info("Looking for blocks out of the {:d} documents window...".format(ARGS.window))
+            BLOCKS = list_replicas_out_of_window_to_delete(ARGS.window)
+        else:
+            LOGGER.info("Looking for blocks that have been pointed at at least {:d} times...".format(ARGS.pointers))
+            BLOCKS = list_replicas_to_delete(ARGS.pointers)
         LOGGER.info("Found {:d} blocks to scrub".format(len(BLOCKS)))
         for BLOCK in BLOCKS:
             LOGGER.debug("Looking at {:s}".format(BLOCK.key))

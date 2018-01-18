@@ -23,6 +23,7 @@ from pyproxy.playcloud_pb2 import Strip
 import pyproxy.coder_client
 import pyproxy.proxy_service
 import pyproxy.pyproxy_globals
+import pyproxy.utils
 
 
 log_config = os.getenv("LOG_CONFIG", os.path.join(os.path.dirname(__file__), "logging.conf"))
@@ -183,43 +184,6 @@ def dictionary():
     """
     return json.dumps(FILES.get_entanglement_graph(), indent=4, separators=(',', ': '))
 
-def init_zookeeper_client(host="zoo1", port=2181, max_retries=5):
-    """
-    Tries to initialize the connection to zookeeper.
-    Args:
-        host(str, optional): zookeeper host
-        port(int, optional): zookeeper port
-        max_retries(int, optional): How many times should the connection
-                                    establishment be retried
-    Returns:
-        kazoo.client.KazooClient: An initialized zookeeper client
-    Raises:
-        EnvironmentError: If the client cannot connect to zookeeper
-    """
-    zk_logger = logging.getLogger("zookeeper")
-    zk_logger.info("initializing connection to zookeeper")
-    hosts = "{:s}:{:d}".format(host, port)
-    client = KazooClient(hosts=hosts)
-    backoff_in_seconds = 1
-    tries = 0
-    while tries < max_retries:
-        try:
-            zk_logger.info("Trying to connect to {:s}".format(hosts))
-            client.start()
-            if client.connected:
-                zk_logger.info("Connected to zookeeper")
-                return client
-        except KazooTimeoutError:
-            tries += 1
-            backoff_in_seconds *= 2
-            zk_logger.warn("Failed to connect to {:s}".format(hosts))
-            zk_logger.warn("Waiting {:d} seconds to reconnect to {:s}"
-                           .format(backoff_in_seconds, hosts))
-            time.sleep(backoff_in_seconds)
-    error_message = "Could not connect to {:s}".format(hosts)
-    zk_logger.error(error_message)
-    raise EnvironmentError(error_message)
-
 @APP.route("/R3Knge0dnlDxZcHXH6iip9DZ+greFpvIKYpSTuhyHWLHybrc6Kmt1H84NkI71wjI", method="GET")
 def dummy_route():
     """
@@ -243,6 +207,6 @@ if __name__ == "__main__":
     playcloud_pb2.add_ProxyServicer_to_server(pyproxy.proxy_service.ProxyService(), GRPC_SERVER)
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
-    KAZOO = init_zookeeper_client()
+    KAZOO = pyproxy.utils.init_zookeeper_client()
     run(server="bjoern", app=APP, host="0.0.0.0", port=3000, debug=False, quiet=True)
     KAZOO.stop()
