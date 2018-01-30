@@ -263,11 +263,11 @@ class BlockFetcher(threading.Thread):
     Fetches a block from the data nodes going through the provider where the blocks
     are available
     """
-    def __init__(self, providers, metablock, queue):
+    def __init__(self, providers, metablock):
         super(BlockFetcher, self).__init__()
         self.providers = providers
         self.metablock = metablock
-        self.queue = queue
+        self.queue = {}
 
     def run(self):
         get_block(self.providers, self.metablock, self.queue)
@@ -371,11 +371,12 @@ class Dispatcher(object):
         fetchers = []
         for metablock in metablocks:
             possible_providers = {key: self.providers[key] for key in metablock.providers}
-            fetcher = BlockFetcher(possible_providers, metablock, blocks)
+            fetcher = BlockFetcher(possible_providers, metablock)
             fetcher.start()
             fetchers.append(fetcher)
         for fetcher in fetchers:
             fetcher.join()
+            blocks.update(fetcher.queue)
         return blocks
 
     def get_block(self, path, index, reconstruct_if_missing=True):
