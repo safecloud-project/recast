@@ -110,9 +110,14 @@ def store(key=None, data=None):
     start = time.clock()
     if key is None:
         key = str(uuid.uuid4())
+        while FILES.exists(key):
+            key = str(uuid.uuid4())
     key = unicode(key, errors="ignore").encode("utf-8")
     lock = KAZOO.WriteLock(os.path.join("/", key), HOSTNAME)
     with lock:
+        if FILES.exists(key):
+            error_message = "File {:s} already exists".format(key)
+            raise NameError(error_message)
         LOGGER.debug("Going to request data encoding")
         encoded_file = CODER_CLIENT.encode(key, data)
 
@@ -143,7 +148,10 @@ def put(key):
     data = request.body.getvalue()
     if not data:
         return abort(400, "The request body must contain data to store")
-    key = store(key=key, data=request.body.getvalue())
+    try:
+        key = store(key=key, data=request.body.getvalue())
+    except NameError as name_error:
+        return abort(409, name_error.message)
     end = time.clock()
     elapsed = end - start
     LOGGER.debug("put request for {:s} took {:f} seconds".format(key, elapsed))

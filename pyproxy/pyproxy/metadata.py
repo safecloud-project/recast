@@ -271,6 +271,18 @@ class Files(object):
                                        socket_keepalive=True)
         self.select_pointers = pointer_selector
 
+    def exists(self, path):
+        """
+        Checks if a file is in the metadata
+        Args:
+            path(str): Path to the file
+        Returns:
+            bool: True if the file exists in the documents
+        """
+        if not path or not isinstance(path, (str, unicode)):
+            raise ValueError("path argument must be a non empty string")
+        return self.redis.exists("{:s}{:s}".format(Files.FILE_PREFIX, path))
+
     def get(self, path):
         """
         Returns a Metadata object stored under a given path.
@@ -281,7 +293,7 @@ class Files(object):
         Raises:
             ValueError: If path is an empty string
         """
-        if not path:
+        if not path or not isinstance(path, (str, unicode)):
             raise ValueError("path argument must be a valid non-empty string")
         return self.get_files([path])[0]
 
