@@ -187,3 +187,29 @@ def test_files_get_provider(monkeypatch):
     result = files.get_blocks_from_provider("FakeProvider")
     assert isinstance(result, list)
     assert len(result) == 1
+
+def test_files_exists_bad_path(monkeypatch):
+    with mock.patch("socket.gethostbyname", return_value="127.0.0.1"):
+        files = Files()
+    error_message = "path argument must be a non empty string"
+    with pytest.raises(ValueError, match=error_message):
+        files.exists(None)
+    with pytest.raises(ValueError, match=error_message):
+        files.exists("")
+    with pytest.raises(ValueError, match=error_message):
+        files.exists({"a": 0})
+    with pytest.raises(ValueError, match=error_message):
+        files.exists([])
+
+def test_files_exists(monkeypatch):
+    with mock.patch("socket.gethostbyname", return_value="127.0.0.1"):
+        files = Files()
+    def always_true(_):
+        return True
+    def always_false(_):
+        return False
+    monkeypatch.setattr(files.redis, "exists", always_false)
+    assert files.exists("path") == False
+    monkeypatch.delattr(files.redis, "exists")
+    monkeypatch.setattr(files.redis, "exists", always_true)
+    assert files.exists("path") == True
