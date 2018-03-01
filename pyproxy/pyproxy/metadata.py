@@ -9,6 +9,7 @@ import socket
 import time
 
 import enum
+import IPy
 import numpy
 import redis
 
@@ -264,7 +265,10 @@ class Files(object):
         return Files.CONNECTION_POOLS[host][port]
 
     def __init__(self, host="metadata", port=6379, pointer_selector=normal_selection):
-        ip_address = socket.gethostbyname(host)
+        try:
+            ip_address = str(IPy.IP(host))
+        except ValueError:
+            ip_address = socket.gethostbyname(host)
         pool = Files.get_pool(ip_address, port)
         self.redis = redis.StrictRedis(connection_pool=pool,
                                        encoding=None,
