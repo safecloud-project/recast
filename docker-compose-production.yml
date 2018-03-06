@@ -1,0 +1,131 @@
+---
+version: "3"
+services:
+    proxy:
+        env_file:
+          - ./erasure.env
+        ports:
+          - 3000:3000
+        deploy:
+            mode: replicated
+            placement:
+                constraints: [node.role == manager]
+            replicas: 8
+        image: dburihabwa/playcloud_proxy
+    zoo1:
+        image: zookeeper
+        restart: always
+        ports:
+          - 2181:2181
+        environment:
+          - ZOO_MY_ID=1
+        deploy:
+            mode: replicated
+            placement:
+                constraints: [node.role == manager]
+
+    metadata:
+        image: redis:3.2.8
+        command: redis-server --appendonly yes
+        deploy:
+            mode: replicated
+            placement:
+                constraints: [node.role == manager]
+        volumes:
+          - ./volumes/metadata/:/data/
+    storage-node-1:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-2:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-3:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-4:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-5:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-6:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-7:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-8:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-9:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-10:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-11:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-12:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-13:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-14:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-15:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
+    storage-node-16:
+        environment:
+          - MINIO_ACCESS_KEY=playcloud
+          - MINIO_SECRET_KEY=playcloud
+        image: minio/minio:latest
+        command: server /data
