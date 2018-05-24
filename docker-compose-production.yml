@@ -2,8 +2,6 @@
 version: "3"
 services:
     proxy:
-        env_file:
-          - ./erasure.env
         ports:
           - 3000:3000
         deploy:
