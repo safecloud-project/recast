@@ -280,7 +280,7 @@ Replica management
 ==================
 
 The right selection of pointers for entanglement is paramount to long-term protection of documents in the archive.
-D2.5 described how to achieve better selection results using a mixed approach by picking one part of the pointers over the entire archive and the other in a sliding window over the most recent documents that entered the archive (aka the tail).
+The paper described how to achieve better selection results using a mixed approach by picking one part of the pointers over the entire archive and the other in a sliding window over the most recent documents that entered the archive (aka the tail).
 In addition, we proposed a similar window-based approach to provide short-term protection to documents in the tail of the archive through replication.
 To deal with the storage overhead of this replication (see Section 4), our implementation provides two strategies for replica management: reference-counting and window-based. The rest of this section describes these strategies and their practical uses.
 
@@ -312,7 +312,7 @@ Replica management by sliding window
 ------------------------------------
 
 A new document entering the archive is entangled and split into blocks.
-As a recent document, it is still part of the tail of the archive made of the *w* most recent documents in the archive. In a system that uses mixed pointer selection, and is thus biased towards documents in the tail, we can assume that as documents exit the window, they can have been used as pointers and copies of their blocks can be discarded (see D2.5 for more details).
+As a recent document, it is still part of the tail of the archive made of the *w* most recent documents in the archive. In a system that uses mixed pointer selection, and is thus biased towards documents in the tail, we can assume that as documents exit the window, they can have been used as pointers and copies of their blocks can be discarded (see paper).
 
 The sliding window strategy offers a way to maintain a predictable storage overhead and even guarantees that the size occupied by replicas decreases over time relative to the size of the archive.
 But it does so with little regard to the actual recoverability of blocks themselves.
