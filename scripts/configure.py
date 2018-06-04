@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 """
 A script that reads configuration.json and produces a matching configuration files
 for docker-compose and the pyproxy.
