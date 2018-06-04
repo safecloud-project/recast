@@ -2,6 +2,24 @@
 
 A python implementation of RECAST (to appear in the DSN18 proceedings).
 
+
+Requirements
+============
+
+RECAST is python 2 project orchastrated using [docker](https://www.docker.com), [docker-compose](https://docs.docker.com/compose/) and [docker-swarm](https://docs.docker.com/engine/swarm/).
+A `requirements .txt` file at the top repo lists all dependencies that need to be installed to play around an instance of RECAST (configuration, deployment, ...).
+```bash
+pip install -r requirements.txt
+```
+Or on a linux system where python 3 is the default:
+```bash
+pip2 install -r requirements.txt
+```
+
+The dependencies needed by RECAST itself can be found in `pyproxy/requirements.txt` and modified for hacking purposes.
+However running the software with docker (see below), alleviates the need to manually install the dependencies.
+
+
 Architecture
 ============
 
