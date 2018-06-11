@@ -15,10 +15,7 @@ from redis import ConnectionError
 import pyproxy.coder_client
 import pyproxy.metadata
 import pyproxy.playcloud_pb2
-import pyproxy.safestore.providers.dbox
 import pyproxy.safestore.providers.disk
-import pyproxy.safestore.providers.gdrive
-import pyproxy.safestore.providers.one
 import pyproxy.safestore.providers.redis_provider
 import pyproxy.safestore.providers.s3
 
@@ -31,11 +28,8 @@ class Providers(enum.Enum):
     Enumeration of all the storage providers supported by the Dispatcher
     """
     redis = 0
-    gdrive = 1
-    dropbox = 2
-    onedrive = 3
-    disk = 4
-    s3 = 5
+    disk = 1
+    s3 = 2
 
 
 class ProviderFactory(object):
@@ -44,10 +38,7 @@ class ProviderFactory(object):
     """
     def __init__(self):
         self.initializers = {
-            Providers.dropbox.name: pyproxy.safestore.providers.dbox.DBox,
-            Providers.gdrive.name: pyproxy.safestore.providers.gdrive.GDrive,
             Providers.redis.name: pyproxy.safestore.providers.redis_provider.RedisProvider,
-            Providers.onedrive.name: pyproxy.safestore.providers.one.ODrive,
             Providers.disk.name: pyproxy.safestore.providers.disk.Disk,
             Providers.s3.name: pyproxy.safestore.providers.s3.S3Provider
         }
