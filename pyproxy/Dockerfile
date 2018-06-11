@@ -106,7 +106,6 @@ RUN apt-get update &&\
     pip install --quiet --requirement requirements.txt
 
 COPY requirements.txt  /usr/local/src/pyproxy/requirements.txt
-COPY pyproxy/safestore/data.db /root/data.db
 WORKDIR /usr/local/src/pyproxy
 RUN pip install --upgrade --requirement requirements.txt
 COPY . /usr/local/src/pyproxy
