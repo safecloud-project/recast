@@ -2,17 +2,13 @@
 # coding=utf8
 
 import logging
-
 import time
-
-from Crypto import Random
+import os
 
 from concurrent import futures
 
 import pyproxy.safestore.handler.defines as defines
 
-
-import numpy
 
 
 class Magic():
@@ -51,8 +47,7 @@ class Magic():
                 list_cypher_data = cypher(data, len(self.providers))
                 res = []
                 for i in range(0, len(self.providers)):
-                    res.append(self.executor.submit(self.providers[
-                               i].put, list_cypher_data[i], path))
+                    res.append(self.executor.submit(self.providers[i].put, list_cypher_data[i], path))
                     self.logger.info("magic:put:i:" +
                                      str(i) + ":path:" + str(path))
 
@@ -181,7 +176,7 @@ def cypher(data, nr_providers):
     buf = data
     size = len(data)
     for x in range(1, nr_providers):
-        rnd = Random.get_random_bytes(size)
+        rnd = os.urandom(size)
         buf = faster_xor(buf, rnd)
         res.append(rnd)
     res.append(buf)

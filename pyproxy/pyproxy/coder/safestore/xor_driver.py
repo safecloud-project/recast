@@ -1,5 +1,5 @@
 """Driver for xor encryption of String."""
-from Crypto import Random
+import os
 
 import numpy
 
@@ -24,7 +24,7 @@ class XorDriver:
         buf = data
         size = len(data)
         for x in range(1, self.n_blocks):
-            rnd = Random.get_random_bytes(size)
+            rnd = os.urandom(size)
             buf = _xor(buf, rnd)
             res.append(rnd)
         res.append(buf)
