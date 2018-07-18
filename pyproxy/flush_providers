@@ -6,7 +6,7 @@ Flushes a storage provider from the data it holds
 import json
 import os
 
-from pyproxy.safestore.providers.dispatcher import ProviderFactory
+from pyproxy.pyproxy.providers import ProviderFactory
 
 
 CONFIGURATION_PATH = os.path.join(os.path.dirname(__file__), "./dispatcher.json")

@@ -11,7 +11,7 @@ import sys
 import time
 
 import pyproxy.metadata as mtdt
-import pyproxy.safestore.providers.dispatcher as dsp
+import pyproxy.pyproxy.providers.dispatcher as dsp
 import pyproxy.utils as utils
 
 __PROGRAM_DESCRIPTION = ("A script that scans the database looking for ",

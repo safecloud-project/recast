@@ -6,8 +6,8 @@ import pytest
 
 import pyproxy.metadata as metadata
 import pyproxy.playcloud_pb2 as playcloud_pb2
-import pyproxy.safestore.providers.dispatcher as dsp
-import pyproxy.safestore.providers.redis_provider as redis
+import pyproxy.pyproxy.providers.dispatcher as dsp
+import pyproxy.pyproxy.providers.redis_provider as redis
 
 DEFAULT_PATH = "hello"
 LENGTH = 128

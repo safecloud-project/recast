@@ -8,7 +8,7 @@ import logging
 import json
 import os
 
-import pyproxy.safestore.providers.dispatcher as d
+import pyproxy.pyproxy.providers.dispatcher as d
 import pyproxy.metadata as metadata
 
 DEFAULT_DISPATCHER_CONFIGURATION = os.path.join(os.path.dirname(__file__), "dispatcher.json")

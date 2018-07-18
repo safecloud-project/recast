@@ -11,7 +11,7 @@ import pyproxy.coder.playcloud_pb2 as playcloud
 import pyproxy.coder.playcloud_pb2_grpc
 import pyproxy.proxy_service as proxy_service
 import pyproxy.pyproxy_globals
-import pyproxy.safestore.providers.dispatcher
+import pyproxy.providers.dispatcher
 
 # TODO Read the default grpc timeout in configuration file before assigning this value
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
@@ -121,7 +121,7 @@ class LocalProxyClient(object):
                                          index,
                                          reconstruct_if_missing=reconstruct_if_missing)
         reply = playcloud.Strip()
-        if not isinstance(data, pyproxy.safestore.providers.dispatcher.NoReplicaException):
+        if not isinstance(data, pyproxy.providers.dispatcher.NoReplicaException):
             reply.data = data
         return reply
 

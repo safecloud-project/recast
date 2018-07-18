@@ -2,7 +2,7 @@
 import json
 
 from pyproxy.coder_client import CoderClient
-from pyproxy.safestore.providers.dispatcher import Dispatcher
+from pyproxy.pyproxy.providers import Dispatcher
 
 def reconstruct(path, index):
     with open("./dispatcher.json", "r") as handle:

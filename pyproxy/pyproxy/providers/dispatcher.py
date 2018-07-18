@@ -15,9 +15,9 @@ from redis import ConnectionError
 import pyproxy.coder_client
 import pyproxy.metadata
 import pyproxy.playcloud_pb2
-import pyproxy.safestore.providers.disk
-import pyproxy.safestore.providers.redis_provider
-import pyproxy.safestore.providers.s3
+import pyproxy.providers.disk
+import pyproxy.providers.redis_provider
+import pyproxy.providers.s3
 
 
 logger = logging.getLogger("dispatcher")
@@ -38,9 +38,9 @@ class ProviderFactory(object):
     """
     def __init__(self):
         self.initializers = {
-            Providers.redis.name: pyproxy.safestore.providers.redis_provider.RedisProvider,
-            Providers.disk.name: pyproxy.safestore.providers.disk.Disk,
-            Providers.s3.name: pyproxy.safestore.providers.s3.S3Provider
+            Providers.redis.name: pyproxy.providers.redis_provider.RedisProvider,
+            Providers.disk.name: pyproxy.providers.disk.Disk,
+            Providers.s3.name: pyproxy.providers.s3.S3Provider
         }
 
     def get_provider(self, configuration=None):

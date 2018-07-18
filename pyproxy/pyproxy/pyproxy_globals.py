@@ -5,7 +5,7 @@ import json
 import os
 import threading
 
-import pyproxy.safestore.providers.dispatcher
+import pyproxy.providers.dispatcher
 
 __DISPATCHER = None
 __lock = threading.Lock()
@@ -25,5 +25,5 @@ def get_dispatcher_instance():
                                                    "dispatcher.json")
             with open(os.path.join(configuration_file_path)) as dispatcher_configuration_file:
                 dispatcher_configuration = json.load(dispatcher_configuration_file)
-                __DISPATCHER = pyproxy.safestore.providers.dispatcher.Dispatcher(dispatcher_configuration)
+                __DISPATCHER = pyproxy.providers.dispatcher.Dispatcher(dispatcher_configuration)
     return __DISPATCHER
