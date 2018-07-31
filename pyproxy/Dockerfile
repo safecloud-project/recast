@@ -102,7 +102,7 @@ WORKDIR /usr/local/src/app/
 COPY requirements.txt /usr/local/src/app
 RUN apt-get update &&\
     apt-get install --yes --quiet libssl-dev libffi-dev python-dev &&\
-    easy_install -U cffi &&\
+    pip install --quiet --upgrade pip &&\
     pip install --quiet --requirement requirements.txt
 
 COPY requirements.txt  /usr/local/src/pyproxy/requirements.txt

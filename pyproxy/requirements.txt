@@ -1,6 +1,7 @@
 bjoern==2.0.1
 boto3==1.4.7
 bottle==0.12.13
+cffi
 cryptography==1.7.2
 enum34==1.1.3
 fake-factory==0.5.7
