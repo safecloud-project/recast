@@ -6,11 +6,13 @@ import logging
 import multiprocessing
 import random
 import re
+import socket
 import threading
 import time
 
 import enum
-from redis import ConnectionError
+import redis
+import botocore.exceptions
 
 import pyproxy.coder_client
 import pyproxy.metadata
@@ -65,11 +67,36 @@ class ProviderFactory(object):
             message = "configuration type '{:s}' is not supported by the factory".format(provider_type)
             raise ValueError(message)
         if provider_type == Providers.redis.name:
-            return initializer(configuration)
+            tick = 0
+            while True:
+                try:
+                    return initializer(configuration)
+                except socket.gaierror as error:
+                    if tick > 5:
+                        raise error
+                    sleep_time = pow(2, tick)
+                    host = configuration["host"]
+                    port = configuration["port"]
+                    logger.warning("Could not connect to {:s}:{:d}. Waiting {:d} seconds to try again".format(host, port, sleep_time))
+                    time.sleep(sleep_time)
+                    tick += 1
         if provider_type == Providers.disk.name:
             return initializer(folder=configuration.get("folder", "/data"))
         if provider_type == Providers.s3.name:
-            return  initializer(**configuration)
+            tick = 0
+            while True:
+                try:
+                    return initializer(**configuration)
+                except botocore.exceptions.EndpointConnectionError as error:
+                    if tick > 5:
+                        raise error
+                    sleep_time = pow(2, tick)
+                    logger.warning("Could not connect to {:s}. Waiting {:d} seconds to try again".format(configuration["endpoint_url"], sleep_time))
+                    time.sleep(sleep_time)
+                    tick += 1
+
+
+
         return initializer()
 
 
@@ -140,7 +167,7 @@ class BlockPusher(threading.Thread):
                 self.provider.put(data, metablock.key)
                 index = extract_index_from_key(metablock.key)
                 self.queue[index] = metablock
-            except ConnectionError:
+            except redis.ConnectionError:
                 index = extract_index_from_key(metablock.key)
                 self.queue[index] = CouldNotPushException(self.provider, metablock.key)
 
@@ -229,7 +256,7 @@ def get_block(providers, metablock, queue):
         logger.debug("About to fetch block {:s} from {:s}".format(key, provider_key))
         try:
             data = provider.get(key)
-        except ConnectionError:
+        except redis.ConnectionError:
             message = "Received a connection error from provider {:s} trying to get block {:s}".format(provider_key, key)
             logger.error(message)
             continue
