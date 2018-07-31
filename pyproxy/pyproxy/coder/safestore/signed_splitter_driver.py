@@ -1,8 +1,5 @@
 """Driver for xor encryption of String."""
 
-from assymetric_driver import AssymetricDriver
-
-
 class SignedSplitterDriver():
     """Class used to sign the message and xor the message.
     This Encryption guarantees privacy and non repudiation

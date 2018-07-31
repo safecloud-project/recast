@@ -32,8 +32,6 @@ from pyproxy.coder.safestore.signed_splitter_driver import SignedSplitterDriver
 from pyproxy.coder.safestore.signed_hashed_splitter_driver import SignedHashedSplitterDriver
 from pyproxy.coder.safestore.aes_driver import AESDriver
 from pyproxy.coder.safestore.shamir_driver import ShamirDriver
-from pyproxy.coder.safestore.assymetric_driver import AssymetricDriver
-
 
 __LOCAL_DIRECTORY = os.path.dirname(__file__)
 
@@ -101,11 +99,8 @@ class DriverFactory(object):
         measures = {  # just confidentiality
             'confd': self.confd,
             # confidentiality and integrity
-            'confd_int': self.confd_int,
-            # confidentiality and non-repudiation
-            'confd_sign': self.confd_sign,
-            # every guarantee
-            'confd_int_sign': self.confd_int_sign}
+            'confd_int': self.confd_int
+        }
 
         return measures[self.sec_measure]()
 
@@ -116,20 +111,6 @@ class DriverFactory(object):
         hashing_scheme = os.environ.get("hash")
         driver = HashedSplitterDriver(self.splitter_driver, hashing_scheme)
         return driver
-
-    def _get_signer(self):
-        sign_cypher = os.environ.get("signature")
-        hashing_scheme = os.environ.get("hash")
-        key_size = int(os.environ.get("keysize"))
-        return AssymetricDriver(sign_cypher, key_size, hashing_scheme)
-
-    def confd_sign(self):
-        signer = self._get_signer()
-        return SignedSplitterDriver(self.splitter_driver, signer)
-
-    def confd_int_sign(self):
-        signer = self._get_signer()
-        return SignedHashedSplitterDriver(self.confd_int(), signer)
 
     def xor(self):
         nblocks = int(os.environ.get("n_blocks"))
