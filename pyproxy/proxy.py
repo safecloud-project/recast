@@ -1,20 +1,20 @@
+# /usr/bin/env python2
 """
 A python implementation of playcloud's proxy server
 """
 import argparse
 import json
-import logging
 import logging.config
 import os
 import time
 import uuid
 
+
+import concurrent.futures
+
 from bottle import abort, request, response, run
 import bottle
-import concurrent.futures
 import grpc
-from kazoo.client import KazooClient
-from kazoo.handlers.threading import KazooTimeoutError
 
 import pyproxy.playcloud_pb2 as playcloud_pb2
 
@@ -25,16 +25,14 @@ import pyproxy.proxy_service
 import pyproxy.pyproxy_globals
 import pyproxy.utils
 
-
-log_config = os.getenv("LOG_CONFIG", os.path.join(os.path.dirname(__file__), "logging.conf"))
-logging.config.fileConfig(log_config)
-
+# Logging initialization
+LOG_CONFIG = os.getenv("LOG_CONFIG", os.path.join(os.path.dirname(__file__), "logging.conf"))
+logging.config.fileConfig(LOG_CONFIG)
 LOGGER = logging.getLogger("proxy")
-
 
 # GRPC setup
 DEFAULT_GRPC_TIMEOUT_IN_SECONDS = 60
-GRPC_MESSAGE_SIZE = (2 * 1024 * 1024 * 1024) - 1 # 2^31 - 1
+GRPC_MESSAGE_SIZE = (2 * 1024 * 1024 * 1024) - 1  # 2^31 - 1
 GRPC_OPTIONS = [
     ("grpc.max_receive_message_length", GRPC_MESSAGE_SIZE),
     ("grpc.max_send_message_length", GRPC_MESSAGE_SIZE)
@@ -73,6 +71,7 @@ def get_file_metadata(key):
         return ""
     return json.dumps(meta.__json__())
 
+
 @APP.route("/<key:path>", method="GET")
 def get(key):
     """
@@ -100,6 +99,7 @@ def get(key):
 
         data = CODER_CLIENT.decode(key, strips)
         return data
+
 
 def store(key=None, data=None):
     """
@@ -168,12 +168,13 @@ def put_keyless():
     start = time.clock()
     data = request.body.getvalue()
     if not data:
-        return abort(400, "The request body must contain data to store")    
+        return abort(400, "The request body must contain data to store")
     key = store(key=None, data=request.body.getvalue())
     end = time.clock()
     elapsed = end - start
     LOGGER.debug("put_keyless request took {:f} seconds".format(elapsed))
     return key
+
 
 @APP.route("/", method="GET")
 def list_files():
@@ -185,6 +186,7 @@ def list_files():
     entries = [meta.__json__() for meta in FILES.values()]
     return json.dumps({"files": entries})
 
+
 @APP.route("/dict", method="GET")
 def dictionary():
     """
@@ -192,12 +194,14 @@ def dictionary():
     """
     return json.dumps(FILES.get_entanglement_graph(), indent=4, separators=(',', ': '))
 
+
 @APP.route("/R3Knge0dnlDxZcHXH6iip9DZ+greFpvIKYpSTuhyHWLHybrc6Kmt1H84NkI71wjI", method="GET")
 def dummy_route():
     """
     Dummy route to test that the server is alive and get a fast response
     """
     return "OK"
+
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(prog="proxy",
