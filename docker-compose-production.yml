@@ -9,7 +9,7 @@ services:
             placement:
                 constraints: [node.role == manager]
             replicas: 8
-        image: dburihabwa/playcloud_proxy
+        image: dburihabwa/recast_proxy
     zoo1:
         image: zookeeper
         restart: always
@@ -29,8 +29,6 @@ services:
             mode: replicated
             placement:
                 constraints: [node.role == manager]
-        volumes:
-          - ./volumes/metadata/:/data/
     storage-node-1:
         environment:
           - MINIO_ACCESS_KEY=playcloud

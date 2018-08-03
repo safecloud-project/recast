@@ -264,10 +264,12 @@ def create_docker_compose_configuration_for_production(configuration):
     """
     dev_compose_configuration = create_docker_compose_configuration(configuration)
     del dev_compose_configuration["services"]["proxy"]["build"]
-    dev_compose_configuration["services"]["proxy"]["image"] = "dburihabwa/playcloud_proxy"
+    dev_compose_configuration["services"]["proxy"]["image"] = "dburihabwa/recast_proxy"
+    # Remove volumes entry from metadata
+    del dev_compose_configuration["services"]["metadata"]["volumes"]
     if "coder" in dev_compose_configuration["services"]:
         del dev_compose_configuration["services"]["coder"]["build"]
-        dev_compose_configuration["services"]["coder"]["image"] = "dburihabwa/playcloud_coder"
+        dev_compose_configuration["services"]["coder"]["image"] = "dburihabwa/recast_coder"
     if "load_balancer" in dev_compose_configuration["services"]:
         del dev_compose_configuration["services"]["load_balancer"]
     for service in dev_compose_configuration["services"].keys():
