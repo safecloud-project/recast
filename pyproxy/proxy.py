@@ -203,6 +203,27 @@ def dummy_route():
     return "OK"
 
 
+def seed_system():
+    """
+    Checks if the system has enough pointers at disposal and creates extra anchor files if needed.
+    """
+    seed_logger = logging.getLogger("seed")
+    seed_logger.info("Checking if the system needs to be seeded")
+    with open(os.path.join(os.path.dirname(__file__), "./dispatcher.json")) as handle:
+        configuration = json.load(handle)
+    if "entanglement" not in configuration or "type" not in configuration["entanglement"] or\
+        configuration["entanglement"]["type"] != "step":
+        seed_logger.info("No need to see the system")
+        return
+    pointers_needed = configuration["entanglement"]["configuration"]["t"]
+    files = Files(host="metadata")
+    pointers_available = files.get_number_of_blocks_available()
+    while pointers_available < pointers_needed:
+        store(key=None, data=os.urandom(1024 * 1024))
+        pointers_available = files.get_number_of_blocks_available()
+    seed_logger.info("Seeding done")
+
+
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(prog="proxy",
                                      description="A python implementation of playcloud's proxy server")
@@ -220,5 +241,6 @@ if __name__ == "__main__":
     GRPC_SERVER.add_insecure_port("0.0.0.0:1234")
     GRPC_SERVER.start()
     KAZOO = pyproxy.utils.init_zookeeper_client()
+    seed_system()
     run(server="bjoern", app=APP, host="0.0.0.0", port=3000, debug=False, quiet=True)
     KAZOO.stop()

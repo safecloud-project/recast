@@ -606,3 +606,11 @@ class Files(object):
                 if provider in block.providers:
                     blocks_from_provider.append(block)
         return blocks_from_provider
+
+    def get_number_of_blocks_available(self):
+        """
+        Return the number of blocks in the system
+        Returns:
+             int: number of blocks in the system
+        """
+        return self.redis.zcard("block_index")
