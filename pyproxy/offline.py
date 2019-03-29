@@ -7,7 +7,7 @@ import errno
 import json
 import logging
 import os
-import uuid
+import shutil
 
 import numpy
 
@@ -15,24 +15,31 @@ import pyproxy.coder.playcloud_pb2
 import pyproxy.coder.entangled_driver
 
 
-DEFAULT_CONFIGURATION_FILE = os.path.join(os.path.basename(__file__), "./dispatcher.json")
+DEFAULT_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "./dispatcher.json")
 
 
 class Storage(object):
+    """
+    On disk storage and pointer source for random entanglement
+    """
     def __init__(self, base_directory):
-        self.directory = base_directory
-        self.blocks = set(list_all_files(self.directory))
-
-    def register_block(self, path):
-        self.blocks.add(path)
+        self.disk = Disk(base_directory)
+        self.blocks = set(list_all_files(self.disk.root_folder))
 
     def get_random_blocks(self, pointers):
+        """
+
+        :param pointers:
+        :return:
+        """
         keys = list(self.blocks)
         indices = Storage.normal_selection(pointers, len(keys))
         strips = []
         for index in indices:
             strip = pyproxy.coder.playcloud_pb2.Strip()
             strip.id = keys[index]
+            strip.data = self.disk.get(strip.id)
+            strips.append(strip)
         return strips
 
     @staticmethod
@@ -69,25 +76,49 @@ class Storage(object):
             selected.append(index)
         return selected
 
-    def get_block(self, path):
+    def get(self, path):
+        """
+        Returns a block from storage
+        Args:
+            path(str): Path to the block
+        Returns:
+            bytes: Block data
+        """
         if path not in self.blocks:
             raise ValueError("{:s} is not known")
-        with open(os.path.join(self.directory, path), "r") as handle:
-            return handle.read()
+        return self.disk.get(path)
 
-    def get(self, path):
-        return self.get_block(path)
+    def get_block(self, path):
+        """
+        Alias to Storage.get that matches random block source signature
+        Args:
+            path(str): Path to the block
+        Returns:
+            bytes: Block data
+        """
+        return self.get(path)
 
     def put(self, path, data):
-        with open(os.path.join(self.directory, path), "w") as handle:
-            handle.write(data)
-        self.register_block(path)
+        """
+        Stores a block under a path
+        Args:
+            path(str): Path to the block
+            data(bytes): Block data
+        """
+        self.disk.put(path, data)
+        self.blocks.add(path)
 
 
 def mkdir_p(path):
     """
-    Create a directory in similar way to bash's mkdir -p
-    :param path: Path of the new directory
+    Recursively creates a directory tree.
+    Shamelessly copied from https://stackoverflow.com/a/600612
+    Args:
+        path(str): Tree to create
+    Returns:
+        bool: True if the directory was created, False otherwise
+    Raises:
+        OSError: If an error occurs during the creation of the directories
     """
     try:
         os.makedirs(path)
@@ -96,7 +127,86 @@ def mkdir_p(path):
             pass
         else:
             raise
+    return os.path.isdir(path)
 
+def clean_path(path):
+    """
+    Removes extra space and leading slash at the beginning of a path
+    Args:
+        path(str): Path to clean
+    Returns:
+        str: A cleaned up path
+    """
+    clean_key = path.strip()
+    if clean_key[0] == '/':
+        clean_key = clean_key[1:]
+    return clean_key
+
+class Disk(object):
+    """
+    A storage provider for playcloud that stores blocks on the disk
+    """
+    def __init__(self, folder="/data"):
+        self.root_folder = folder
+
+    def get(self, key):
+        """
+        Retrieves a block from the disk. Returns None if nothing found
+        Args:
+            key(str): Path to the block from the filsystem
+        Returns:
+            (byte|None): The data or None if the block does not exist
+        """
+        clean_key = clean_path(key)
+        path = os.path.join(self.root_folder, clean_key)
+        if not os.path.isfile(path):
+            return None
+        with open(path, "r") as handle:
+            data = handle.read()
+        return data
+
+    def put(self, key, value):
+        """
+        Saves a block on the disk
+        Args:
+            key(str): Path to the block from the file system
+            value(bytes): The data to store
+        """
+        clean_key = clean_path(key)
+        path = os.path.join(self.root_folder, clean_key)
+        mkdir_p(os.path.dirname(path))
+        with open(path, "w") as handle:
+            handle.write(value)
+
+    def delete(self, key):
+        """
+        Deletes a block from the filesytem
+        Args:
+            key(str): Path to the block from the filsystem
+        Returns:
+            bool: True if the block was deleted, False otherwise.
+        """
+        clean_key = clean_path(key)
+        path = os.path.join(self.root_folder, clean_key)
+        if not os.path.exists(path):
+            return False
+        os.unlink(path)
+        return not os.path.exists(path)
+
+    def clear(self):
+        """
+        Removes all blocks from the filesystem
+        Returns:
+            bool: True if all data was deleted, False otherwise
+        """
+        for entry in os.listdir(self.root_folder):
+            path = os.path.join(self.root_folder, entry)
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
+
+        return len(os.listdir(self.root_folder)) == 0
 
 def seed_system(configuration_file, storage):
     """
@@ -114,12 +224,12 @@ def seed_system(configuration_file, storage):
         return
     pointers_needed = configuration["entanglement"]["configuration"]["t"]
     pointers_available = len(storage.blocks)
-    anchors_directory = os.path.join(storage.directory, ".anchors")
-    mkdir_p(anchors_directory)
-    while pointers_available < pointers_needed:
-        file_path = os.path.join(anchors_directory, str(uuid.uuid4()))
-        storage.put(file_path, os.urandom(1024 * 1024))
-        pointers_available = len(storage.blocks)
+    anchors_directory = ".anchors"
+    mkdir_p(os.path.join(storage.disk.root_folder, anchors_directory))
+    difference = pointers_needed - pointers_available
+    for index in xrange(difference):
+        file_path = os.path.join(anchors_directory, "anchor-{:d}".format(index))
+        storage.put(file_path, pyproxy.coder.entangled_driver.pad("", 1024 * 1024))
     seed_logger.info("Seeding done")
 
 
@@ -150,6 +260,7 @@ def main():
     parser.add_argument("-c", "--configuration", type=str, help="Configuration file", default=DEFAULT_CONFIGURATION_FILE)
 
     args = parser.parse_args()
+
     if not os.path.exists(args.output):
         raise ValueError("output directory cannot be found: {:s}".format(args.output))
     if not os.path.isdir(args.output):
@@ -163,7 +274,7 @@ def main():
 
     files = list_all_files(args.input)
     for input_file in files:
-        name = input_file.replace(args.input, "")
+        name = os.path.basename(input_file)
         with open(input_file, "r") as handle:
             data = handle.read()
         parities = driver.encode(data)
