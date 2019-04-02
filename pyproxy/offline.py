@@ -259,7 +259,7 @@ def seed_system(configuration_file, storage):
         return
     pointers_needed = configuration["entanglement"]["configuration"]["t"]
     pointers_available = len(storage.blocks)
-    anchors_directory = ".anchors"
+    anchors_directory = ".recast/anchors"
     mkdir_p(os.path.join(storage.disk.root_folder, anchors_directory))
     difference = pointers_needed - pointers_available
     for index in xrange(difference):
@@ -272,6 +272,7 @@ def main():
     """
     Main routine
     """
+    #FIXME load possible configuration from disk
     parser = argparse.ArgumentParser(__file__, description="Perform offline entanglement")
     parser.add_argument("input", type=str, help="Input directory with the files to entangle")
     parser.add_argument("output", type=str, help="Output directory to store the entangled files")
@@ -287,8 +288,10 @@ def main():
     if not os.access(args.output, os.W_OK):
         raise ValueError("output directory is not writeable: {:s}")
 
+    settings_directory = os.path.join(args.output, ".recast")
+    mkdir_p(settings_directory)
     source = Storage(args.output)
-    seed_system("dispatcher.json", source)
+    seed_system(args.configuration, source)
     driver = pyproxy.coder.entangled_driver.StepEntangler(source, 1, 10, 3)
 
     files = list_all_files(args.input)
@@ -309,9 +312,8 @@ def main():
             source.put(block_name, parity)
             file_metadata["blocks"].append(block_name)
         metadata[name] = file_metadata
-    #FIXME write configuration to disk
-    print json.dumps(metadata, indent=4, sort_keys=True)
-
+    with open(os.path.join(settings_directory, "metadata.json"), "w") as handle:
+        json.dump(metadata, handle)
 
 if __name__ == '__main__':
     main()
