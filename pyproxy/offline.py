@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#! /usr/bin/env python2
 """
 A script to perform offline entanglement
 """
@@ -13,15 +13,81 @@ import numpy
 
 import pyproxy.coder.playcloud_pb2
 import pyproxy.coder.entangled_driver
-
+import pyproxy.metadata
 
 DEFAULT_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "./dispatcher.json")
+
+
+def mkdir_p(path):
+    """
+    Recursively creates a directory tree.
+    Shamelessly copied from https://stackoverflow.com/a/600612
+    Args:
+        path(str): Tree to create
+    Returns:
+        bool: True if the directory was created, False otherwise
+    Raises:
+        OSError: If an error occurs during the creation of the directories
+    """
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+    return os.path.isdir(path)
+
+
+def clean_path(path):
+    """
+    Removes extra space and leading slash at the beginning of a path
+    Args:
+        path(str): Path to clean
+    Returns:
+        str: A cleaned up path
+    """
+    clean_key = path.strip()
+    if clean_key[0] == '/':
+        clean_key = clean_key[1:]
+    return clean_key
+
+def list_all_files(directory):
+    """
+    Traverses a directory (and its subdirectories) and lists all the regular files encountered
+    :param directory: Base directory to explore
+    :return: list(str): The list of files found
+    """
+    if not os.path.exists(directory):
+        raise ValueError("Could not find directory {:s}".format(directory))
+    if not os.path.isdir(directory):
+        raise ValueError("{:s} is not a directory".format(directory))
+    result = []
+    for path, _, files in os.walk(directory):
+        for name in files:
+            full_path = os.path.join(path, name)
+            if os.path.isfile(full_path) and not os.path.islink(full_path):
+                result.append(full_path)
+    return sorted(result)
+
+
+def get_document_path(base_directory, full_path):
+    """
+    Extracts the necessary part of the path to the document
+    Args:
+        base_directory(str):
+        full_path(str):
+    Returns:
+        str: The path to the document in the system
+    """
+    return clean_path(full_path.replace(base_directory, ""))
 
 
 class Storage(object):
     """
     On disk storage and pointer source for random entanglement
     """
+
     def __init__(self, base_directory):
         self.disk = Disk(base_directory)
         self.blocks = set(list_all_files(self.disk.root_folder))
@@ -109,43 +175,11 @@ class Storage(object):
         self.blocks.add(path)
 
 
-def mkdir_p(path):
-    """
-    Recursively creates a directory tree.
-    Shamelessly copied from https://stackoverflow.com/a/600612
-    Args:
-        path(str): Tree to create
-    Returns:
-        bool: True if the directory was created, False otherwise
-    Raises:
-        OSError: If an error occurs during the creation of the directories
-    """
-    try:
-        os.makedirs(path)
-    except OSError as exc:  # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-    return os.path.isdir(path)
-
-def clean_path(path):
-    """
-    Removes extra space and leading slash at the beginning of a path
-    Args:
-        path(str): Path to clean
-    Returns:
-        str: A cleaned up path
-    """
-    clean_key = path.strip()
-    if clean_key[0] == '/':
-        clean_key = clean_key[1:]
-    return clean_key
-
 class Disk(object):
     """
     A storage provider for playcloud that stores blocks on the disk
     """
+
     def __init__(self, folder="/data"):
         self.root_folder = folder
 
@@ -161,7 +195,7 @@ class Disk(object):
         path = os.path.join(self.root_folder, clean_key)
         if not os.path.isfile(path):
             return None
-        with open(path, "r") as handle:
+        with open(path, "rb") as handle:
             data = handle.read()
         return data
 
@@ -175,7 +209,7 @@ class Disk(object):
         clean_key = clean_path(key)
         path = os.path.join(self.root_folder, clean_key)
         mkdir_p(os.path.dirname(path))
-        with open(path, "w") as handle:
+        with open(path, "wb") as handle:
             handle.write(value)
 
     def delete(self, key):
@@ -208,6 +242,7 @@ class Disk(object):
 
         return len(os.listdir(self.root_folder)) == 0
 
+
 def seed_system(configuration_file, storage):
     """
     Provides the system with anchor blocks to ensure that the first entangled documents are recoverable
@@ -233,23 +268,6 @@ def seed_system(configuration_file, storage):
     seed_logger.info("Seeding done")
 
 
-def list_all_files(directory):
-    """
-    Traverses a directory (and its subdirectories) and lists all the regular files encountered
-    :param directory: Base directory to explore
-    :return: list(str): The list of files found
-    """
-    if not os.path.exists(directory):
-        raise ValueError("Could not find directory {:s}".format(directory))
-    if not os.path.isdir(directory):
-        raise ValueError("{:s} is not a directory".format(directory))
-    result = []
-    for path, _, files in os.walk(directory):
-        for name in files:
-            result.append(os.path.join(path, name))
-    return result
-
-
 def main():
     """
     Main routine
@@ -257,7 +275,8 @@ def main():
     parser = argparse.ArgumentParser(__file__, description="Perform offline entanglement")
     parser.add_argument("input", type=str, help="Input directory with the files to entangle")
     parser.add_argument("output", type=str, help="Output directory to store the entangled files")
-    parser.add_argument("-c", "--configuration", type=str, help="Configuration file", default=DEFAULT_CONFIGURATION_FILE)
+    parser.add_argument("-c", "--configuration", type=str, help="Configuration file",
+                        default=DEFAULT_CONFIGURATION_FILE)
 
     args = parser.parse_args()
 
@@ -273,14 +292,25 @@ def main():
     driver = pyproxy.coder.entangled_driver.StepEntangler(source, 1, 10, 3)
 
     files = list_all_files(args.input)
+    metadata = {}
     for input_file in files:
-        name = os.path.basename(input_file)
-        with open(input_file, "r") as handle:
+        name = get_document_path(args.input, input_file)
+        with open(input_file, "rb") as handle:
             data = handle.read()
         parities = driver.encode(data)
+        entangling_blocks = ["{:s}-{:d}".format(ep[0], ep[1]) for ep in pyproxy.metadata.extract_entanglement_data(parities[0])]
+        file_metadata = {
+            "entangling_blocks": entangling_blocks,
+            "blocks": []
+        }
+
         for index, parity in enumerate(parities):
             block_name = "{:s}-{:d}".format(name, index)
             source.put(block_name, parity)
+            file_metadata["blocks"].append(block_name)
+        metadata[name] = file_metadata
+    #FIXME write configuration to disk
+    print json.dumps(metadata, indent=4, sort_keys=True)
 
 
 if __name__ == '__main__':

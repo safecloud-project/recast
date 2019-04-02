@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
 mkdir -p /tmp/{in,out}
-cat /dev/urandom | base64 | head -c 1000000 > /tmp/in/input.txt
+cat /dev/urandom | base64 | head -c $((1024 * 1024)) > /tmp/in/input.txt
+./offline.py /etc/ /tmp/out/
