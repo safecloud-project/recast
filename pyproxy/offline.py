@@ -16,6 +16,8 @@ import pyproxy.coder.entangled_driver
 import pyproxy.metadata
 
 DEFAULT_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "./dispatcher.json")
+SETTINGS_DIRECTORY = ".recast"
+METADATA_FILE = os.path.join(SETTINGS_DIRECTORY, "metadata.json")
 
 
 def mkdir_p(path):
@@ -51,6 +53,7 @@ def clean_path(path):
     if clean_key[0] == '/':
         clean_key = clean_key[1:]
     return clean_key
+
 
 def list_all_files(directory):
     """
@@ -90,13 +93,16 @@ class Storage(object):
 
     def __init__(self, base_directory):
         self.disk = Disk(base_directory)
-        self.blocks = set(list_all_files(self.disk.root_folder))
+        files = [clean_path(f.replace(base_directory, "")) for f in list_all_files(self.disk.root_folder)]
+        self.blocks = {f for f in files if not f.startswith(SETTINGS_DIRECTORY)}
 
     def get_random_blocks(self, pointers):
         """
-
-        :param pointers:
-        :return:
+        Returns a list randomly selected pointers for entanglement purposes
+        Args:
+            pointer(int): Number of pointers to fetch
+        Returns:
+            list(pyproxy.coder.playcloud_pb2.Strip): A list of pointers selected at random
         """
         keys = list(self.blocks)
         indices = Storage.normal_selection(pointers, len(keys))
@@ -243,6 +249,25 @@ class Disk(object):
         return len(os.listdir(self.root_folder)) == 0
 
 
+def load_metadata(directory):
+    """
+    Args:
+        directory(str): Directory that might contain
+    Returns:
+        dict: The metadata loaded from the file
+    """
+    if not os.path.isdir(directory):
+        raise ValueError("{:s} is not a directory".format(directory))
+    settings_directory = os.path.join(directory, ".recast")
+    if not os.path.isdir(settings_directory):
+        return {}
+    metadata_file = os.path.join(settings_directory, "metadata.json")
+    if not os.path.isfile(metadata_file):
+        return {}
+    with open(metadata_file, "r") as handle:
+        return json.load(handle)
+
+
 def seed_system(configuration_file, storage):
     """
     Provides the system with anchor blocks to ensure that the first entangled documents are recoverable
@@ -272,7 +297,6 @@ def main():
     """
     Main routine
     """
-    #FIXME load possible configuration from disk
     parser = argparse.ArgumentParser(__file__, description="Perform offline entanglement")
     parser.add_argument("input", type=str, help="Input directory with the files to entangle")
     parser.add_argument("output", type=str, help="Output directory to store the entangled files")
@@ -288,14 +312,14 @@ def main():
     if not os.access(args.output, os.W_OK):
         raise ValueError("output directory is not writeable: {:s}")
 
-    settings_directory = os.path.join(args.output, ".recast")
+    settings_directory = os.path.join(args.output, SETTINGS_DIRECTORY)
     mkdir_p(settings_directory)
     source = Storage(args.output)
     seed_system(args.configuration, source)
     driver = pyproxy.coder.entangled_driver.StepEntangler(source, 1, 10, 3)
 
     files = list_all_files(args.input)
-    metadata = {}
+    metadata = load_metadata(args.output)
     for input_file in files:
         name = get_document_path(args.input, input_file)
         with open(input_file, "rb") as handle:
@@ -312,7 +336,7 @@ def main():
             source.put(block_name, parity)
             file_metadata["blocks"].append(block_name)
         metadata[name] = file_metadata
-    with open(os.path.join(settings_directory, "metadata.json"), "w") as handle:
+    with open(os.path.join(args.output, METADATA_FILE), "w") as handle:
         json.dump(metadata, handle)
 
 if __name__ == '__main__':
