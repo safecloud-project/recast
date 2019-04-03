@@ -18,6 +18,7 @@ import pyproxy.metadata
 DEFAULT_CONFIGURATION_FILE = os.path.join(os.path.dirname(__file__), "./dispatcher.json")
 SETTINGS_DIRECTORY = ".recast"
 METADATA_FILE = os.path.join(SETTINGS_DIRECTORY, "metadata.json")
+ANCHORS_DIRECTORY = ".anchors"
 
 
 def mkdir_p(path):
@@ -284,11 +285,10 @@ def seed_system(configuration_file, storage):
         return
     pointers_needed = configuration["entanglement"]["configuration"]["t"]
     pointers_available = len(storage.blocks)
-    anchors_directory = ".recast/anchors"
-    mkdir_p(os.path.join(storage.disk.root_folder, anchors_directory))
+    mkdir_p(os.path.join(storage.disk.root_folder, ANCHORS_DIRECTORY))
     difference = pointers_needed - pointers_available
     for index in xrange(difference):
-        file_path = os.path.join(anchors_directory, "anchor-{:d}".format(index))
+        file_path = os.path.join(ANCHORS_DIRECTORY, "anchor-{:d}".format(index))
         storage.put(file_path, pyproxy.coder.entangled_driver.pad("", 1024 * 1024))
     seed_logger.info("Seeding done")
 
