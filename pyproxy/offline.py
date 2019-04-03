@@ -324,6 +324,8 @@ def main():
     metadata = load_metadata(OUTPUT_DIRECTORY)
     for input_file in files:
         name = get_document_path(args.input, input_file)
+        if name in metadata:
+            continue
         with open(input_file, "rb") as handle:
             data = handle.read()
         parities = driver.encode(data)
