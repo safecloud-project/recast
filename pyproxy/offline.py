@@ -305,21 +305,23 @@ def main():
 
     args = parser.parse_args()
 
-    if not os.path.exists(args.output):
-        raise ValueError("output directory cannot be found: {:s}".format(args.output))
-    if not os.path.isdir(args.output):
-        raise ValueError("output directory does not point to directory: {:s}".format(args.output))
-    if not os.access(args.output, os.W_OK):
+    OUTPUT_DIRECTORY = os.path.abspath(args.output)
+
+    if not os.path.exists(OUTPUT_DIRECTORY):
+        raise ValueError("output directory cannot be found: {:s}".format(OUTPUT_DIRECTORY))
+    if not os.path.isdir(OUTPUT_DIRECTORY):
+        raise ValueError("output directory does not point to directory: {:s}".format(OUTPUT_DIRECTORY))
+    if not os.access(OUTPUT_DIRECTORY, os.W_OK):
         raise ValueError("output directory is not writeable: {:s}")
 
-    settings_directory = os.path.join(args.output, SETTINGS_DIRECTORY)
+    settings_directory = os.path.join(OUTPUT_DIRECTORY, SETTINGS_DIRECTORY)
     mkdir_p(settings_directory)
-    source = Storage(args.output)
+    source = Storage(OUTPUT_DIRECTORY)
     seed_system(args.configuration, source)
     driver = pyproxy.coder.entangled_driver.StepEntangler(source, 1, 10, 3)
 
     files = list_all_files(args.input)
-    metadata = load_metadata(args.output)
+    metadata = load_metadata(OUTPUT_DIRECTORY)
     for input_file in files:
         name = get_document_path(args.input, input_file)
         with open(input_file, "rb") as handle:
@@ -336,8 +338,8 @@ def main():
             source.put(block_name, parity)
             file_metadata["blocks"].append(block_name)
         metadata[name] = file_metadata
-    with open(os.path.join(args.output, METADATA_FILE), "w") as handle:
-        json.dump(metadata, handle)
+    with open(os.path.join(OUTPUT_DIRECTORY, METADATA_FILE), "w") as handle:
+        json.dump(metadata, handle, sort_keys=True)
 
 if __name__ == '__main__':
     main()
