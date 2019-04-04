@@ -292,6 +292,24 @@ def seed_system(configuration_file, storage):
         storage.put(file_path, pyproxy.coder.entangled_driver.pad("", 1024 * 1024))
     seed_logger.info("Seeding done")
 
+def load_driver(configuration_file, source):
+    """
+    Args:
+        configuration_file(str): Path to the recast configuration file
+        source(object): Block source for entanglement purposes
+    Returns:
+        pyproxy.coder.entangled_driver.StepEntangler: A configured instance of a StepEntangler
+    """
+    if not os.path.isfile(configuration_file):
+        raise ValueError("{:s} is not a valid file".format(configuration_file))
+    with open(configuration_file, "r") as handle:
+        configuration = json.load(handle)
+    if "entanglement" not in configuration or "configuration" not in configuration["entanglement"]:
+        raise ValueError("Could not load entanglement section from {:s}".format(configuration_file))
+    s = configuration["entanglement"]["configuration"]["s"]
+    t = configuration["entanglement"]["configuration"]["t"]
+    p = configuration["entanglement"]["configuration"]["p"]
+    return pyproxy.coder.entangled_driver.StepEntangler(source, s, t, p)
 
 def main():
     """
@@ -318,7 +336,7 @@ def main():
     mkdir_p(settings_directory)
     source = Storage(OUTPUT_DIRECTORY)
     seed_system(args.configuration, source)
-    driver = pyproxy.coder.entangled_driver.StepEntangler(source, 1, 10, 3)
+    driver = load_driver(args.configuration, source)
 
     files = list_all_files(args.input)
     metadata = load_metadata(OUTPUT_DIRECTORY)
