@@ -360,6 +360,7 @@ def main():
         metadata[name] = file_metadata
     with open(os.path.join(OUTPUT_DIRECTORY, METADATA_FILE), "w") as handle:
         json.dump(metadata, handle, sort_keys=True)
+    shutil.copyfile(args.configuration, os.path.join(settings_directory, "dispatcher.json"))
 
 if __name__ == '__main__':
     main()
