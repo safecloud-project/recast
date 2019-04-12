@@ -355,7 +355,7 @@ def main():
                 strip = source.get(block)
                 strips.append(strip)
             decoded_document = driver.decode(strips, path=document)
-            destination.put(path, decoded_document)
+            destination.put(document, decoded_document)
     else:
         settings_directory = os.path.join(OUTPUT_DIRECTORY, SETTINGS_DIRECTORY)
         mkdir_p(settings_directory)
