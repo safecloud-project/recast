@@ -285,11 +285,15 @@ def seed_system(configuration_file, storage):
         return
     pointers_needed = configuration["entanglement"]["configuration"]["t"]
     pointers_available = len(storage.blocks)
-    mkdir_p(os.path.join(storage.disk.root_folder, ANCHORS_DIRECTORY))
+    anchors_folder = os.path.join(storage.disk.root_folder, ANCHORS_DIRECTORY)
+    mkdir_p(anchors_folder)
+    driver = pyproxy.coder.entangled_driver.StepEntangler(storage, 1, 0, 1)
+    raw_block = pyproxy.coder.entangled_driver.pad("", 1024 * 1024)
     difference = pointers_needed - pointers_available
     for index in xrange(difference):
         file_path = os.path.join(ANCHORS_DIRECTORY, "anchor-{:d}".format(index))
-        storage.put(file_path, pyproxy.coder.entangled_driver.pad("", 1024 * 1024))
+        parities = driver.encode(raw_block)
+        storage.put(file_path, parities[0])
     seed_logger.info("Seeding done")
 
 def load_driver(configuration_file, source):
