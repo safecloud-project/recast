@@ -163,13 +163,18 @@ class Storage(object):
 
     def get_block(self, path):
         """
-        Alias to Storage.get that matches random block source signature
+        Alias to Storage.get that matches random block source signature for encoding
         Args:
             path(str): Path to the block
         Returns:
             bytes: Block data
         """
         return self.get(path)
+
+    def get_block(self, path, index, reconstruct_if_missing=False):
+
+        key = "{:s}-{:d}".format(path, index)
+        return pyproxy.coder.playcloud_pb2.Strip(data=self.get(key))
 
     def put(self, path, data):
         """
@@ -320,6 +325,7 @@ def main():
     Main routine
     """
     parser = argparse.ArgumentParser(__file__, description="Perform offline entanglement")
+    parser.add_argument("--decode", "-d", action="store_true")
     parser.add_argument("input", type=str, help="Input directory with the files to entangle")
     parser.add_argument("output", type=str, help="Output directory to store the entangled files")
     parser.add_argument("-c", "--configuration", type=str, help="Configuration file",
@@ -336,35 +342,50 @@ def main():
     if not os.access(OUTPUT_DIRECTORY, os.W_OK):
         raise ValueError("output directory is not writeable: {:s}")
 
-    settings_directory = os.path.join(OUTPUT_DIRECTORY, SETTINGS_DIRECTORY)
-    mkdir_p(settings_directory)
-    source = Storage(OUTPUT_DIRECTORY)
-    seed_system(args.configuration, source)
-    driver = load_driver(args.configuration, source)
+    if args.decode:
+        source = Storage(args.input)
+        destination = Storage(args.output)
+        driver = load_driver(args.configuration, source)
+        metadata = load_metadata(args.input)
+        for document in metadata:
+            path = os.path.join(args.input, document)
+            document_metadata = metadata[document]
+            strips = []
+            for block in document_metadata["blocks"]:
+                strip = source.get(block)
+                strips.append(strip)
+            decoded_document = driver.decode(strips, path=document)
+            destination.put(path, decoded_document)
+    else:
+        settings_directory = os.path.join(OUTPUT_DIRECTORY, SETTINGS_DIRECTORY)
+        mkdir_p(settings_directory)
+        source = Storage(OUTPUT_DIRECTORY)
+        driver = load_driver(args.configuration, source)
+        seed_system(args.configuration, source)
 
-    files = list_all_files(args.input)
-    metadata = load_metadata(OUTPUT_DIRECTORY)
-    for input_file in files:
-        name = get_document_path(args.input, input_file)
-        if name in metadata:
-            continue
-        with open(input_file, "rb") as handle:
-            data = handle.read()
-        parities = driver.encode(data)
-        entangling_blocks = ["{:s}-{:d}".format(ep[0], ep[1]) for ep in pyproxy.metadata.extract_entanglement_data(parities[0])]
-        file_metadata = {
-            "entangling_blocks": entangling_blocks,
-            "blocks": []
-        }
+        files = list_all_files(args.input)
+        metadata = load_metadata(OUTPUT_DIRECTORY)
+        for input_file in files:
+            name = get_document_path(args.input, input_file)
+            if name in metadata:
+                continue
+            with open(input_file, "rb") as handle:
+                data = handle.read()
+            parities = driver.encode(data)
+            entangling_blocks = ["{:s}-{:d}".format(ep[0], ep[1]) for ep in pyproxy.metadata.extract_entanglement_data(parities[0])]
+            file_metadata = {
+                "entangling_blocks": entangling_blocks,
+                "blocks": []
+            }
 
-        for index, parity in enumerate(parities):
-            block_name = "{:s}-{:d}".format(name, index)
-            source.put(block_name, parity)
-            file_metadata["blocks"].append(block_name)
-        metadata[name] = file_metadata
-    with open(os.path.join(OUTPUT_DIRECTORY, METADATA_FILE), "w") as handle:
-        json.dump(metadata, handle, sort_keys=True)
-    shutil.copyfile(args.configuration, os.path.join(settings_directory, "dispatcher.json"))
+            for index, parity in enumerate(parities):
+                block_name = "{:s}-{:d}".format(name, index)
+                source.put(block_name, parity)
+                file_metadata["blocks"].append(block_name)
+            metadata[name] = file_metadata
+        with open(os.path.join(OUTPUT_DIRECTORY, METADATA_FILE), "w") as handle:
+            json.dump(metadata, handle, sort_keys=True)
+        shutil.copyfile(args.configuration, os.path.join(settings_directory, "dispatcher.json"))
 
 if __name__ == '__main__':
     main()
