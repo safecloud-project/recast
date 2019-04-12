@@ -58,7 +58,7 @@ def clean_path(path):
 
 def list_all_files(directory):
     """
-    Traverses a directory (and its subdirectories) and lists all the regular files encountered
+    Traverses a directory (and its subdirectories) and lists all the regular non-empty files
     :param directory: Base directory to explore
     :return: list(str): The list of files found
     """
@@ -70,7 +70,7 @@ def list_all_files(directory):
     for path, _, files in os.walk(directory):
         for name in files:
             full_path = os.path.join(path, name)
-            if os.path.isfile(full_path) and not os.path.islink(full_path):
+            if os.path.isfile(full_path) and not os.path.islink(full_path) and os.path.getsize(full_path) > 0:
                 result.append(full_path)
     return sorted(result)
 
