@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import logging.config
+import mimetypes
 import os
 import time
 import uuid
@@ -91,6 +92,7 @@ def get(key):
         if blocks is None:
             if key in EMPTY_FILES:
                 response.status = 200
+                response.content_type = mimetypes.guess_type(key)[0]
                 return ""
             response.status = 404
             return ""
@@ -105,6 +107,7 @@ def get(key):
         LOGGER.debug("Going go to do decode request")
 
         data = CODER_CLIENT.decode(key, strips)
+        response.content_type = mimetypes.guess_type(key)[0]
         return data
 
 
