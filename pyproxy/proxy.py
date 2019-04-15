@@ -3,6 +3,7 @@
 A python implementation of playcloud's proxy server
 """
 import argparse
+import hashlib
 import json
 import logging.config
 import os
@@ -15,6 +16,8 @@ import concurrent.futures
 from bottle import abort, request, response, run
 import bottle
 import grpc
+
+import offline
 
 import pyproxy.playcloud_pb2 as playcloud_pb2
 
@@ -215,12 +218,33 @@ def seed_system():
         configuration["entanglement"]["type"] != "step":
         seed_logger.info("No need to see the system")
         return
-    pointers_needed = configuration["entanglement"]["configuration"]["t"]
     files = Files(host="metadata")
     pointers_available = files.get_number_of_blocks_available()
-    while pointers_available < pointers_needed:
-        store(key=None, data=os.urandom(1024 * 1024))
-        pointers_available = files.get_number_of_blocks_available()
+    pointers_needed = configuration["entanglement"]["configuration"]["t"]
+    difference = pointers_needed - pointers_available
+    if difference <= 0:
+        seed_logger.info("Seeding done")
+        return
+
+    storage = offline.Storage("/tmp/")
+    driver = pyproxy.coder.entangled_driver.StepEntangler(storage, 1, 0, 1)
+    raw_block = pyproxy.coder.entangled_driver.pad("", 1024 * 1024)
+    coded_strip = driver.encode(raw_block)[0]
+    checksum = hashlib.sha256(coded_strip).digest()
+    seed_logger.info("Creating {:d} anchoring blocks".format(difference))
+    for index in xrange(difference):
+        path = "anchor-{:d}".format(index)
+        strip = Strip()
+        strip.id = "{:s}-00".format(path)
+        strip.data = coded_strip
+        strip.checksum = checksum
+        strip.type = Strip.DATA
+        strips = [strip]
+        encoded_file =  playcloud_pb2.File(path=path, strips=strips, original_size=len(raw_block))
+        metadata = DISPATCHER.put(path, encoded_file)
+        metadata.entangling_blocks = extract_entanglement_data(encoded_file.strips[0].data)
+        FILES.put(path, metadata)
+
     seed_logger.info("Seeding done")
 
 
