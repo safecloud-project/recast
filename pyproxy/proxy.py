@@ -10,7 +10,6 @@ import os
 import time
 import uuid
 
-
 import concurrent.futures
 
 from bottle import abort, request, response, run
@@ -56,6 +55,8 @@ APP = bottle.app()
 KAZOO = None
 HOSTNAME = os.uname()[1]
 
+EMPTY_FILES = set()
+
 
 @APP.route("/<key:path>/__meta", method="GET")
 def get_file_metadata(key):
@@ -88,6 +89,9 @@ def get(key):
     with lock:
         blocks = DISPATCHER.get(key)
         if blocks is None:
+            if key in EMPTY_FILES:
+                response.status = 200
+                return ""
             response.status = 404
             return ""
         strips = []
@@ -118,6 +122,9 @@ def store(key=None, data=None):
     key = unicode(key, errors="ignore").encode("utf-8")
     lock = KAZOO.WriteLock(os.path.join("/", key), HOSTNAME)
     with lock:
+        if not data:
+            EMPTY_FILES.add(key)
+            return key
         if FILES.exists(key):
             error_message = "File {:s} already exists".format(key)
             raise NameError(error_message)
@@ -149,10 +156,8 @@ def put(key):
     # Check if the PUT request actually carries any data in its body to avoid
     # storing empty blocks under a key.
     data = request.body.getvalue()
-    if not data:
-        return abort(400, "The request body must contain data to store")
     try:
-        key = store(key=key, data=request.body.getvalue())
+        key = store(key=key, data=data)
     except NameError as name_error:
         return abort(409, name_error.message)
     end = time.clock()
@@ -214,8 +219,8 @@ def seed_system():
     seed_logger.info("Checking if the system needs to be seeded")
     with open(os.path.join(os.path.dirname(__file__), "./dispatcher.json")) as handle:
         configuration = json.load(handle)
-    if "entanglement" not in configuration or "type" not in configuration["entanglement"] or\
-        configuration["entanglement"]["type"] != "step":
+    if "entanglement" not in configuration or "type" not in configuration["entanglement"] or \
+            configuration["entanglement"]["type"] != "step":
         seed_logger.info("No need to see the system")
         return
     files = Files(host="metadata")
@@ -240,7 +245,7 @@ def seed_system():
         strip.checksum = checksum
         strip.type = Strip.DATA
         strips = [strip]
-        encoded_file =  playcloud_pb2.File(path=path, strips=strips, original_size=len(raw_block))
+        encoded_file = playcloud_pb2.File(path=path, strips=strips, original_size=len(raw_block))
         metadata = DISPATCHER.put(path, encoded_file)
         metadata.entangling_blocks = extract_entanglement_data(encoded_file.strips[0].data)
         FILES.put(path, metadata)
