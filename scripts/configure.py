@@ -218,7 +218,8 @@ def create_docker_compose_configuration(configuration, scale=1):
     node_keys = [key for key in compose_configuration["services"] if key not in services_to_keep]
     make_node = create_redis_compose_node
     if scale <= 1:
-        del compose_configuration["services"]["load_balancer"]
+        if "load_balancer" in compose_configuration["services"]:
+            del compose_configuration["services"]["load_balancer"]
         compose_configuration["services"]["proxy"]["ports"] = ["3000:3000"]
     else:
         del compose_configuration["services"]["proxy"]["container_name"]
