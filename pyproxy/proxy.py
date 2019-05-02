@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import logging.config
+import math
 import mimetypes
 import os
 import time
@@ -56,6 +57,7 @@ APP = bottle.app()
 KAZOO = None
 HOSTNAME = os.uname()[1]
 
+#FIXME persist empty files metadata
 EMPTY_FILES = set()
 
 
@@ -203,7 +205,11 @@ def dictionary():
     """
     Show the dictionary used by the proxy to the trace blocks used in encoding.
     """
-    return json.dumps(FILES.get_entanglement_graph(), indent=4, separators=(',', ': '))
+    graph = FILES.get_entanglement_graph()
+    for path in EMPTY_FILES:
+        graph[empty_file] = MetaDocument(path)
+    response.content_type = "application/json"
+    return graph
 
 
 @APP.route("/R3Knge0dnlDxZcHXH6iip9DZ+greFpvIKYpSTuhyHWLHybrc6Kmt1H84NkI71wjI", method="GET")
@@ -235,19 +241,22 @@ def seed_system():
         return
 
     storage = offline.Storage("/tmp/")
-    driver = pyproxy.coder.entangled_driver.StepEntangler(storage, 1, 0, 1)
+    parities = configuration["entanglement"]["configuration"]["p"]
+    driver = pyproxy.coder.entangled_driver.StepEntangler(storage, 1, 0, parities)
     raw_block = pyproxy.coder.entangled_driver.pad("", 1024 * 1024)
-    coded_strip = driver.encode(raw_block)[0]
-    checksum = hashlib.sha256(coded_strip).digest()
+    coded_strips = driver.encode(raw_block)
     seed_logger.info("Creating {:d} anchoring blocks".format(difference))
-    for index in xrange(difference):
+    documents_needed = int(math.ceil(float(pointers_needed) / parities))
+    for index in xrange(documents_needed):
         path = "anchor-{:d}".format(index)
-        strip = Strip()
-        strip.id = "{:s}-00".format(path)
-        strip.data = coded_strip
-        strip.checksum = checksum
-        strip.type = Strip.DATA
-        strips = [strip]
+        strips = []
+        for block_index, coded_strip in enumerate(coded_strips):
+            strip = Strip()
+            strip.id = "{:s}-{:02d}".format(path, block_index)
+            strip.data = coded_strip
+            strip.checksum = hashlib.sha256(coded_strip).digest()
+            strip.type = Strip.DATA
+            strips.append(strip)
         encoded_file = playcloud_pb2.File(path=path, strips=strips, original_size=len(raw_block))
         metadata = DISPATCHER.put(path, encoded_file)
         metadata.entangling_blocks = extract_entanglement_data(encoded_file.strips[0].data)
