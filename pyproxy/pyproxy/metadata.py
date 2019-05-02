@@ -230,6 +230,21 @@ def extract_document_size(block_data):
     end = block_data.find(header_delimiter, start)
     return int(block_data[start:end])
 
+def split_blocks_field(path, joined_keys):
+    pos = 0
+    extracted_keys = []
+    while pos != -1 and pos < len(joined_keys):
+        start = joined_keys.find(path, pos)
+        if start == -1:
+            break
+        end = joined_keys.find(",", start + len(path))
+        if end == -1:
+            extracted_keys.append(joined_keys[start:])
+        else:
+            extracted_keys.append(joined_keys[start:end])
+        pos = end
+    return extracted_keys
+
 class Files(object):
     """
     Represents metadata stored in the cluster
@@ -336,7 +351,8 @@ class Files(object):
         keys = []
         for hsh in hashes:
             mtdt = Files.parse_metadata(hsh)
-            keys += hsh.get("blocks").strip().split(",")
+            path = hsh.get("path")
+            keys += split_blocks_field(path, hsh.get("blocks"))
             metadata.append(mtdt)
         blocks = self.get_blocks(keys)
         step = len(blocks) / len(metadata)
