@@ -456,8 +456,10 @@ class Files(object):
             MetaBlock: The parsed MetaBlock
         """
         key = record.get("key")
-        creation_date = datetime.datetime.strptime(record.get("creation_date"),
-                                                   "%Y-%m-%d %H:%M:%S.%f")
+        try:
+            creation_date = datetime.datetime.strptime(record.get("creation_date"),"%Y-%m-%d %H:%M:%S.%f")
+        except:
+            creation_date = datetime.datetime.strptime(record.get("creation_date"),"%Y-%m-%d %H:%M:%S")
         providers = record.get("providers").strip()
         if providers:
             providers = providers.split(",")
