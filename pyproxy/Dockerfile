@@ -69,7 +69,7 @@ RUN apt-get update && \
     apt-get autoremove   --assume-yes --quiet && \
     apt-get autoclean    --assume-yes --quiet && \
     apt-get install      --assume-yes --quiet libev-dev python-all-dev python-hiredis python-numpy python-pip && \
-    apt-get install --assume-yes --quiet autoconf automake build-essential cython gcc git g++ libjerasure2 libtool  python-pip python-numpy wget yasm && \
+    apt-get install --assume-yes --quiet autoconf automake build-essential cython gcc git g++ libtool  python-pip python-numpy wget yasm && \
     ldconfig
 
 # Install intel ISA-L 2.20.0
@@ -80,9 +80,18 @@ RUN wget --quiet https://github.com/01org/isa-l/archive/v2.20.0.tar.gz && \
     ./autogen.sh && ./configure && make -s && make install && \
     echo "/usr/lib" >> /etc/ld.so.conf && ldconfig
 
+# Install gf-complete
+RUN git clone http://lab.jerasure.org/jerasure/gf-complete.git /tmp/gf-complete --quiet
+WORKDIR /tmp/gf-complete
+RUN git fetch --quiet && git checkout 7e61b44404f0ed410c83cfd3947a52e88ae044e1 --quiet && ./autogen.sh && ./configure && make && make install && ldconfig
+
+# Install jerasure
+RUN git clone http://lab.jerasure.org/jerasure/jerasure.git /tmp/jerasure --quiet
+WORKDIR /tmp/jerasure
+RUN git fetch --quiet && git checkout f8e5f981859f87cbb0ca82e03f66c06571078093 --quiet && autoreconf --force --install && ./configure && make && make install && ldconfig
+
 # Install liberasurecode 1.1.1
-WORKDIR /tmp
-RUN git clone https://github.com/openstack/liberasurecode --quiet
+RUN git clone https://github.com/openstack/liberasurecode /tmp/liberasurecode --quiet
 WORKDIR /tmp/liberasurecode
 RUN git checkout v1.1.1 --quiet && ./autogen.sh && ./configure && make && make test && make install && ldconfig
 
