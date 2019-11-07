@@ -82,7 +82,7 @@ RUN wget --quiet https://github.com/01org/isa-l/archive/v2.20.0.tar.gz && \
 
 # Install liberasurecode 1.1.1
 WORKDIR /tmp
-RUN git clone https://bitbucket.org/tsg-/liberasurecode.git --quiet
+RUN git clone https://github.com/openstack/liberasurecode --quiet
 WORKDIR /tmp/liberasurecode
 RUN git checkout v1.1.1 --quiet && ./autogen.sh && ./configure && make && make test && make install && ldconfig
 
