@@ -1,6 +1,8 @@
 """
 A module with entanglement utilities
 """
+import binascii
+import ctypes
 import json
 import logging
 import math
@@ -83,7 +85,9 @@ class FragmentHeader(object):
     """
     Native python representation of a fragment_header_t struct used by liberasurecode
     """
-    HEADER_FORMAT = "=IIIxxxxxxxxx"
+    # Even though the checksum is supposed to be u_int32 and binascii.crc32 returns an int,
+    # liberasurecode does not seem to be bothered when doing its checks
+    HEADER_FORMAT = "=IIixxxxxxxxx"
     def __init__(self, blob):
         self.metadata = FragmentMetadata(blob[:59])
         extracted = struct.unpack(FragmentHeader.HEADER_FORMAT, blob[59:])
@@ -266,6 +270,7 @@ def fetch_and_prep_pointer_block(source, path, index, fragment_index, fragment_s
     fragment_header.metadata.index = fragment_index
     fragment_header.metadata.size = fragment_size
     fragment_header.metadata.orig_data_size = original_data_size
+    fragment_header.metadata_checksum = binascii.crc32(fragment_header.metadata.pack())
     modified_block = fragment_header.pack() + pad(pointer[80:], fragment_size)
     return modified_block
 
