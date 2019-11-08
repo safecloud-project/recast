@@ -90,11 +90,11 @@ RUN git clone http://lab.jerasure.org/jerasure/jerasure.git /tmp/jerasure --quie
 WORKDIR /tmp/jerasure
 RUN git fetch --quiet && git checkout f8e5f981859f87cbb0ca82e03f66c06571078093 --quiet && autoreconf --force --install && ./configure && make && make install && ldconfig
 
-# Install liberasurecode 1.1.1
+# Install liberasurecode 1.4.0
 # FIXME: Breaks with 35000cb0c34378a8565a41bbb914ea1aaecd92fa and actual checksum checking
 RUN git clone https://github.com/openstack/liberasurecode /tmp/liberasurecode --quiet
 WORKDIR /tmp/liberasurecode
-RUN git checkout v1.1.1 --quiet && ./autogen.sh && ./configure && make && make test && make install && ldconfig
+RUN git checkout 1.4.0 --quiet && ./autogen.sh && ./configure && make && make test && make install && ldconfig
 
 # Upgrade pip
 RUN pip install --upgrade --quiet pip
