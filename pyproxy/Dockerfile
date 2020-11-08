@@ -81,12 +81,12 @@ RUN wget --quiet https://github.com/01org/isa-l/archive/v2.20.0.tar.gz && \
     echo "/usr/lib" >> /etc/ld.so.conf && ldconfig
 
 # Install gf-complete
-RUN git clone http://lab.jerasure.org/jerasure/gf-complete.git /tmp/gf-complete --quiet
+RUN git clone https://github.com/ceph/gf-complete /tmp/gf-complete --quiet
 WORKDIR /tmp/gf-complete
 RUN git fetch --quiet && git checkout 7e61b44404f0ed410c83cfd3947a52e88ae044e1 --quiet && ./autogen.sh && ./configure && make && make install && ldconfig
 
 # Install jerasure
-RUN git clone http://lab.jerasure.org/jerasure/jerasure.git /tmp/jerasure --quiet
+RUN git clone https://github.com/ceph/jerasure.git /tmp/jerasure --quiet
 WORKDIR /tmp/jerasure
 RUN git fetch --quiet && git checkout f8e5f981859f87cbb0ca82e03f66c06571078093 --quiet && autoreconf --force --install && ./configure && make && make install && ldconfig
 
